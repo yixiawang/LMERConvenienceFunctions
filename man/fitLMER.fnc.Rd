@@ -7,7 +7,12 @@ Back-fit fixed effects and forward-fit random effects of an LMER model.
 The function follows these steps: (1) Set REML to FALSE (unless specified otherwise); (2) back-fit initial model either on F (by default) or on t values; (3) forward-fit random effects; (4) re-back-fit fixed effects; (5) set REML to TRUE (unless specified otherwise).
 }
 \usage{
-fitLMER.fnc(model = as.character(), data = as.character(), backfit.on = "F", item = FALSE, ran.effects = list(ran.intercepts = as.character(), slopes = as.character(), by.vars = as.character()), alpha = 0.05, t.threshold = 2, set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, file.name = paste("./full_backfitLMER_log_", gsub(" ", "_", date()), ".txt", sep = ""))
+fitLMER.fnc(model = as.character(), data = as.character(), 
+    backfit.on = "F", item = FALSE, ran.effects = list(ran.intercepts
+    = as.character(), slopes = as.character(), by.vars = as.character()), 
+    alpha = 0.05, t.threshold = 2, set.REML.FALSE = TRUE, reset.REML.TRUE 
+    = TRUE, file.name = paste("full_backfitLMER_log_", gsub(":", "_", 
+    gsub(" ", "_", date())), ".txt", sep=""))
 }
 \arguments{
   \item{model}{
@@ -38,7 +43,7 @@ Logical. Whether or not to set REML to FALSE. Defaults to FALSE.
 Logical. Whether or not to re-set the back-fitted model to REML = TRUE.
 }
   \item{file.name}{
-Should the back-fitting log be saved? defaults to ``paste("./fixef_backfit_log_", gsub(" ", "_", date()), ".txt", sep = "")'', that is, the path and file name of the log, which can be changed to whatever the use wishes. Set to FALSE to disable.
+Should the back-fitting log be saved? By default, it is saved in a temporary folder (platform dependent) as ``paste("full_backfitLMER_log_", gsub(":", "_", gsub(" ", "_", date())), ".txt", sep = "")''. The path and file name of the log can be changed to whatever the use wishes. Set to FALSE to disable.
 }
 }
 \details{
@@ -49,7 +54,7 @@ This process was used in Tremblay and Tucker (in preparation) and in Newman, Tre
 \value{
 A ``mer'' object with fixed effects (on F or t values) and back-fitted forward-fitted random effect structure.
 
-A log of the process is printed on screen and, optionally, printed in a log file.
+A log of the process is printed on screen and, optionally, printed in a log file saved in a temporary file (platform specific).
 }
 \references{
 Baayen, R.H., Davidson, D.J. and Bates, D.M. (2008). Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
@@ -79,7 +84,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
 # fit initial model
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency +
+    FamilySize + Length + DerivEntropy + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -88,10 +95,15 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
 # fitLMER #1 -- backfit on F
-mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = list(ran.intercepts = "Class", slopes = c("Frequency", "Length", "FamilySize"), by.vars = "Subject"))
+mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = 
+    list(ran.intercepts = "Class", slopes = c("Frequency", 
+    "Length", "FamilySize"), by.vars = "Subject"), 
+    file.name = FALSE)
 pamer.fnc(mA)
 # fitLMER #2 -- backfit on F
-mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = c("(1+Length|Subject)", "(1+Frequency|Subject)", "(1+FamilySize|Subject)"))
+mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
+    c("(1+Length|Subject)", "(1+Frequency|Subject)", 
+    "(1+FamilySize|Subject)"), file.name = FALSE)
 pamer.fnc(mB)
 
 # Example 2
@@ -99,7 +111,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # fit initial model
-m0 = lmer(RT ~ Frequency * FamilySize * Length * DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Frequency * FamilySize * Length * 
+    DerivEntropy + (1|Subject), data = lexdec3)
 # look at criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -108,7 +121,9 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
 # fitLMER #3 -- backfit on F
-mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = list(slopes = c("Frequency", "FamilySize", "Length", "DerivEntropy"), by.vars = "Subject"))
+mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
+    list(slopes = c("Frequency", "FamilySize", "Length", 
+    "DerivEntropy"), by.vars = "Subject"), file.name = FALSE)
 # look at model criticism plots
 mcp.fnc(mA,lexdec3)
 pamer.fnc(mA)

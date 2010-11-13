@@ -6,11 +6,9 @@ function(
                            slopes=as.character(), # of random effects to consider, e.g.,
                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
           alpha=0.05,
-          log.file=paste("./ranef_forwardfit_log_",gsub(" ","_",date()),".txt",sep="") # or other path and file name or FALSE
+          log.file=paste("ranef_forwardfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
           ){
-  unlink("temp.txt")
-  sink(file=NULL,type="message")   
-  
+ 
   if(length(model)==0){
     stop("please supply a value to the ''model'' argument")
   }
@@ -24,6 +22,11 @@ function(
   }
   
   options(warn=1)
+
+  current.dir=getwd()
+  temp.dir=tempdir()
+  tempdir()
+  setwd(temp.dir)
 
   unlink("temp.txt")
   sink(file=NULL,type="message")   
@@ -198,7 +201,12 @@ function(
           }
       }
    }
-   if(log.file!=FALSE)sink(file=NULL)
+
+  if(log.file!=FALSE){
+    sink(file=NULL)
+    cat("Log file saved in directory",temp.dir,"\n")
+  }
+  setwd(current.dir)
 
    return(model=model)
 }

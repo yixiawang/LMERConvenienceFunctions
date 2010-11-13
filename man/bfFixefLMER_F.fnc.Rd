@@ -28,7 +28,10 @@ It works as follows:
   (3)  Set REML to TRUE (default) unless otherwise specified.
 }
 \usage{
-bfFixefLMER_F.fnc(model = as.character(), data = as.character(), item = FALSE, alpha = 0.05, set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, log.file = paste("./fixef_backfit_log_", gsub(" ", "_", date()), ".txt", sep = ""))
+bfFixefLMER_F.fnc(model = as.character(), data = as.character(), 
+    item = FALSE, alpha = 0.05, set.REML.FALSE = TRUE, reset.REML.TRUE = 
+    TRUE, log.file = paste("fixef_backfit_log_", gsub(":", "_", gsub(" ", 
+    "_", date())), ".txt", sep=""))
 }
 \arguments{
   \item{model}{
@@ -50,7 +53,7 @@ Logical. Whether or not to set REML to FALSE. Defaults to FALSE.
 Logical. Whether or not to re-set the back-fitted model to REML = TRUE.
 }
   \item{log.file}{
-Should the back-fitting log be saved? defaults to ``paste("./fixef_backfit_log_", gsub(" ", "_", date()), ".txt", sep = "")'', that is, the path and file name of the log, which can be changed to whatever the use wishes. Set to FALSE to disable.
+Should the back-fitting log be saved? By default, it is saved in a temporary folder (platform dependent) as ``paste("fixef_backfit_log_", gsub(":", "_", gsub(" ", "_", date())), ".txt", sep = "")''. The path and file name of the log can be changed to whatever the use wishes. Set to FALSE to disable.
 }
 }
 \details{
@@ -59,7 +62,7 @@ Basically, a term remains in the model if (1) its p value from the ANOVA is equa
 If factorial terms are included in the initial model back-fitting on F is recommended. This backfitting method was used in Newman, Tremblay, Nichols, Neville, and Ullman (submitted).
 }
 \value{
-A ``mer'' model with back-fitted fixed effects (on ANOVA F) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file.
+A ``mer'' model with back-fitted fixed effects (on t values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file in a temporary file (platform dependent).
 }
 \references{
 Pinheiro, J.C. and Bates, D.M. (2000). Mixed Effects Models in S and S-Plus. New York: Springer.
@@ -89,7 +92,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
 # fit initial model
-m1 = lmer(RT ~ Frequency * FamilySize * Length * NativeLanguage + (1|Subject), data = lexdec3)
+m1 = lmer(RT ~ Frequency * FamilySize * Length * 
+    NativeLanguage + (1|Subject), data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m1, lexdec3)
 # trim data on initial model residuals
@@ -98,7 +102,7 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 mB = update(m1)
 # backfit fixed effects on F
-m2 = bfFixefLMER_F.fnc(mB, lexdec3)
+m2 = bfFixefLMER_F.fnc(mB, lexdec3, log.file = FALSE)
 pamer.fnc(m2)
 
 # An example with rcs
@@ -107,7 +111,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # base model
-m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + FamilySize + Length) + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + 
+    FamilySize + Length) + (1|Subject), data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on model residuals
@@ -115,7 +120,7 @@ lexdec3 = romr.fnc(m0, lexdec3)$data
 # update model
 m0 = update(m0)
 # backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3)
+m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 
 # An example with poly
@@ -124,7 +129,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # base model
-m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + NativeLanguage + FamilySize + Length) + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + 
+    NativeLanguage + FamilySize + Length) + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on model residuals
@@ -132,7 +139,7 @@ lexdec3 = romr.fnc(m0, lexdec3)$data
 # update model
 m0 = update(m0)
 # backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3)
+m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 }
 \keyword{ ~kwd1 }

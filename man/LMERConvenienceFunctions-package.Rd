@@ -12,8 +12,8 @@ The main functions are fixed effect back-fitting functions (``bfFixefLMER_F.fnc'
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2010-11-05\cr
+Version: \tab 1.1\cr
+Date: \tab 2010-11-13\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -70,7 +70,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
 # fit initial model
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
+    FamilySize + Length + DerivEntropy + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -79,10 +81,15 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
 # fitLMER #1 -- backfit on F
-mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = list(ran.intercepts = "Class", slopes = c("Frequency", "Length", "FamilySize"), by.vars = "Subject"))
+mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = 
+    list(ran.intercepts = "Class", slopes = c("Frequency", 
+    "Length", "FamilySize"), by.vars = "Subject"), 
+    file.name = FALSE)
 pamer.fnc(mA)
 # fitLMER #2 -- backfit on F
-mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = c("(1+Length|Subject)", "(1+Frequency|Subject)", "(1+FamilySize|Subject)"))
+mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
+    c("(1+Length|Subject)", "(1+Frequency|Subject)", 
+    "(1+FamilySize|Subject)"), file.name = FALSE)
 pamer.fnc(mB)
 
 # Example 2
@@ -90,7 +97,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # fit initial model
-m0 = lmer(RT ~ Frequency * FamilySize * Length * DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Frequency * FamilySize * Length * DerivEntropy + 
+    (1|Subject), data = lexdec3)
 # look at criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -99,7 +107,9 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
 # fitLMER #3 -- backfit on F
-mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = list(slopes = c("Frequency", "FamilySize", "Length", "DerivEntropy"), by.vars = "Subject"))
+mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
+    list(slopes = c("Frequency", "FamilySize", "Length", 
+    "DerivEntropy"), by.vars = "Subject"), file.name = FALSE)
 # look at model criticism plots
 mcp.fnc(mA,lexdec3)
 pamer.fnc(mA)
@@ -109,7 +119,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
 # fit initial model
-m0 = lmer(RT ~ Frequency * FamilySize * DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Frequency * FamilySize * DerivEntropy +
+    (1|Subject), data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -118,10 +129,10 @@ lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
 # backfit fixed effects on F
-mB = bfFixefLMER_F.fnc(m0, lexdec3)
+mB = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(mB)
 # bfFixefLMER -- backfit on t
-m1 = bfFixefLMER_F.fnc(m0, lexdec3)
+m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 
 # Example 3
@@ -131,7 +142,8 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # base model
-m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + FamilySize + Length) + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + 
+    FamilySize + Length) + (1|Subject), data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on model residuals
@@ -139,7 +151,7 @@ lexdec3 = romr.fnc(m0, lexdec3)$data
 # update model
 m0 = update(m0)
 # backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3)
+m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 
 # Example 4
@@ -149,7 +161,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # base model
-m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + NativeLanguage + FamilySize + Length) + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + 
+    NativeLanguage + FamilySize + Length) + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on model residuals
@@ -157,7 +171,7 @@ lexdec3 = romr.fnc(m0, lexdec3)$data
 # update model
 m0 = update(m0)
 # backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3)
+m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 
 data(lexdec)
@@ -167,7 +181,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
 # fit initial model
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
+    FamilySize + Length + DerivEntropy + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 # trim data on initial model residuals
@@ -175,28 +191,34 @@ dat.trimmed = romr.fnc(m0, lexdec3)
 lexdec3 = dat.trimmed$data
 # update initial model on trimmed data
 m0 = update(m0)
-mA = ffRanefLMER.fnc(m0, lexdec3, ran.effects = list(ran.intercepts = "Class", slopes = c("Frequency", "Length", "FamilySize"), by.vars = "Subject"))
+mA = ffRanefLMER.fnc(m0, lexdec3, ran.effects = list(ran.intercepts = 
+    "Class", slopes = c("Frequency", "Length", "FamilySize"), 
+    by.vars = "Subject"), log.file = FALSE)
 print(mA, corr = FALSE)
-mB = ffRanefLMER.fnc(m0, lexdec3, ran.effects = c("(1+Length|Subject)", "(1+Frequency|Subject)", "(1+FamilySize|Subject)"))
+mB = ffRanefLMER.fnc(m0, lexdec3, ran.effects = c("(1+Length|Subject)", 
+    "(1+Frequency|Subject)", "(1+FamilySize|Subject)"), log.file = FALSE)
 print(mB, corr = FALSE)
 
 library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + 
+    Length + DerivEntropy + (1|Subject), data = lexdec3)
 pamer.fnc(m0)
 
 library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + 
+    Length + DerivEntropy + (1|Subject), data = lexdec3)
 out=romr.fnc(m0,lexdec3)
 names(out)
 
 library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + 
+    Length + DerivEntropy + (1|Subject), data = lexdec3)
 mcp.fnc(m0, lexdec3)
 dat.trimmed = romr.fnc(m0, lexdec3)
 names(dat.trimmed)

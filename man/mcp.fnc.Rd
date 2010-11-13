@@ -38,7 +38,9 @@ library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct=="correct", ]
 # base model
-m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + FamilySize + SynsetCount + Length) + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + 
+    FamilySize + SynsetCount + Length) + (1|Subject), 
+    data = lexdec3)
 # look at model criticism plots
 mcp.fnc(m0, lexdec3)
 }

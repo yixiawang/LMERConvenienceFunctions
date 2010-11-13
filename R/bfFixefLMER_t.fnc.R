@@ -7,7 +7,7 @@ function(
         t.threshold=2,
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
-        log.file=paste("./fixef_backfit_log_",gsub(" ","_",date()),".txt",sep="") # or other path and file name or FALSE
+        log.file=paste("fixef_backfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
                 ){
   if(length(model)==0){
     stop("please supply a value to the ''model'' argument")
@@ -37,6 +37,11 @@ function(
     cat("setting REML to FALSE\n")
     model=update(model,.~.,REML=FALSE)
   }
+
+  current.dir=getwd()
+  temp.dir=tempdir()
+  tempdir()
+  setwd(temp.dir)
 
   options(warn=1)
 
@@ -216,7 +221,11 @@ function(
     model=update(model,.~.,REML=TRUE)
   }
 
-  if(log.file!=FALSE)sink(file=NULL)
+  if(log.file!=FALSE){
+    sink(file=NULL)
+    cat("Log file saved in directory",temp.dir,"\n")
+  }
+  setwd(current.dir)
 
   return(model=model)
 }

@@ -6,7 +6,7 @@ function(
         alpha=0.05,
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
-        log.file=paste("./fixef_backfit_log_",gsub(" ","_",date()),".txt",sep="") # or other path and file name or FALSE
+        log.file=paste("fixef_backfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
                 ){
   if(length(model)==0){
     stop("please supply a value to the ''model'' argument")
@@ -42,6 +42,11 @@ function(
   }
 
   options(warn=1)
+
+  current.dir=getwd()
+  temp.dir=tempdir()
+  tempdir()
+  setwd(temp.dir)
 
   unlink("temp.txt")
   sink(file=NULL,type="message")   
@@ -162,7 +167,11 @@ function(
     model=update(model,.~.,REML=TRUE)
   }
 
-  if(log.file!=FALSE)sink(file=NULL)
+  if(log.file!=FALSE){
+    sink(file=NULL)
+    cat("Log file saved in directory",temp.dir,"\n")
+  }
+  setwd(current.dir)
 
   return(model=model)
 }

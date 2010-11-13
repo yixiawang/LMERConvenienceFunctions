@@ -39,7 +39,9 @@ Antoine Tremblay, IWK Health Center, <trea26@gmail.com>
 library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + FamilySize + SynsetCount + Length + DerivEntropy + (1|Subject), data = lexdec3)
+m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
+    FamilySize + SynsetCount + Length + DerivEntropy + (1|Subject), 
+    data = lexdec3)
 mcp.fnc(m0, lexdec3)
 dat.trimmed = romr.fnc(m0, lexdec3)
 names(dat.trimmed)

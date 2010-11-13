@@ -7,7 +7,8 @@ List files and directories in current directory.
 List files and directories in current directory in matrix format. Each row is preceded by a row number.
 }
 \usage{
-f(path = ".", pattern = NULL, all.files = FALSE, full.names = FALSE, recursive = FALSE, ignore.case = FALSE)
+f(path = ".", pattern = NULL, all.files = FALSE, full.names = 
+    FALSE, recursive = FALSE, ignore.case = FALSE)
 }
 \arguments{
   \item{path}{
