@@ -12,8 +12,8 @@ The main functions are fixed effect back-fitting functions (``bfFixefLMER_F.fnc'
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2010-11-13\cr
+Version: \tab 1.2\cr
+Date: \tab 2010-12-15\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
