@@ -4,6 +4,7 @@ function(
         data=as.character(),
         item=FALSE, # otherwise, put between quotes an item identifier such as "Item" or "Word"
         alpha=0.05,
+	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
         t.threshold=2,
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
@@ -33,7 +34,7 @@ function(
     stop("please supply a value to the ''reset.REML.TRUE'' argument")
   }
 
-  if(set.REML.FALSE){
+  if(llrt && set.REML.FALSE){
     cat("setting REML to FALSE\n")
     model=update(model,.~.,REML=FALSE)
   }
@@ -53,6 +54,7 @@ function(
   if(item!=FALSE){
     cat("checking",paste("by-",item,sep=""),"random intercepts\n")
     # Determine whether to include Items as a random effect
+    model.updated<-NULL
     eval(parse(text=paste("model.updated=update(model,.~.+(1|",item,"))",sep="")))
     if(as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"])<=alpha){
       cat("\tlog-likelihood ratio test p-value =",as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"]),"\n")
@@ -74,7 +76,13 @@ function(
   } else {
     coefficients=row.names(anova(model))
   }
-  smry=as.data.frame(summary(model)@coefs)
+
+  if(is(model,"mer")){
+    model<-asS4(model)
+    smry=as.data.frame(summary(model)@coefs)
+  } else {
+      stop("the input model is not a mer object\n")
+  }
 
   # Keep only the level of an interaction term that has the greatest absolute t-value
   smry.temp=smry[-c(1:nrow(smry)),]
@@ -138,85 +146,147 @@ function(
         keepers=row.names(smry.temp2)
         keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),])),keepers)]
         smry.temp2=smry.temp2[keepers,]
-        } else {
-        cat("\t\tnot part of higher-order interaction\n")
+      }else{
+	cat("\t\tnot part of higher-order interaction\n")
 
         # Fit less complex nested model
+	m.temp<-NULL
         eval(parse(text=paste("m.temp=update(model,.~.-",row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),]),")",sep="")))
 
-        # Which model should be kept? The more or the less complex one?
-        if(as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"])<=alpha){
-          cat("\t\tlog-likelihood ratio test p-value =",as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"]),"<=",alpha,"\n")
-          cat("\t\tskipping term\n")
-          keepers=row.names(smry.temp2)
-          keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),])),keepers)]
-          smry.temp2=smry.temp2[keepers,]
-        } else {
-          cat("\t\tlog-likelihood ratio test p.value =",as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"]),">",alpha,"\n")
-          cat("\t\tremoving term\n")
-          model=m.temp
-  
-          if(as.vector(model@call[1])=="glmer()"){
-            odv=data[,as.character(unlist(as.list(model@call))$formula[2])]
-            data[,as.character(unlist(as.list(model@call))$formula[2])]=rnorm(nrow(data),0,1)
-            temp.lmer=update(model,.~.,family="gaussian",data=data)
-            coefficients=row.names(anova(temp.lmer))
-            data[,as.character(unlist(as.list(model@call))$formula[2])]=odv
-          } else {
-            coefficients=row.names(anova(model))
-          }
-          smry2=as.data.frame(summary(model)@coefs)  
-    
-          # Keep only the level of an interaction term that has the greatest absolute t-value
-          smry.temp2=smry2[-c(1:nrow(smry2)),]
-          for(coef in coefficients){
-            intr.order=length(unlist(strsplit(coef,":")))
-            orig.coef=coef
-            coef=gsub(":","\\.\\*:",coef)
-            coef=gsub("(^.*$)","\\1\\.\\*",coef)
-            coef=gsub("\\(","\\\\(",coef)
-            coef=gsub("\\)","\\\\)",coef)
-            smry.temp3=smry2[grep(paste("^",coef,sep=""),row.names(smry2)),]
-            smry.temp4=smry.temp3
-            smry.temp4=smry.temp4[-c(1:nrow(smry.temp4)),]
-            for(j in 1:nrow(smry.temp3)){
-              if(length(unlist(strsplit(row.names(smry.temp3)[j],":")))==intr.order){
-                smry.temp4=rbind(smry.temp4,smry.temp3[j,]) 
-              }
-            }
-            smry.temp3=smry.temp4
-            smry.temp3[,3]=abs(smry.temp3[,3])
-            smry.temp3=smry.temp3[smry.temp3[,3]==max(smry.temp3[,3]),]
-            row.names(smry.temp3)=orig.coef
-            smry.temp2=rbind(smry.temp2,smry.temp3)
-          }
+	if(llrt){
+        	# Which model should be kept? The more or the less complex one?
+        	if(as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"])<=alpha){
+          		cat("\t\tlog-likelihood ratio test p-value =",as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"]),"<=",alpha,"\n")
+          		cat("\t\tskipping term\n")
+          		keepers=row.names(smry.temp2)
+          		keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),])),keepers)]
+          		smry.temp2=smry.temp2[keepers,]
+        	} else {
+          		cat("\t\tlog-likelihood ratio test p.value =",as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"]),">",alpha,"\n")
+          		cat("\t\tremoving term\n")
+          		model=m.temp
+  	
+          		if(as.vector(model@call[1])=="glmer()"){
+            			odv=data[,as.character(unlist(as.list(model@call))$formula[2])]
+            			data[,as.character(unlist(as.list(model@call))$formula[2])]=rnorm(nrow(data),0,1)
+            			temp.lmer=update(model,.~.,family="gaussian",data=data)
+            			coefficients=row.names(anova(temp.lmer))
+            			data[,as.character(unlist(as.list(model@call))$formula[2])]=odv
+          		} else {
+            			coefficients=row.names(anova(model))
+          		}
+
+  			smry2=as.data.frame(summary(asS4(model))@coefs)
+    	
+          		# Keep only the level of an interaction term that has the greatest absolute t-value
+          		smry.temp2=smry2[-c(1:nrow(smry2)),]
+          		for(coef in coefficients){
+            			intr.order=length(unlist(strsplit(coef,":")))
+            			orig.coef=coef
+            			coef=gsub(":","\\.\\*:",coef)
+            			coef=gsub("(^.*$)","\\1\\.\\*",coef)
+            			coef=gsub("\\(","\\\\(",coef)
+            			coef=gsub("\\)","\\\\)",coef)
+            			smry.temp3=smry2[grep(paste("^",coef,sep=""),row.names(smry2)),]
+            			smry.temp4=smry.temp3
+            			smry.temp4=smry.temp4[-c(1:nrow(smry.temp4)),]
+            			for(j in 1:nrow(smry.temp3)){
+              				if(length(unlist(strsplit(row.names(smry.temp3)[j],":")))==intr.order){
+                				smry.temp4=rbind(smry.temp4,smry.temp3[j,]) 
+              				}
+            			}
+            			smry.temp3=smry.temp4
+            			smry.temp3[,3]=abs(smry.temp3[,3])
+            			smry.temp3=smry.temp3[smry.temp3[,3]==max(smry.temp3[,3]),]
+            			row.names(smry.temp3)=orig.coef
+            			smry.temp2=rbind(smry.temp2,smry.temp3)
+          		}
+        	
+          		# Determine the interaction orders for each term
+          		temp=strsplit(coefficients,":")
+          		names(temp)=coefficients
+          		intr.order=list()
+          		for(i in coefficients){
+            			intr.order[[i]]=length(temp[[i]])
+          		}
+          		intr.order=as.data.frame(unlist(intr.order))
+          		colnames(intr.order)="Order"
+          		intr.order$Coef=row.names(intr.order)
+          		row.names(intr.order)=1:nrow(intr.order)
+    	
+          		smry.temp2$Order=intr.order$Order
+    	
+          		# Keep only terms with interaction order i
+          		keepers=as.character(row.names(smry.temp2[smry.temp2$Order==order,]))
+          		smry.temp2=smry.temp2[keepers,]
+          	}
+	  }else{
+          	cat("\t\tremoving term\n")
+          	model=m.temp
+  	
+          	if(as.vector(model@call[1])=="glmer()"){
+            		odv=data[,as.character(unlist(as.list(model@call))$formula[2])]
+            		data[,as.character(unlist(as.list(model@call))$formula[2])]=rnorm(nrow(data),0,1)
+            		temp.lmer=update(model,.~.,family="gaussian",data=data)
+            		coefficients=row.names(anova(temp.lmer))
+            		data[,as.character(unlist(as.list(model@call))$formula[2])]=odv
+          	} else {
+            		coefficients=row.names(anova(model))
+          	}
+
+  		smry2=as.data.frame(summary(asS4(model))@coefs)
+    	
+          	# Keep only the level of an interaction term that has the greatest absolute t-value
+          	smry.temp2=smry2[-c(1:nrow(smry2)),]
+          	for(coef in coefficients){
+            		intr.order=length(unlist(strsplit(coef,":")))
+            		orig.coef=coef
+            		coef=gsub(":","\\.\\*:",coef)
+            		coef=gsub("(^.*$)","\\1\\.\\*",coef)
+            		coef=gsub("\\(","\\\\(",coef)
+            		coef=gsub("\\)","\\\\)",coef)
+            		smry.temp3=smry2[grep(paste("^",coef,sep=""),row.names(smry2)),]
+            		smry.temp4=smry.temp3
+            		smry.temp4=smry.temp4[-c(1:nrow(smry.temp4)),]
+            		for(j in 1:nrow(smry.temp3)){
+              			if(length(unlist(strsplit(row.names(smry.temp3)[j],":")))==intr.order){
+                			smry.temp4=rbind(smry.temp4,smry.temp3[j,]) 
+              			}
+            		}
+            		smry.temp3=smry.temp4
+            		smry.temp3[,3]=abs(smry.temp3[,3])
+            		smry.temp3=smry.temp3[smry.temp3[,3]==max(smry.temp3[,3]),]
+            		row.names(smry.temp3)=orig.coef
+            		smry.temp2=rbind(smry.temp2,smry.temp3)
+          	}
         
-          # Determine the interaction orders for each term
-          temp=strsplit(coefficients,":")
-          names(temp)=coefficients
-          intr.order=list()
-          for(i in coefficients){
-            intr.order[[i]]=length(temp[[i]])
-          }
-          intr.order=as.data.frame(unlist(intr.order))
-          colnames(intr.order)="Order"
-          intr.order$Coef=row.names(intr.order)
-          row.names(intr.order)=1:nrow(intr.order)
+          	# Determine the interaction orders for each term
+          	temp=strsplit(coefficients,":")
+          	names(temp)=coefficients
+          	intr.order=list()
+          	for(i in coefficients){
+            		intr.order[[i]]=length(temp[[i]])
+          	}
+          	intr.order=as.data.frame(unlist(intr.order))
+          	colnames(intr.order)="Order"
+          	intr.order$Coef=row.names(intr.order)
+          	row.names(intr.order)=1:nrow(intr.order)
     
-          smry.temp2$Order=intr.order$Order
-    
-          # Keep only terms with interaction order i
-          keepers=as.character(row.names(smry.temp2[smry.temp2$Order==order,]))
-          smry.temp2=smry.temp2[keepers,]
-          }
-        }
+          	smry.temp2$Order=intr.order$Order
+    	
+          	# Keep only terms with interaction order i
+          	keepers=as.character(row.names(smry.temp2[smry.temp2$Order==order,]))
+          	smry.temp2=smry.temp2[keepers,]
+            }
+	  }
         count=count+1
         if(nrow(smry.temp2)==0){
           break
         }
-    }
+      }
   }
-  if(reset.REML.TRUE){
+
+  if(llrt && reset.REML.TRUE){
     cat("resetting REML to TRUE\n")
     model=update(model,.~.,REML=TRUE)
   }

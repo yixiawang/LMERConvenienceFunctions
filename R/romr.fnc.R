@@ -1,8 +1,8 @@
 romr.fnc <-
-function(model,data){
+function(model,data, trim = 2.5){
 	data$rstand = as.vector(scale(resid(model))) 
 	row.names(data)=1:nrow(data)
-	outliers=as.numeric(row.names(data[abs(data$rstand)>2.5,]))
+	outliers=as.numeric(row.names(data[abs(data$rstand)>trim,]))
 	data0=data
 	data=data[-outliers,,drop=TRUE]
 	cat("n.removed =",(nrow(data0)-nrow(data)),"\n")

@@ -8,6 +8,8 @@ function(
                      slopes=as.character(),
                      by.vars=as.character()),
     alpha=0.05,
+    llrt=FALSE,
+    p.value="Upper", # or "Lower"
     t.threshold=2,
     set.REML.FALSE=TRUE,
     reset.REML.TRUE=TRUE,
@@ -24,9 +26,9 @@ function(
   cat("===              backfitting fixed effects         ===\n")
   cat("======================================================\n")
   if(backfit.on=="F"){
-    mod=bfFixefLMER_F.fnc(model=model,data=data,item=item,alpha=alpha,set.REML.FALSE=set.REML.FALSE,reset.REML.TRUE=FALSE,log.file=FALSE)
+    mod=bfFixefLMER_F.fnc(model=model,data=data,item=item,alpha=alpha,llrt=llrt,p.value=p.value,set.REML.FALSE=set.REML.FALSE,reset.REML.TRUE=FALSE,log.file=FALSE)
   }else{
-    mod=bfFixefLMER_t.fnc(model=model,data=data,item=item,alpha=alpha,t.threshold=t.threshold,set.REML.FALSE=set.REML.FALSE,reset.REML.TRUE=FALSE,log.file=FALSE)
+    mod=bfFixefLMER_t.fnc(model=model,data=data,item=item,alpha=alpha,llrt=llrt,t.threshold=t.threshold,set.REML.FALSE=set.REML.FALSE,reset.REML.TRUE=FALSE,log.file=FALSE)
   }
 
 
@@ -40,9 +42,9 @@ function(
   cat("===            re-backfitting fixed effects        ===\n")
   cat("======================================================\n")
   if(backfit.on=="F"){
-    mod=bfFixefLMER_F.fnc(model=mod,data=data,item=FALSE,alpha=alpha,set.REML.FALSE=FALSE,reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
+    mod=bfFixefLMER_F.fnc(model=mod,data=data,item=FALSE,alpha=alpha,llrt=llrt,p.value=p.value,set.REML.FALSE=FALSE,reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
   }else{
-    mod=bfFixefLMER_t.fnc(model=mod,data=data,item=FALSE,alpha=alpha,t.threshold=t.threshold,set.REML.FALSE=FALSE,reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
+    mod=bfFixefLMER_t.fnc(model=mod,data=data,item=FALSE,alpha=alpha,llrt=llrt,t.threshold=t.threshold,set.REML.FALSE=FALSE,reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
   }
 
   if(file.name!=FALSE){

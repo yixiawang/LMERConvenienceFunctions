@@ -78,6 +78,7 @@ function(
             sink(wngs,type="message")
       
           # Fit more complex model
+	  model.updated<-NULL
           eval(parse(text=paste("model.updated=update(model,.~.+(1|",intercept,"))",sep="")))
       
         # Should the model with the more complex random-effects structure be kept?
