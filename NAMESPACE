@@ -1,5 +1,5 @@
-#import(Matrix)
-importFrom(Matrix, summary)
+import(Matrix)
+#importFrom(Matrix, summary)
 import(lme4)
 import(languageR)
 exportPattern("^[^\\.]")

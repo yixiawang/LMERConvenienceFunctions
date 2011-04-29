@@ -9,8 +9,8 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.3\cr
-Date: \tab 28-04-2011\cr
+Version: \tab 1.4\cr
+Date: \tab 29-04-2011\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -152,54 +152,8 @@ pamer.fnc(mB)
 m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
 pamer.fnc(m1)
 
-# Example 3
-# An example with rcs
-library(Design)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
 
-# base model
-m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + 
-    FamilySize + Length) + (1|Subject), data = lexdec3)
 
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on model residuals
-lexdec3 = romr.fnc(m0, lexdec3, trim = 2.5)$data
-
-# update model
-m0 = update(m0)
-
-# backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
-pamer.fnc(m1)
-
-# Example 4
-# An example with poly
-library(Design)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
-
-# base model
-m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + 
-    NativeLanguage + FamilySize + Length) + (1|Subject), 
-    data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on model residuals
-lexdec3 = romr.fnc(m0, lexdec3, trim = 2.5)$data
-
-# update model
-m0 = update(m0)
-
-# backfit fixed effects on F
-m1 = bfFixefLMER_F.fnc(m0, lexdec3, log.file = FALSE)
-pamer.fnc(m1)
 
 data(lexdec)
 cn(lexdec)

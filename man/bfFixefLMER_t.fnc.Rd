@@ -83,54 +83,5 @@ mB = update(m1)
 m2 = bfFixefLMER_t.fnc(mB, lexdec3, log.file = FALSE, 
     llrt = TRUE)
 pamer.fnc(m2)
-
-### An example with rcs
-library(Design)
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
-
-# base model
-m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage + 
-    Length) + (1|Subject), data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on model residuals
-lexdec3 = romr.fnc(m0, lexdec3, trim = 2.5)$data
-# update model
-m0 = update(m0)
-# backfit fixed effects on t
-m1 = bfFixefLMER_t.fnc(m0, lexdec3, log.file = FALSE,
-	llrt = TRUE)
-pamer.fnc(m1)
-
-### An example with poly
-library(Design)
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
-
-# base model
-m0 = lmer(RT ~  poly(Frequency, 4, raw = TRUE) * (Sex + 
-    NativeLanguage + FamilySize + Length) + (1|Subject), 
-    data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on model residuals
-lexdec3 = romr.fnc(m0, lexdec3, trim = 2.5)$data
-
-# update model
-m0 = update(m0)
-
-# backfit fixed effects on t
-m1 = bfFixefLMER_t.fnc(m0, lexdec3, log.file = FALSE,
-	llrt = FALSE)
-pamer.fnc(m1)
 }
 \keyword{models & regression}
