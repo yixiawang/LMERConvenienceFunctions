@@ -1,10 +1,10 @@
 \name{romr.fnc}
 \alias{romr.fnc}
 \title{Exclude outliers.}
-\description{Exclude outliers with a standardized residual at a distance greater than 2.5 standard deviations from 0.}
+\description{Exclude outliers with a standardized residual at a distance greater than 2.5 standard deviations from 0. Note that this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
 \usage{romr.fnc(model, data, trim = 2.5)}
 \arguments{
-  \item{model}{A \code{mer} object (fitted by function \code{lmer}).}
+  \item{model}{A \code{mer} object (fitted by function \code{lmer}). Note that this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
   \item{data}{The data frame on which the \code{mer} object was fitted.}
   \item{trim}{Threshold at which residuals will be removed. Defaults to 2.5 (standard deviations above and below the residuals mean).}
 }

@@ -6,7 +6,7 @@ function(
                            slopes=as.character(), # of random effects to consider, e.g.,
                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
           alpha=0.05,
-          log.file=paste("ranef_forwardfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
+          log.file=file.path(tempdir(),paste("ffRanefLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
           ){
  
   if(length(model)==0){

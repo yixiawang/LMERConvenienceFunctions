@@ -1,20 +1,37 @@
 --------------------
+version 1.5
+-----
+* Function ``pamer.fnc'' additioanlly returns the deviance explained, 
+R-squared, for each model term.
+* Fixed a little bug with the fitting logs. The user can now change the
+path to where the log will be saved.
+* Added argument ``col = "red"'' to function ``mcp.fnc''.
+
+--------------------
 version 1.4
 -----
-* Removed dependency on package ``Design'', and consequently removed any example that uses ``rcs'' or ``poly''.
+* Removed dependency on package ``Design'', and consequently removed 
+any example that uses ``rcs'' or ``poly''.
 
 --------------------
 version 1.3
 -----
 * Added argument ``trim'' to functions ``mcp.fnc'' and ``romr.fnc'';
 
-* Removed argument ``data'' in function ``mcp.fnc''. The data frame on which the model was fitted is now automatically retrieved from the model object itself (``model@frame'').
+* Removed argument ``data'' in function ``mcp.fnc''. The data frame 
+on which the model was fitted is now automatically retrieved from the
+model object itself (``model@frame'').
 
-* Added values ``Upper Den. Df'', ``Lower Den. DF'', and ``Lower p value'' to function ``pamer.fnc''.
+* Added values ``Upper Den. Df'', ``Lower Den. DF'', and ``Lower p value'' 
+to function ``pamer.fnc''.
 
-* Added argument ``llrt'' (log-likelihood ratio testing) to functions ``bfFixefLMER_F.fnc'', ``bfFixefLMER.fnc_t'', and ``fitLMER.fnc''.
+* Added argument ``llrt'' (log-likelihood ratio testing) to functions 
+``bfFixefLMER_F.fnc'', ``bfFixefLMER.fnc_t'', and ``fitLMER.fnc''.
 
-* Added argument ``p.value'' to functions ``fitLMER.fnc'' and ``bfFixefLMER_F.fnc'' to allow the user to choose to backfit either on upper-bound (anti-conservative) or lower-bound (consevative) \emph{p''-values.
+* Added argument ``p.value'' to functions ``fitLMER.fnc'' and 
+``bfFixefLMER_F.fnc'' to allow the user to choose to backfit either 
+on upper-bound (anti-conservative) or lower-bound (consevative) 
+\emph{p''-values.
 
 * Added function ``posthoc.fnc''.
 

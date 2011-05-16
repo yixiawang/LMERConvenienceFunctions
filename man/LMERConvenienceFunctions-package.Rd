@@ -3,31 +3,17 @@
 \alias{LMERConvenienceFunctions}
 \docType{package}
 \title{An suite of functions to facilitate modeling with LMER.}
-\description{The main functions are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} to back-fit on \emph{p}-values from ANOVA or \code{bfFixefLMER.fnc_t.fnc} \emph{t}-values from \code{summary(model)} and, optionally, log-likelihood ratio testing) and a random effect forward-fitting function (\code{ffRanefLMER.fnc}; log-likelihood ratio testing). There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, and a function to perform posthoc analyses (\code{posthoc.fnc}). Additionally, there are functions to list files in current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory using the \code{f} function (\code{cd}), and to automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and finally a function to list in matrix format (\code{cn}, with easily readable numbers for each column name).
+\description{The main functions are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} to back-fit on \emph{p}-values from ANOVA or \code{bfFixefLMER.fnc_t.fnc} to back-fit on \emph{t}-values from \code{summary(model)} and, optionally, log-likelihood ratio testing) and a random effect forward-fitting function (\code{ffRanefLMER.fnc}; log-likelihood ratio testing). There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, and a function to perform posthoc analyses (\code{posthoc.fnc}). Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and finally a function to list in matrix format the column names of a data frame (\code{cn}).
 }
 \details{
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.4\cr
-Date: \tab 29-04-2011\cr
+Version: \tab 1.5\cr
+Date: \tab 16-05-2011\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
-bfFixefLMER_F.fnc
-bfFixefLMER_t.fnc
-ffRanefLMER.fnc
-fitLMER.fnc 
-posthoc.fnc
-pamer.fnc
-mcp.fnc
-romr.fnc
-perSubjecttrim.fnc
-cn
-f
-cd
-cdf
-cdup
 }
 \author{Antoine Tremblay, IWK Health Center 
 
@@ -39,30 +25,30 @@ Baayen, R.H. (2008). \emph{Analyzing Linguistic Data. A Practical Introduction t
 
 Baayen, R.H., Davidson, D.J. and Bates, D.M. (2008). Mixed-effects modeling with crossed random effects for subjects and items. \emph{Journal of Memory and Language}, \emph{59}, 390--412.
 
-Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (submitted). The Influence of Language Proficiency on Lexical-Semantic Processing in Native and Late Learners of English: ERP evidence. Submitted to the \emph{Journal of Cognitive Neuroscience}.
+Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (accepted). The Influence of Language Proficiency on Lexical-Semantic Processing in Native and Late Learners of English: ERP evidence. Submitted to the \emph{Journal of Cognitive Neuroscience}.
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.
 
-Tremblay, A. and Tucker B. V. (submitted). What can the production of four-word sequences tell us about the mental lexicon? Submitted to \emph{The Mental Lexicon}.
+Tremblay, A. and Tucker B. V. (accepted). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. (Accepted). \emph{The Mental Lexicon}.
 
 \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}
 }
 \keyword{ package }
 \seealso{
-\code{\link{bfFixefLMER_F.fnc}}
-\code{\link{bfFixefLMER_t.fnc}}
-\code{\link{ffRanefLMER.fnc}}
-\code{\link{fitLMER.fnc}}
-\code{\link{posthoc.fnc}}
-\code{\link{pamer.fnc}}
-\code{\link{mcp.fnc}}
-\code{\link{romr.fnc}}
-\code{\link{perSubjectTrim.fnc}}
-\code{\link{cn}}
-\code{\link{f}}
-\code{\link{cd}}
-\code{\link{cdf}}
-\code{\link{cdup}}
+\code{\link{bfFixefLMER_F.fnc}; }
+\code{\link{bfFixefLMER_t.fnc}; }
+\code{\link{ffRanefLMER.fnc}; }
+\code{\link{fitLMER.fnc}; }
+\code{\link{posthoc.fnc}; }
+\code{\link{pamer.fnc}; }
+\code{\link{mcp.fnc}; }
+\code{\link{romr.fnc}; }
+\code{\link{perSubjectTrim.fnc}; }
+\code{\link{cn}; }
+\code{\link{f}; }
+\code{\link{cd}; }
+\code{\link{cdf}; }
+\code{\link{cdup}; }
 }
 \examples{
 # Example 1

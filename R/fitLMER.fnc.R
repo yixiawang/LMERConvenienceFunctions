@@ -9,11 +9,11 @@ function(
                      by.vars=as.character()),
     alpha=0.05,
     llrt=FALSE,
-    p.value="Upper", # or "Lower"
+    p.value="upper", # or "lower"
     t.threshold=2,
     set.REML.FALSE=TRUE,
     reset.REML.TRUE=TRUE,
-    file.name=paste("full_backfitLMER_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
+    file.name=file.path(tempdir(),paste("fitLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
     ){
 
   current.dir=getwd()

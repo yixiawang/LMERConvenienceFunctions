@@ -17,10 +17,10 @@ Antoine Tremblay, IWK Health Center, <trea26@gmail.com>
 }
 
 \seealso{
-\code{\link{f}}
-\code{\link{cd}}
-\code{\link{cdf}}
-\code{\link{setwd}}
+\code{\link{f}; }
+\code{\link{cd}; }
+\code{\link{cdf}; }
+\code{\link{setwd}; }
 }
 \keyword{ ~kwd1 }
 \keyword{ ~kwd2 }

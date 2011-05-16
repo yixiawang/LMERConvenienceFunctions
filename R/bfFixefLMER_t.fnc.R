@@ -8,7 +8,7 @@ function(
         t.threshold=2,
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
-        log.file=paste("fixef_backfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
+        log.file=file.path(tempdir(),paste("bfFixefLMER_t_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
                 ){
   if(length(model)==0){
     stop("please supply a value to the ''model'' argument")

@@ -8,8 +8,8 @@
 \value{Cheange to new directory and list files and directories in new directory using function \code{f}.}
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}}
 \seealso{
-\code{\link{f}}
-\code{\link{cd}}
-\code{\link{cdup}}
-\code{\link{setwd}}
+\code{\link{f}; }
+\code{\link{cd}; }
+\code{\link{cdup}; }
+\code{\link{setwd}; }
 }

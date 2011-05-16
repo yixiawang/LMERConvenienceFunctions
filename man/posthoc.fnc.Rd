@@ -1,7 +1,7 @@
 \name{posthoc.fnc}
 \alias{posthoc.fnc}
-\title{Perform posthoc analyses on LMER model.}
-\description{The specified factor variable is releveled to each one of the factor's levels, the \code{mer} model updated, and, if enabled, MCMC \emph{p}-values returned.}
+\title{Posthoc analyses for LMER models.}
+\description{The specified factor variable is re-leveled to each one of the factor's levels, the \code{mer} model updated, and, if enabled, MCMC \emph{p}-values returned.}
 \usage{posthoc.fnc(model, factor, ndigits = 4, MCMC = FALSE, 
 nsim = 10000, addPlot = FALSE)}
 \arguments{
@@ -15,14 +15,14 @@ nsim = 10000, addPlot = FALSE)}
 \value{A list containing, for each factor level, a table of coefficients as returned from function \code{summary}. If \code{MCMC = TRUE}, an additional table of coefficients as returned by function \code{pvals.fnc}.}
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 \seealso{
-\code{\link{bfFixefLMER_F.fnc}}
-\code{\link{bfFixefLMER_t.fnc}}
-\code{\link{ffRanefLMER.fnc}}
-\code{\link{fitLMER.fnc}}
-\code{\link{pamer.fnc}}
-\code{\link{mcp.fnc}}
-\code{\link{romr.fnc}}
-\code{\link{perSubjectTrim.fnc}}
+\code{\link{bfFixefLMER_F.fnc}; }
+\code{\link{bfFixefLMER_t.fnc}; }
+\code{\link{ffRanefLMER.fnc}; }
+\code{\link{fitLMER.fnc}; }
+\code{\link{pamer.fnc}; }
+\code{\link{mcp.fnc}; }
+\code{\link{romr.fnc}; }
+\code{\link{perSubjectTrim.fnc}; }
 }
 \examples{
 library(lme4)

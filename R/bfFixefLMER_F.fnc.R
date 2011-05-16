@@ -5,10 +5,10 @@ function(
         item=FALSE, # can be an item identifier such as "Item" or "Word"
         alpha=0.05,
 	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
-	p.value="Upper", # or "Lower"
+	p.value="upper", # or "lower"
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
-        log.file=paste("fixef_backfit_log_",gsub(":","_",gsub(" ","_",date())),".txt",sep="") # or other path and file name or FALSE
+        log.file=file.path(tempdir(),paste("bfFixefLMER_F_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
                 ){
   if(length(model)==0){
     stop("please supply a value to the ''model'' argument")
@@ -98,21 +98,21 @@ function(
     keepers=as.character(row.names(smry.temp[smry.temp$Order==order,]))
     smry.temp2=smry.temp[keepers,]
     
-    if(smry.temp2[smry.temp2[,paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),paste(p.value,"p value",sep=" ")]<=alpha){
+    if(smry.temp2[smry.temp2[,paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),paste(p.value,".p.val.",sep="")]<=alpha){
       cat("\tall terms of interaction level",order,"significant\n")
     }else{
 
-      while(smry.temp2[smry.temp2[,paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),paste(p.value,"p value",sep=" ")][1]>alpha){
+      while(smry.temp2[smry.temp2[,paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),paste(p.value,".p.val.",sep="")][1]>alpha){
         cat("\titeration",count,"\n")
-	evaluated.term=row.names(smry.temp2[smry.temp2[,paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),])
-        cat("\t\tp-value for term",paste("\"",evaluated.term,"\"",sep=""),"=",smry.temp2[evaluated.term,paste(p.value,"p value",sep=" ")],">",alpha,"\n")
+	evaluated.term=row.names(smry.temp2[smry.temp2[,paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),])
+        cat("\t\tp-value for term",paste("\"",evaluated.term,"\"",sep=""),"=",smry.temp2[evaluated.term,paste(p.value,".p.val.",sep="")],">",alpha,"\n")
   
         # Is the fixed-effect term part of a higher-order interaction? If it is, skip it and proceed with backfitting, otherwise evaluate it.
         if(length(grep("FALSE",unique(unlist(strsplit(evaluated.term,":"))%in%unlist(strsplit(intr.order[intr.order$Order>order,"Coef"],":")))))<1){
           cat("\t\tpart of higher-order interaction\n")
           cat("\t\tskipping term\n")
           keepers=row.names(smry.temp2)
-          keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),])),keepers)]
+          keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),])),keepers)]
           smry.temp2=smry.temp2[keepers,]
           smry.temp2=na.omit(smry.temp2)
         } else {
@@ -120,7 +120,7 @@ function(
   
           # Fit less complex nested model
 	  m.temp<-NULL
-          eval(parse(text=paste("m.temp=update(model,.~.-",row.names(smry.temp2[smry.temp2[,paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),]),")",sep="")))
+          eval(parse(text=paste("m.temp=update(model,.~.-",row.names(smry.temp2[smry.temp2[,paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),]),")",sep="")))
   
 	  if(llrt){
           	# Which model should be kept? The more or the less complex one?
@@ -130,7 +130,7 @@ function(
             		cat("\t\tskipping term\n")
             		keepers=row.names(smry.temp2)
             		keepers=keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[,
-				paste(p.value,"p value",sep=" ")]==max(smry.temp2[,paste(p.value,"p value",sep=" ")]),])),keepers)]
+				paste(p.value,".p.val.",sep="")]==max(smry.temp2[,paste(p.value,".p.val.",sep="")]),])),keepers)]
             		smry.temp2=smry.temp2[keepers,]
           	} else {
             		cat("\t\tlog-likelihood ratio test p.value =",

@@ -3,7 +3,7 @@ function(model,ndigits=4){
 	dims<-NULL
 	rank.X=qr(model@X)$rank
 	anova.table=anova(model)
-	anova.table=cbind(anova.table,"Upper Den. DF"=nrow(model@frame)-rank.X)
+	anova.table=cbind(anova.table,"upper.den.df"=nrow(model@frame)-rank.X)
 	p.values.upper=as.numeric()
 	p.values.lower=as.numeric()
 	for(term in row.names(anova.table)){
@@ -21,8 +21,18 @@ function(model,ndigits=4){
 
 
 	}
-	anova.table=round(cbind(anova.table,"Upper p value"=p.values.upper,
-		"Lower Den. DF"=nrow(model@frame)-rank.X-lower.bound,"Lower p value"=p.values.lower),
+
+	dv<-gsub(" ","",gsub("(.*)~.*","\\1",as.character(model@call)[2]))
+	ss.tot<-var(model@frame[,dv])*nrow(model@frame)
+	aov.table<-as.data.frame(anova(model))
+	expl.dev<-vector("numeric")
+	for(i in rownames(aov.table)){
+		expl.dev<-c(expl.dev,aov.table[i,2]/ss.tot)
+	}
+	names(expl.dev)<-rownames(aov.table)
+
+	anova.table=round(cbind(anova.table,"upper.p.val."=p.values.upper,
+		"lower.den.df"=nrow(model@frame)-rank.X-lower.bound,"lower.p.val."=p.values.lower,"expl.dev."=expl.dev),
 		ndigits)
 
 	return(anova.table)

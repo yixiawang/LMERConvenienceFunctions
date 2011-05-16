@@ -7,8 +7,8 @@
 \value{Change directory to the selected one.}
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}}
 \seealso{
-\code{\link{f}}
-\code{\link{cdf}}
-\code{\link{cdup}}
-\code{\link{setwd}}
+\code{\link{f}; }
+\code{\link{cdf}; }
+\code{\link{cdup}; }
+\code{\link{setwd} ;}
 }
