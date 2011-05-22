@@ -1,4 +1,20 @@
 --------------------
+version 1.5.2
+-----
+* In function ``fitLMER.fnc'', changed argument ``file.name'' to 
+``log.file.name'' to make it more transparent.
+* Disabled the automatic changing of the current working directory
+to directory ``temp.dir'' in functions ``bfFixefLMER_F.fnc'', 
+``bfFixefLMER_t.fnc'', ``ffRanefLMER.fnc'', and ``fitLMER.fnc''.
+* Argumants ``model'' and ``data'' now have no default value in
+functions ``bfFixefLMER_F.fnc'', ``bfFixefLMER_t.fnc'', 
+``ffRanefLMER.fnc'', and ``fitLMER.fnc'' (before version 1.5.2,
+these arguments had ``as.character()'' as a default).
+* Column ``expl.dev.'' in function ``pamer.fnc'' now lists the 
+percentage explained (which is simply the value returned in version
+1.5 times 100). 
+
+--------------------
 version 1.5
 -----
 * Function ``pamer.fnc'' additioanlly returns the deviance explained, 

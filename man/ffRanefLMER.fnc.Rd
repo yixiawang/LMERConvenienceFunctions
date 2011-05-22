@@ -2,8 +2,8 @@
 \alias{ffRanefLMER.fnc}
 \title{Forward-fit the random effect structure of an LMER model.}
 \description{Forward-fit an LMER model's random effect structure by comparing a model without one of the specified random effects and a model with it by way of log-likelihood ratio testing. If the more complex model is a significantly better fit, the random effect is kept, otherwise it is dropped. Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
-\usage{ffRanefLMER.fnc(model = as.character(), data = as.character(), 
-ran.effects = list(ran.intercepts = as.character(), slopes = 
+\usage{ffRanefLMER.fnc(model, data, ran.effects = 
+list(ran.intercepts = as.character(), slopes = 
 as.character(), by.vars = as.character()), alpha = 0.05, 
 log.file = file.path(tempdir(), paste("ffRanefLMER_log_", 
 gsub(":", "-", gsub(" ", "_", date())), ".txt", sep="")))}

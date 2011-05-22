@@ -3,12 +3,11 @@
 \title{Back-fit fixed effects and forward-fit random effects of an LMER model.}
 \description{The function follows these steps: (1) If \code{llrt} is set to \code{TRUE}, set \code{REML} to \code{FALSE} (unless specified otherwise); (2) back-fit initial model either on \emph{F}- (by default) or on \emph{t}-values; (3) forward-fit random effects; (4) re-back-fit fixed effects; (5) if \code{llrt} is set to \code{TRUE}, set \code{REML} to \code{TRUE} (unless specified otherwise). Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
 \usage{
-fitLMER.fnc(model = as.character(), data = as.character(), 
-backfit.on = "F", item = FALSE, ran.effects = list(ran.intercepts= 
-as.character(), slopes = as.character(), by.vars = as.character()), 
-alpha = 0.05, llrt = FALSE, p.value = "upper", t.threshold = 2, 
-set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, file.name = 
-file.path(tempdir(), paste("fitLMER_log_", gsub(":", "-", 
+fitLMER.fnc(model, data, backfit.on = "F", item = FALSE, 
+ran.effects = list(ran.intercepts= as.character(), slopes = as.character(), 
+by.vars = as.character()), alpha = 0.05, llrt = FALSE, p.value = "upper", 
+t.threshold = 2, set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, 
+log.file.name = file.path(tempdir(), paste("fitLMER_log_", gsub(":", "-", 
 gsub(" ", "_", date())), ".txt", sep="")))
 }
 \arguments{
@@ -23,7 +22,7 @@ gsub(" ", "_", date())), ".txt", sep="")))
   \item{t.threshold}{Threshold for \emph{t}-value below which either a model terms is dropped or a log-likelihood ratio test is performed between a model with the term under consideration and a simpler model without it. Defaults to 2. If data frame has fewer than ~ 100 observations, this values should be adjusted.}
   \item{set.REML.FALSE}{Logical. Whether or not to set \code{REML} to \code{FALSE}. Defaults to \code{FALSE}.}
   \item{reset.REML.TRUE}{Logical. Whether or not to re-set the back-fitted model to \code{REML = TRUE}.}
-  \item{file.name}{Should the back-fitting log be saved? By default, it is saved in a temporary folder (platform dependent) as \code{file.path(tempdir(), paste("fitLMER_log_", gsub(":", "-", gsub(" ", "_", date())), ".txt", sep = ""))}. The path and file name of the log can be changed to whatever the use wishes. Set to \code{FALSE} to disable.}
+  \item{log.file.name}{Should the back-fitting log be saved? By default, it is saved in a temporary folder (platform dependent) as \code{file.path(tempdir(), paste("fitLMER_log_", gsub(":", "-", gsub(" ", "_", date())), ".txt", sep = ""))}. The path and file name of the log can be changed to whatever the use wishes. Set to \code{FALSE} to disable.}
 }
 \details{The process has three stages. In the first stage, either \code{bfFixefLMER_F.fnc} or \code{bfFixefLMER_t.fnc} is called (depending on the user's choice) and the fixed effects are back-fitted accordingly. In the second stage, \code{ffRanefLMER.fnc} is called and random effects are forward-fitted. In the third stage, the fixed effects are back-fitted again. This is done because the inclusion of certain random effects sometimes renders certain fixed effects non-significant. Note that if this results in a random effect being present in the model with no corresponding fixed effect (an undesirable situation), the user will have to manually remove this random effect. This process was used in Tremblay and Tucker (Accepted) and in Newman, Tremblay, Nichols, Neville, and Ullman (Accepted).}
 \value{A \code{mer} object with fixed effects (on \emph{F}- or \code{t}-values) and back-fitted forward-fitted random effect structure as well as a log of the process is printed on screen and, optionally, printed in a log file.}
@@ -76,13 +75,13 @@ m0 = update(m0)
 mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = 
     list(ran.intercepts = "Class", slopes = c("Frequency", 
     "Length", "FamilySize"), by.vars = "Subject"), 
-    file.name = FALSE, backfit.on = "t")
+    log.file.name = FALSE, backfit.on = "t")
 pamer.fnc(mA)
 
 # fitLMER #2 -- backfit on F
 mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
     c("(1+Length|Subject)", "(1+Frequency|Subject)", 
-    "(1+FamilySize|Subject)"), file.name = FALSE)
+    "(1+FamilySize|Subject)"), log.file.name = FALSE)
 pamer.fnc(mB)
 
 # Example 2
@@ -107,7 +106,7 @@ m0 = update(m0)
 # fitLMER #3 -- backfit on F
 mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
     list(slopes = c("Frequency", "FamilySize", "Length", 
-    "DerivEntropy"), by.vars = "Subject"), file.name = FALSE)
+    "DerivEntropy"), by.vars = "Subject"), log.file.name = FALSE)
 
 # look at model criticism plots
 mcp.fnc(mA, trim = 2.5)

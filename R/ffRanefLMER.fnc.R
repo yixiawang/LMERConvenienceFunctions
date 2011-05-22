@@ -1,7 +1,7 @@
 ffRanefLMER.fnc <-
 function(
-          model=as.character(),
-          data=as.character(),
+          model,
+          data,
           ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
                            slopes=as.character(), # of random effects to consider, e.g.,
                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
@@ -9,13 +9,13 @@ function(
           log.file=file.path(tempdir(),paste("ffRanefLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
           ){
  
-  if(length(model)==0){
-    stop("please supply a value to the ''model'' argument")
-  }
+  #if(length(model)==0){
+  #  stop("please supply a value to the ''model'' argument")
+  #}
 
-  if(length(data)==0){
-    stop("please supply a value to the ''data'' argument")
-  }
+  #if(length(data)==0){
+  #  stop("please supply a value to the ''data'' argument")
+  #}
 
   if(length(alpha)==0){
     stop("please supply a value to the ''alpha'' argument")
@@ -26,9 +26,9 @@ function(
   current.dir=getwd()
   temp.dir=tempdir()
   tempdir()
-  setwd(temp.dir)
+  #setwd(temp.dir)
 
-  unlink("temp.txt")
+  unlink(file.path(temp.dir,"temp.txt"))
   sink(file=NULL,type="message")   
   
   if(log.file!=FALSE)sink(file=log.file,split=TRUE)
@@ -207,7 +207,7 @@ function(
     sink(file=NULL)
     cat("Log file saved in directory",temp.dir,"\n")
   }
-  setwd(current.dir)
+  #setwd(current.dir)
 
    return(model=model)
 }

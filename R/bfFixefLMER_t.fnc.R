@@ -1,7 +1,7 @@
 bfFixefLMER_t.fnc <-
 function(
-        model=as.character(),
-        data=as.character(),
+        model,
+        data,
         item=FALSE, # otherwise, put between quotes an item identifier such as "Item" or "Word"
         alpha=0.05,
 	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
@@ -10,13 +10,13 @@ function(
         reset.REML.TRUE=TRUE,
         log.file=file.path(tempdir(),paste("bfFixefLMER_t_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
                 ){
-  if(length(model)==0){
-    stop("please supply a value to the ''model'' argument")
-  }
+  #if(length(model)==0){
+    #stop("please supply a value to the ''model'' argument")
+  #}
 
-  if(length(data)==0){
-    stop("please supply a value to the ''data'' argument")
-  }
+  #if(length(data)==0){
+    #stop("please supply a value to the ''data'' argument")
+  #}
 
   if(length(item)==0){
     stop("please supply a value to the ''item'' argument")
@@ -42,11 +42,11 @@ function(
   current.dir=getwd()
   temp.dir=tempdir()
   tempdir()
-  setwd(temp.dir)
+  #setwd(temp.dir)
 
   options(warn=1)
 
-  unlink("temp.txt")
+  unlink(file.path(temp.dir,"temp.txt"))
   sink(file=NULL,type="message")   
 
   if(log.file!=FALSE)sink(file=log.file,split=TRUE)
@@ -295,7 +295,7 @@ function(
     sink(file=NULL)
     cat("Log file saved in directory",temp.dir,"\n")
   }
-  setwd(current.dir)
+  #setwd(current.dir)
 
   return(model=model)
 }

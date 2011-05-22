@@ -2,8 +2,8 @@
 \alias{bfFixefLMER_F.fnc}
 \title{Back-fits an LMER model on p-values from ANOVA and, optionally, on LLRT.}
 \description{This function back-fits an initial LMER model on upper- or lower-bound \emph{p}-values obtained from function \code{pamer.fnc} and, if enabled, log-likelihood ratio testing. Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
-\usage{bfFixefLMER_F.fnc(model = as.character(), data = as.character(), 
-item = FALSE, alpha = 0.05, llrt = FALSE, p.value = "upper", 
+\usage{bfFixefLMER_F.fnc(model, data,  item = FALSE, 
+alpha = 0.05, llrt = FALSE, p.value = "upper", 
 set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, log.file = 
 file.path(tempdir(), paste("bfFixefLMER_F_log_", gsub(":", "-", 
 gsub(" ", "_", date())), ".txt", sep="")))}

@@ -13,7 +13,8 @@ function(
     t.threshold=2,
     set.REML.FALSE=TRUE,
     reset.REML.TRUE=TRUE,
-    file.name=file.path(tempdir(),paste("fitLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
+    log.file.name=file.path(tempdir(),paste("fitLMER_log_",gsub(":","-",
+	gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
     ){
 
   current.dir=getwd()
@@ -21,7 +22,7 @@ function(
   tempdir()
   setwd(temp.dir)
 
-  if(file.name!=FALSE)sink(file=file.name,split=TRUE)  
+  if(log.file.name!=FALSE)sink(file=log.file.name,split=TRUE)  
   cat("======================================================\n")
   cat("===              backfitting fixed effects         ===\n")
   cat("======================================================\n")
@@ -47,11 +48,11 @@ function(
     mod=bfFixefLMER_t.fnc(model=mod,data=data,item=FALSE,alpha=alpha,llrt=llrt,t.threshold=t.threshold,set.REML.FALSE=FALSE,reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
   }
 
-  if(file.name!=FALSE){
+  if(log.file.name!=FALSE){
     sink(file=NULL)
     cat("Log file saved in directory",temp.dir,"\n")
   }
-  setwd(current.dir)
+  #setwd(current.dir)
 
   return(model=mod)
 }

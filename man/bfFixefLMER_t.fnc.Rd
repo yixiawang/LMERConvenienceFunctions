@@ -3,8 +3,8 @@
 \title{Back-fits an LMER model on absolute t-value and, optionally, on LLRT.}
 \description{This function back-fits an initial LMER model on \emph{t}-values, and, if enabled, log-likelihood ratio testing. Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
 \usage{
-bfFixefLMER_t.fnc(model = as.character(), data = as.character(), 
-item = FALSE, alpha = 0.05, llrt = FALSE, t.threshold = 2, 
+bfFixefLMER_t.fnc(model, data, item = FALSE, 
+alpha = 0.05, llrt = FALSE, t.threshold = 2, 
 set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, log.file = 
 file.path(tempdir(), paste("bfFixefLMER_t_log_", gsub(":", "-", 
 gsub(" ", "_", date())), ".txt", sep = "")))

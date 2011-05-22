@@ -9,8 +9,8 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.5\cr
-Date: \tab 16-05-2011\cr
+Version: \tab 1.5.2\cr
+Date: \tab 22-05-2011\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -74,13 +74,13 @@ m0 = update(m0)
 mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = 
     list(ran.intercepts = "Class", slopes = c("Frequency", 
     "Length", "FamilySize"), by.vars = "Subject"), 
-    file.name = FALSE, backfit.on = "t")
+    log.file.name = FALSE, backfit.on = "t")
 pamer.fnc(mA)
 
 # fitLMER #2 -- backfit on F
 mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
     c("(1+Length|Subject)", "(1+Frequency|Subject)", 
-    "(1+FamilySize|Subject)"), file.name = FALSE)
+    "(1+FamilySize|Subject)"), log.file.name = FALSE)
 pamer.fnc(mB)
 
 # Example 2
@@ -105,7 +105,7 @@ m0 = update(m0)
 # fitLMER #3 -- backfit on F
 mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
     list(slopes = c("Frequency", "FamilySize", "Length", 
-    "DerivEntropy"), by.vars = "Subject"), file.name = FALSE)
+    "DerivEntropy"), by.vars = "Subject"), log.file.name = FALSE)
 
 # look at model criticism plots
 mcp.fnc(mA, trim = 2.5)
