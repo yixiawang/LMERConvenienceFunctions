@@ -2,15 +2,15 @@
 \alias{LMERConvenienceFunctions-package}
 \alias{LMERConvenienceFunctions}
 \docType{package}
-\title{An suite of functions to facilitate modeling with LMER.}
-\description{The main functions are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} to back-fit on \emph{p}-values from ANOVA or \code{bfFixefLMER.fnc_t.fnc} to back-fit on \emph{t}-values from \code{summary(model)} and, optionally, log-likelihood ratio testing) and a random effect forward-fitting function (\code{ffRanefLMER.fnc}; log-likelihood ratio testing). There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, and a function to perform posthoc analyses (\code{posthoc.fnc}). Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and finally a function to list in matrix format the column names of a data frame (\code{cn}).
+\title{An suite of functions to facilitate modeling with LMER (other miscellanea).}
+\description{The main functions are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} to back-fit on \emph{p}-values from ANOVA or \code{bfFixefLMER.fnc_t.fnc} to back-fit on \emph{t}-values from \code{summary(model)} and, optionally, log-likelihood ratio testing) and a random effect forward-fitting function (\code{ffRanefLMER.fnc}; log-likelihood ratio testing). There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, and a function to perform posthoc analyses (\code{posthoc.fnc}). Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and a function to list in matrix format the column names of a data frame (\code{cn}).
 }
 \details{
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.5.2\cr
-Date: \tab 22-05-2011\cr
+Version: \tab 1.5.3\cr
+Date: \tab 13-06-2011\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -48,7 +48,7 @@ Tremblay, A. and Tucker B. V. (accepted). The Effects of N-gram Probabilistic Me
 \code{\link{f}; }
 \code{\link{cd}; }
 \code{\link{cdf}; }
-\code{\link{cdup}; }
+\code{\link{cdup} }
 }
 \examples{
 # Example 1

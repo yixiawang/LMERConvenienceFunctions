@@ -20,7 +20,7 @@ function(
   current.dir=getwd()
   temp.dir=tempdir()
   tempdir()
-  setwd(temp.dir)
+  #setwd(temp.dir)
 
   if(log.file.name!=FALSE)sink(file=log.file.name,split=TRUE)  
   cat("======================================================\n")

@@ -1,4 +1,15 @@
 --------------------
+version 1.5.3
+-----
+* Function ``pamer.fnc'' now accepts models with interactions
+in the ranef structure (e.g., (1|X:Y).
+* Added lower- and upper-bound degrees of freedom to ``posthoc.fnc''
+results, as well as lower- and upper-bound unadjusted p-values
+and lower- and upper-bound adjusted p-values (Bonferroni corrected).
+* fixed a bug in function ``fitLMER.fnc'': the function does not set
+the current working directory to ``tempdir()'' anymore and then leave 
+you there once the fitting is done.
+--------------------
 version 1.5.2
 -----
 * In function ``fitLMER.fnc'', changed argument ``file.name'' to 

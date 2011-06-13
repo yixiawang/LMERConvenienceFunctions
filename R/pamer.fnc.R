@@ -10,11 +10,11 @@ function(model,ndigits=4){
 		# upper-bound p-values
 		p.values.upper=c(p.values.upper,round(1-pf(anova.table[term,"F value"],anova.table[term,"Df"],nrow(model@frame)-rank.X),ndigits))
 
-		# loer-bound p-values
+		# lower-bound p-values
 		model.ranef<-ranef(model)
 		lower.bound<-0
-		for(i in names(model.ranef)){
-			eval(parse(text=paste("dims<-dim(model.ranef$",i,")",sep="")))
+		for(i in 1:length(names(model.ranef))){
+			dims<-dim(model.ranef[[i]])
 			lower.bound<-lower.bound+dims[1]*dims[2]
 		}
 		p.values.lower=c(p.values.lower,1-pf(anova.table[term,"F value"],anova.table[term,"Df"],nrow(model@frame)-rank.X-lower.bound))
