@@ -4,10 +4,10 @@
 \description{This function back-fits an initial LMER model on \emph{t}-values, and, if enabled, log-likelihood ratio testing. Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
 \usage{
 bfFixefLMER_t.fnc(model, data, item = FALSE, 
-alpha = 0.05, llrt = FALSE, t.threshold = 2, 
-set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, log.file = 
-file.path(tempdir(), paste("bfFixefLMER_t_log_", gsub(":", "-", 
-gsub(" ", "_", date())), ".txt", sep = "")))
+alpha = 0.05, llrt = FALSE, prune.ranefs = TRUE, 
+t.threshold = 2, set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, 
+log.file = file.path(tempdir(), paste("bfFixefLMER_t_log_", 
+gsub(":", "-", gsub(" ", "_", date())), ".txt", sep = "")))
 }
 \arguments{
   \item{model}{A \code{mer} object (fitted by function \code{lmer}). Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
@@ -15,6 +15,7 @@ gsub(" ", "_", date())), ".txt", sep = "")))
   \item{item}{Whether or not to evaluate the addition of by-item random intercepts to the model, evaluated by way of log-likelihood ratio test. Either \code{FALSE} (the default) or the column name (quoted) of the item identifier (e.g., \code{"Item"}, or \code{"Word"}).}
   \item{alpha}{Level of significance (for log-likelihood ratio test). Defaults to 0.05.}
   \item{llrt}{Logical. Whether log-likelihood ratio testing between the complex and simple models should be performed. Defaults to \code{FALSE}.}
+  \item{prune.ranefs}{Logical. Whether to remove any random effect for which its variable is not also present in the fixed effects structure (with the exception of the grouping variables such as \code{"Subjects"} and \code{"Items"}). Defaults to \code{TRUE}. For example, if the random effects structure contains the terms \code{Condition + ROI + Group}, and the random effects structure contains the terms \code{(1 | Subject) + (0 + TrialNum | Subject)}, the ranedom effect \code{(0 + TrialNum | Subject)} will be pruned from the model given that it is not in the model's fixed effects structure.}
   \item{t.threshold}{Threshold for \emph{t}-value below which either a model terms is dropped or a log-likelihood ratio test is performed between a model with the term under consideration and a simpler model without it. Defaults to 2. If data frame has fewer than ~ 100 observations, this values should be adjusted.}
   \item{set.REML.FALSE}{Logical. Whether or not to set REML to \code{FALSE}. Defaults to \code{FALSE}.}
   \item{reset.REML.TRUE}{Logical. Whether or not to re-set the back-fitted model to \code{REML = TRUE}.}
@@ -46,7 +47,7 @@ This backfitting method was used in Tremblay & Tucker (accepted). If factorial t
 }
 \value{A \code{mer} model with back-fitted fixed effects (on \code{t}-values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file.}
 \references{
-Tremblay, A. and Tucker B. V. (Accepted). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. (Accepted). \emph{The Mental Lexicon}.
+Tremblay, A. and Tucker B. V. (Accepted). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}.
 }
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 \seealso{
@@ -65,9 +66,10 @@ library(lme4)
 library(languageR)
 data(lexdec)
 lexdec3 = lexdec[lexdec$Correct == "correct", ]
+lexdec$RT<-exp(lexdec$RT)
 
 # fit initial model
-m1 = lmer(RT ~ Frequency * FamilySize * Length * 
+m1 = lmer(log(RT) ~ Frequency * FamilySize * Length * 
     DerivEntropy + (1|Subject), data = lexdec3)
 
 # look at model criticism plots
@@ -79,6 +81,8 @@ lexdec3 = dat.trimmed$data
 
 # update initial model on trimmed data
 mB = update(m1)
+dev.new()
+mcp.fnc(mB, trim = 2.5)
 
 # backfit fixed effects on t
 m2 = bfFixefLMER_t.fnc(mB, lexdec3, log.file = FALSE, 

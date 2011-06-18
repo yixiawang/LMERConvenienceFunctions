@@ -1,4 +1,24 @@
 --------------------
+version 1.6
+-----
+* Added function ``plotLMER3d.fnc'' to create (dyanmic) 3d
+plots of models fitted with LMER.
+* Added sub-argument ``corr'' to argument ``ran.effects'' in 
+functions ``ffRanefLMER.fnc'' and ``fitLMER.fnc''.
+* In function ``ffRanefLMER.fnc'', when ``ran.effects'' is a vector
+(e.g., c("(Condition | Subject)", "(0 + TrialNum | Subject)")), the 
+function now checks whether variables specified in ``ran.effects'' 
+are present in the fixed-effects structure. If the variable appearing 
+in a ranef is not present in model coefficients, it is skipped.
+* Fixed a little bug in function ``ffRanefLMER.fnc'' regarding
+the testing of random effects of the form ``(Condition|Subject)''.
+* Fixed a little bug in functions ``bfFixefLMER_F.fnc'' and 
+``bfFixefLMER_t.fnc'': When all model terms are removed, the 
+functions now return a model with only an intercept and whatever 
+random effects were in the model.
+* Added argument ``prune.ranefs'' to functions ``bfFixefLMER_F.fnc'',
+``bfFixefLMER_t.fnc'', and ``fitLMER.fnc''.
+--------------------
 version 1.5.3
 -----
 * Function ``pamer.fnc'' now accepts models with interactions

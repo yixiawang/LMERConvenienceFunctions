@@ -1,23 +1,14 @@
-bfFixefLMER_F.fnc <-
-function(
-        model,
+bfFixefLMER_F.fnc <- function(model,
         data,
         item=FALSE, # can be an item identifier such as "Item" or "Word"
         alpha=0.05,
 	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
+	prune.ranefs=TRUE, # remove or not random effects for which the variable is not in the fixed effects structure. 
 	p.value="upper", # or "lower"
         set.REML.FALSE=TRUE,
         reset.REML.TRUE=TRUE,
         log.file=file.path(tempdir(),paste("bfFixefLMER_F_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
                 ){
-  #if(length(model)==0){
-    #stop("please supply a value to the ''model'' argument")
-  #}
-
-  #if(length(data)==0){
-    #stop("please supply a value to the ''data'' argument")
-  #}
-
   if(length(item)==0){
     stop("please supply a value to the ''item'' argument")
   }
@@ -35,7 +26,7 @@ function(
   }
 
   if(as.vector(model@call[1])=="glmer()"){
-    stop("glmer models not yet supported")
+    stop("sorry, glmer models not yet supported")
   }
 
   if(llrt && set.REML.FALSE){
@@ -45,10 +36,8 @@ function(
 
   options(warn=1)
 
-  current.dir=getwd()
   temp.dir=tempdir()
   tempdir()
-  #setwd(temp.dir)
 
   unlink(file.path(temp.dir,"temp.txt"))
   sink(file=NULL,type="message")   
@@ -71,15 +60,15 @@ function(
   }
 
   # Get initial model coefficients and summary
-  coefficients=row.names(pamer.fnc(model))
+  coefs=row.names(anova(model))
   smry=pamer.fnc(model)
   smry.temp=pamer.fnc(model)
 
   # Determine the interaction orders for each term
-  temp=strsplit(coefficients,":")
-  names(temp)=coefficients
+  temp=strsplit(coefs,":")
+  names(temp)=coefs
   intr.order=list()
-  for(i in coefficients){
+  for(i in coefs){
     intr.order[[i]]=length(temp[[i]])
   }
   intr.order=as.data.frame(unlist(intr.order))
@@ -137,18 +126,21 @@ function(
 				as.vector(anova(model,m.temp)[2,"Pr(>Chisq)"]),">",alpha,"\n")
             		cat("\t\tremoving term\n")
             		model=m.temp
-    		
+
             		# Get initial model coefficients and summary
-            		coefficients=row.names(pamer.fnc(model))
+            		coefs=row.names(anova(model))
+			if(length(coefs)==0){
+				break
+			}
             		smry=pamer.fnc(model)
             		smry.temp=pamer.fnc(model)
           		
             		# Determine the interaction orders for each term
-            		temp=strsplit(coefficients,":")
-            		names(temp)=coefficients
+            		temp=strsplit(coefs,":")
+            		names(temp)=coefs
             		intr.order=list()
-            		for(i in coefficients){
-              		intr.order[[i]]=length(temp[[i]])
+            		for(i in coefs){
+              			intr.order[[i]]=length(temp[[i]])
             		}
             		intr.order=as.data.frame(unlist(intr.order))
             		colnames(intr.order)="Order"
@@ -166,16 +158,19 @@ function(
             		cat("\t\tremoving term\n")
 			model=m.temp
             		# Get initial model coefficients and summary
-            		coefficients=row.names(pamer.fnc(model))
+            		coefs=row.names(anova(model))
+			if(length(coefs)==0){
+				break
+			}
             		smry=pamer.fnc(model)
             		smry.temp=pamer.fnc(model)
           		
             		# Determine the interaction orders for each term
-            		temp=strsplit(coefficients,":")
-            		names(temp)=coefficients
+            		temp=strsplit(coefs,":")
+            		names(temp)=coefs
             		intr.order=list()
-            		for(i in coefficients){
-              		intr.order[[i]]=length(temp[[i]])
+            		for(i in coefs){
+              			intr.order[[i]]=length(temp[[i]])
             		}
             		intr.order=as.data.frame(unlist(intr.order))
             		colnames(intr.order)="Order"
@@ -192,7 +187,7 @@ function(
         }
         count=count+1
         if(nrow(smry.temp2)==0){
-          break
+		break
         }
       }
     }
@@ -202,11 +197,60 @@ function(
     model=update(model,.~.,REML=TRUE)
   }
 
-  if(log.file!=FALSE){
-    sink(file=NULL)
-    cat("Log file saved in directory",temp.dir,"\n")
+  if(prune.ranefs){
+	cat("pruning random effects structure ...\n")
+	# recover random effects in model
+	split1<-gsub(" ","",model@call)[2]
+	split2<-unlist(strsplit(split1,"\\~"))[2]
+	split2<-gsub("\\)\\+\\(","\\)_____\\(",split2)
+	split2<-gsub("\\(0\\+","\\(0\\&\\&\\&",split2)
+	split2<-gsub("\\(1\\+","\\(0\\&\\&\\&",split2)
+	split3<-unlist(strsplit(split2,"\\+"))
+	split4<-grep("\\|",split3,value=TRUE)
+	split4<-gsub("\\&\\&\\&","\\+",split4)
+	split5<-unlist(strsplit(split4,"_____"))
+	m.ranefs<-split5
+	
+	# determine whether variables in random effects structure 
+	# are also in fixed effects structure
+	coefs=row.names(anova(model))
+	
+	# recover variables in m.ranefs
+	m.ranef.variables<-gsub("\\((.*)\\|.*","\\1",m.ranefs)
+	m.ranef.variables<-gsub(".\\+(.*)","\\1",m.ranef.variables)
+	m.ranef.variables<-m.ranef.variables[m.ranef.variables!="1"]
+	m.ranef.variables<-m.ranef.variables[m.ranef.variables!="0"]
+	
+	# determine whether variables in m.ranefs are also in 
+	# coefs
+	ranef.to.remove<-vector("character")
+	for(m.ranef.variable in m.ranef.variables){
+		if(!m.ranef.variable%in%coefs){
+			ranef.to.remove<-c(ranef.to.remove,m.ranef.variable)
+		}
+	}
+	
+	if(length(ranef.to.remove)>0){
+		# removing actual ranefs
+		rtr<-vector("character")
+		for(iii in ranef.to.remove){
+			rtr<-c(rtr,grep(iii,m.ranefs,value=TRUE))
+			cat(paste("\t",iii," in random effects structure, \n\tbut not in fixed effects structure\n",sep=""))
+			cat("\t\tremoving",iii,"from model ...\n")
+		}
+		eval(parse(text=paste("model<-update(model,.~.-",paste(rtr,collapse="-"),",data=data)",sep="")))
+	}else{
+		cat("\tnothing to prune\n")
+	}
   }
-  #setwd(current.dir)
+
+  options(warn=0)
+  sink(file=NULL,type="message")          
+
+  if(log.file!=FALSE){
+    cat("log file is",log.file,"\n")
+    sink(file=NULL)
+  }
 
   return(model=model)
 }
