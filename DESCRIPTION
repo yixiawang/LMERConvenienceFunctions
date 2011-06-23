@@ -2,8 +2,8 @@ Package: LMERConvenienceFunctions
 Type: Package
 Title: A suite of functions to back-fit fixed effects and forward-fit
         random effects, as well as other miscellaneous functions.
-Version: 1.6
-Date: 18-06-2011
+Version: 1.6.1
+Date: 23-06-2011
 Author: Antoine Tremblay
 Maintainer: Antoine Tremblay, IWK Health Center <trea26@gmail.com>
 Description: Functions to back-fit fixed effects (on F or t values and,
@@ -22,6 +22,6 @@ Depends: languageR, Matrix, lme4
 Suggests: Design, rgl, mgcv
 License: GPL-2
 LazyLoad: yes
-Packaged: 2011-06-22 02:44:39 UTC; antoine
+Packaged: 2011-06-23 12:06:35 UTC; antoine
 Repository: CRAN
-Date/Publication: 2011-06-22 20:30:40
+Date/Publication: 2011-06-24 16:57:18

@@ -29,6 +29,12 @@ plotLMER3d.fnc<-function(model,
 	model.name<-paste(model.name[1],"___",model.name[2],"___",model.name[3],"___",pred,"_",intr,sep="")
 	model.name<-gsub("\\+","__",model.name)
 	model.name<-gsub("\\:","_",model.name)
+	model.name<-gsub("\\*","_",model.name)
+	model.name<-gsub("\\^","_",model.name)
+	model.name<-gsub("\\|","_",model.name)
+	model.name<-gsub("\\~","_",model.name)
+	model.name<-gsub("\\(","WWW",model.name)
+	model.name<-gsub("\\)","WWW",model.name)
 	model.name<-paste(model.name,".rda",sep="")
 
 	if(!model.name%in%list.files(path=temp.dir,pattern="lmer___.*\\.rda$")){
