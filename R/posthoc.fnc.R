@@ -1,9 +1,11 @@
 posthoc.fnc<-function(
     model,   #unquoted name of model
-    factor, # quoted name of factor
+    data, # the data frame on which th model was fitted, unquoted
+    factor, # quoted name of factor on which to perform the posthoc
+    prior.releveling=NULL, # must be list where each vector contains i) the quoted name of the factor to be releveled and ii) the desired reference level
     two.tailed=TRUE, # or FALSE for 1-tailed
     num.comp=NULL, # an integer for the number of comparisons
-    ndigits = 4,
+    ndigits=4,
     MCMC=FALSE,
     nsim=10000,
     addPlot=FALSE
@@ -12,12 +14,20 @@ posthoc.fnc<-function(
     pdf(file="posthoc.fnc_MCMC_plots.pdf")
   }
 
-  data<-model@frame
+  #data<-model@frame
+  if(!is.null(prior.releveling)){
+	cat("releveling specified factors prior to performing posthoc ...\n")
+	for(pr in 1:length(prior.releveling)){
+		data[,prior.releveling[[pr]][1]]<-relevel(data[,prior.releveling[[pr]][1]],prior.releveling[[pr]][2])
+		cat("\treference level of factor",prior.releveling[[pr]][1],"set to",prior.releveling[[pr]][2],"...\n")
+	}
+  }
 
   levs=sort(levels(data[,factor]))
   posthoc=list()
+  cat("performing posthoc ...\n")
   for(lev in levs){
-    cat(paste("processing level",paste("''",lev,"''",sep=""),"(",grep(lev,levs),"of",length(levs),") ...\n"),sep=" ")
+    cat(paste("\tprocessing level",lev,"of factor",factor,"(",grep(lev,levs),"of",length(levs),") ...\n"),sep=" ")
     data[,factor]=relevel(data[,factor],lev)
     model=update(model,.~.,data=data)
     if(class(model)=="lm"){

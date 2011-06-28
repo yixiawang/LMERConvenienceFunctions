@@ -9,8 +9,8 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.6.1\cr
-Date: \tab 23-06-2011\cr
+Version: \tab 1.6.2\cr
+Date: \tab 28-06-2011\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }

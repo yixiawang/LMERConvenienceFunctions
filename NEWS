@@ -1,4 +1,9 @@
 --------------------
+version 1.6.2
+-----
+* Added argument ``data'' to function ``posthoc.fnc''.
+* Added argument ``prior.releveling'' to function ``posthoc.fnc''.
+--------------------
 version 1.6
 -----
 * Added function ``plotLMER3d.fnc'' to create (dyanmic) 3d
