@@ -5,13 +5,17 @@ plotLMER3d.fnc<-function(model,
 			xlim = range(x, na.rm = TRUE),
 			ylim = range(y, na.rm = TRUE),
 			zlim=range(z, na.rm = TRUE), 
-			xlab="", 
-			ylab="", 
-			zlab="", 
+			xlab=NULL, 
+			ylab=NULL, 
+			zlab=NULL, 
+			main=NULL, 
 			cex=1,
 			fun=NA, 
 			n=30,
 			color="topo",
+			alpha=1,
+			alpha.rs=0.65,
+			alpha.u=1,
 			lit=TRUE,
 			theta=0,
 			phi=0,
@@ -19,10 +23,34 @@ plotLMER3d.fnc<-function(model,
 			play3d=FALSE,   # or TRUE or a list with first element axis, e.g., c(0,0,1), second element rpm, 
 					# e.g., 4, and third element duration, e.g., 20.			
 			ref.surf=FALSE,
-			xaxt="s",
-			yaxt="s"
+			underneath=FALSE,
+			rug=FALSE,
+			rug.u=FALSE,
+			ret=FALSE
 ){
+	# set labels if NULL
+	if(is.null(xlab)){
+		xlab=pred
+	}
 
+	if(is.null(ylab)){
+		ylab=intr
+	}
+
+	if(is.null(zlab)){
+		zlab<-as.character(model@call)[2]
+		zlab<-gsub(" ","",unlist(strsplit(zlab,"~"))[1])
+	}
+
+	if(is.null(main)){
+		if(plot.type=="contour"){
+			main=zlab
+		}else{
+			main=""
+		}
+	}
+
+	# create file name for saving in temp dir
 	temp.dir<-tempdir()
 	model.name<-as.character(model@call)
 	model.name<-gsub(" ","",model.name)
@@ -37,6 +65,9 @@ plotLMER3d.fnc<-function(model,
 	model.name<-gsub("\\)","WWW",model.name)
 	model.name<-paste(model.name,".rda",sep="")
 
+
+
+	# get previously generated plotting info if it exists
 	if(!model.name%in%list.files(path=temp.dir,pattern="lmer___.*\\.rda$")){
 		# create LMER plot and store values
 		list1<-plotLMER.fnc(model=model,fun=fun,pred=pred,intr=list(intr,
@@ -84,7 +115,6 @@ plotLMER3d.fnc<-function(model,
 #		image(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),
 #			z=z,col=col,zlim=zlim)
 #	}
-#
 
 	if(plot.type=="contour"){
 		contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
@@ -120,14 +150,24 @@ plotLMER3d.fnc<-function(model,
 #			box()
 #		}else{
 #			cat("plotting, but will not use supplied x- and y-values ...\n")
-			image(z=z,col=pal,zlim=zlim,main=zlab,cex.main=cex,cex.lab=cex,cex.axis=cex,
-				xlab=xlab,ylab=ylab,axes=FALSE)
+			image(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=z,col=pal,zlim=zlim,main=main,
+				cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,ylab=ylab,axes=TRUE)
 				#xlab=paste(xlab,"-- Random Units",sep=" "),ylab=paste(ylab,
 				#"-- Random Units",sep=" "))
-			if(xaxt=="s")axis(1,at=quantile(seq(0,1,.1)),labels=round(quantile(as.numeric(rownames(z))),2))
-			if(yaxt=="s")axis(2,at=quantile(seq(0,1,.1)),labels=round(quantile(as.numeric(colnames(z))),2))
-			contour(z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),axes=FALSE)
+			#if(xaxt=="s")axis(1,at=quantile(seq(0,1,.1)),labels=round(quantile(as.numeric(rownames(z))),2))
+			#if(yaxt=="s")axis(2,at=quantile(seq(0,1,.1)),labels=round(quantile(as.numeric(colnames(z))),2))
+			contour(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=z,zlim=zlim,
+				add=TRUE,levels=round(contourlevels,2),axes=FALSE)
+
+			if(rug){
+				xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
+				points(xy[,1],xy[,2],pch=19,cex=0.05)
+			}
+
 			box()
+			if(ret){
+				return(list(z=z,col=pal))
+			}
 		#}
 	}else if (plot.type=="persp"){
 		# the color portion of this code is adapted from the persp() help page
@@ -144,7 +184,7 @@ plotLMER3d.fnc<-function(model,
         	}else if(color=="cm"){
             		jet.colors<-colorRampPalette(cm.colors(50))
         	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(heat.colors(50))
+            		jet.colors<-colorRampPalette(terrain.colors(50))
         	}else if(color=="gray"||color=="bw"||color=="grey"){
             		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
         	}else{
@@ -170,11 +210,24 @@ plotLMER3d.fnc<-function(model,
 				#phi=phi,theta=theta,xlab=xlab,ylab=ylab,zlab=zlab,zlim=zlim)
 		#}else{
 			#cat("plotting, but will not use supplied x- and y-values ...\n")
-			persp(z=z,ticktype="simple",col=color[facetcol],phi=phi,theta=theta,
-				zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,axes=TRUE)
+			persp(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=z,
+				ticktype="detailed",col=color[facetcol],phi=phi,theta=theta,
+				zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,main=main,axes=TRUE)->res
 				#xlab=paste(xlab,"-- Random Units",sep=" "),
 				#ylab=paste(ylab,"-- Random Units",sep=" "))
 		#}
+		if(rug){
+			xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
+			temp<-vector("numeric")
+			for(i in 1:nrow(xy)){
+				temp<-c(temp,z[as.character(xy$Var1[i]),as.character(xy$Var2[i])])
+			}
+			points(trans3d(xy[,1],xy[,2],temp,pmat=res),pch=19,cex=0.5)
+		}
+
+		if(ret){
+			return(list(z=z,col=color[facetcol]))
+		}
 	}else{
 		if(!"rgl"%in%.packages(all.available=TRUE)){
 			stop("Package ''rgl'' not available.\n Please set ''plot.type'' to ''contour'' or ''persp''.\n")
@@ -194,7 +247,7 @@ plotLMER3d.fnc<-function(model,
         	}else if(color=="cm"){
             		jet.colors<-colorRampPalette(cm.colors(100))
         	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(heat.colors(100))
+            		jet.colors<-colorRampPalette(terrain.colors(100))
         	}else if(color=="gray"||color=="bw"||color=="grey"){
             		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
         	}else{
@@ -215,9 +268,7 @@ plotLMER3d.fnc<-function(model,
 		# this portion is from the persp3d() help page
 		nx=length(rownames(z))
 		ny=length(colnames(z))
-		options(warn=-1)
 		col <- rbind(0, cbind(matrix(facetcol, nx-1, ny-1), 0))
-		options(warn=0)
 
 		# create persp3d plot
 		#trying<-try(persp3d(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=z,col=col,zlim=zlim,
@@ -228,7 +279,8 @@ plotLMER3d.fnc<-function(model,
 				#xlab=xlab,ylab=ylab,zlab=zlab,smooth=FALSE,lit=lit)
 		#}else{
 			#cat("plotting, but will not use supplied x- and y-values ...\n")
-			persp3d(z=z,col=col,zlim=zlim,zlab=zlab,smooth=FALSE,lit=lit,xlab=xlab,ylab=ylab)
+			persp3d(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=z,col=col,zlim=zlim,
+				zlab=zlab,main=main,alpha=alpha,smooth=FALSE,lit=lit,xlab=xlab,ylab=ylab)
 				#xlab=paste(xlab,"-- Random Units",sep=" "),ylab=paste(ylab,
 				#"-- Random Units",sep=" "))
 			#axis(1,at=quantile(seq(0,1,.1)),labels=round(quantile(as.numeric(rownames(z))),2))
@@ -237,10 +289,30 @@ plotLMER3d.fnc<-function(model,
 
 		#}
 
+
 		if(ref.surf){
-			persp3d(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),matrix(0,ncol=ncol(z),nrow=nrow(z),
-				byrow=TRUE),col=grey(0.9),zlim=zlim,add=TRUE,lit=lit)
+			persp3d(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),matrix(mean(z),ncol=ncol(z),
+				nrow=nrow(z),byrow=TRUE),col="grey",alpha=alpha.rs,zlim=zlim,add=TRUE,lit=lit)
 		}
+
+		if(underneath){
+			persp3d(x=as.numeric(rownames(z)),y=as.numeric(colnames(z)),z=matrix(min(z),nrow(z),ncol(z)),
+				col=col,alpha=alpha.u,add=TRUE,smooth=FALSE,lit=lit,zlim=zlim)	
+			if(rug.u){
+				for(i in 1:nrow(z)){
+					plot3d(x=as.numeric(rownames(z))[i],y=as.numeric(colnames(z)),
+						z=matrix(min(z),nrow(z),ncol(z))[i,],add=TRUE,col="black",size=3)
+				}
+			}
+		}
+
+		if(rug){
+			for(i in 1:nrow(z)){
+				plot3d(x=as.numeric(rownames(z))[i],y=as.numeric(colnames(z)),z=z[i,],
+					add=TRUE,col="black",size=3)
+			}
+		}
+
 
 		if(play3d || is.list(play3d)){
 			if(is.list(play3d)){
@@ -250,7 +322,9 @@ plotLMER3d.fnc<-function(model,
 			}
 		}
 
-
+		if(ret){
+			return(list(z=z,col=col))
+		}
 	}
-}
 
+}

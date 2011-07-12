@@ -28,6 +28,7 @@ m0 = lmer(RT ~  rcs(Frequency, 4) * (Sex + NativeLanguage +
     data = lexdec3)
 
 # look at model criticism plots
+devAskNewPage(ask=FALSE)
 mcp.fnc(m0, trim = 2.5)
 }
 \keyword{hplot}

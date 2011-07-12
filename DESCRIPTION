@@ -2,8 +2,8 @@ Package: LMERConvenienceFunctions
 Type: Package
 Title: A suite of functions to back-fit fixed effects and forward-fit
         random effects, as well as other miscellaneous functions.
-Version: 1.6.2
-Date: 28-06-2011
+Version: 1.6.3
+Date: 12-07-2011
 Author: Antoine Tremblay
 Maintainer: Antoine Tremblay, IWK Health Center <trea26@gmail.com>
 Description: Functions to back-fit fixed effects (on F or t values and,
@@ -16,12 +16,15 @@ Description: Functions to back-fit fixed effects (on F or t values and,
         and conservative, respectively), a function to graph model
         criticism plots, functions to trim data on model residuals or
         on a response variable (per subject), a function to perform
-        posthoc analyses, and a function to plot (dynamic) 3d plots pf
-        models fitted by LMER.
+        posthoc analyses, a function to generate (dynamic) 3d plots of
+        (i) predicted values of an LMER model for interactions between
+        two numeric variables,(ii) the raw data as a function of two
+        numeric variable, and (iii) kernel density estimates
+        (densities) of two numeric variables.
 Depends: languageR, Matrix, lme4
 Suggests: Design, rgl, mgcv
 License: GPL-2
 LazyLoad: yes
-Packaged: 2011-06-28 20:24:03 UTC; antoine
+Packaged: 2011-07-12 10:03:37 UTC; antoine
 Repository: CRAN
-Date/Publication: 2011-06-29 09:41:30
+Date/Publication: 2011-07-23 13:01:56

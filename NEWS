@@ -1,4 +1,20 @@
 --------------------
+version 1.6.3
+-----
+* In function ``plotLMER3d.fnc'', added the possibility to 
+add a tittle to "persp" plots, in addition to
+* the option of having a flat miror image underneath the main 3d 
+surface of "persp3d" plots,
+* rug plots for the three types of plots and for the flat
+miror image underneath the main 3d surface of "persp3d" plots,
+* transparency control for the main 3d surface, reference level, 
+and flat miror image for "persp3d" plots, and
+* the option to return the z and color matrices used for 
+plotting.
+* Added function ``plotDensity3d.fnc''.
+* Added function ``plotRaw3d.fnc''.
+* Added data ``erpFz''.
+--------------------
 version 1.6.2
 -----
 * Added argument ``data'' to function ``posthoc.fnc''.
