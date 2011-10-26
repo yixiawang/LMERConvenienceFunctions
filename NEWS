@@ -1,4 +1,22 @@
 --------------------
+version 1.6.4
+-----
+* Fixed little bug in function ``ffRanefLMER.fnc''.
+* Added argument ``if.warn.not.add'' to functions ``ffRanefLMER.fnc'' and 
+``fitLMER.fnc''.
+* Added arguments ``plot.dat'' and ``path'' to function 
+``plotLMER3d.fnc''.
+* Added arguments ``add'', ``alpha'', and ``xy'' to function
+``plotRaw3d.fnc''. 
+* In function ``plotLMER3d.fnc'', can now plot even if error message
+``Error in persp3d.default(x = as.numeric(rownames(z)), 
+y = as.numeric(colnames(z)),  : increasing 'x' and 'y' values expected''
+occurs. Issues the following warning: ``plotting anyways, but will not
+use supplied x- and y-values ...''.
+* Added model ``z'' to run a new example in function 
+``plotRaw3d.fnc''.
+* Added function ``mcposthoc.fnc''.
+--------------------
 version 1.6.3
 -----
 * In function ``plotLMER3d.fnc'', added the possibility to 

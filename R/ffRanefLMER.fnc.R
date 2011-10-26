@@ -5,6 +5,7 @@ ffRanefLMER.fnc <- function(model,
 			   corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
           alpha=0.05,
+	  if.warn.not.add=TRUE,
           log.file=file.path(tempdir(),paste("ffRanefLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
           ){
   if(length(alpha)==0){
@@ -78,7 +79,7 @@ ffRanefLMER.fnc <- function(model,
           sink(file=NULL,type="message")   
           unlink(file.path(temp.dir,"temp.txt"))
       
-          if(length(warn)>0){
+          if(if.warn.not.add && length(warn)>0){
             if(length(grep("warning",warn,value=TRUE))>0){
               cat(paste("\t",warn,"\n",sep=""))
               cat("\tnot adding",paste("(1 | ",intercept,")",sep=""),"to model\n")
@@ -155,7 +156,7 @@ ffRanefLMER.fnc <- function(model,
                   sink(file=NULL,type="message")        
                   unlink(file.path(temp.dir,"temp.txt"))
             
-                  if(length(warn)>0){
+                  if(if.warn.not.add && length(warn)>0){
                     if(length(grep("warning",warn,value=TRUE))>0){
                       cat(paste("\t",warn,"\n",sep=""))
 		      if(is.factor(model@frame[,slope])){
@@ -207,11 +208,20 @@ ffRanefLMER.fnc <- function(model,
           		unlink(file.path(temp.dir,"temp.txt"))
           		sink(file=NULL,type="message")        
           		
-          		if(length(warn)>0){
-            			if(length(grep("warning",warn,value=TRUE))>0){
+          		if(if.warn.not.add && length(warn)>0){
+            			if(length(grep("Warning",warn,value=TRUE))>0){
               				cat(paste("\t",warn,"\n",sep=""))
               				cat("\tnot adding",ranef,"to model\n")
-            			}
+            			}else{
+            				if(as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"])<=alpha){
+              					cat("\tlog-likelihood ratio test p-value =",as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"]),"\n")
+              					cat("\tadding",ranef,"to model\n")
+              					model=model.updated
+            				}else{
+              					cat("\tlog-likelihood ratio test p-value =",as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"]),"\n")
+              					cat("\tnot adding",ranef,"to model\n")
+            				}
+				}
           		}else{      
             			if(as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"])<=alpha){
               				cat("\tlog-likelihood ratio test p-value =",as.vector(anova(model,model.updated)[2,"Pr(>Chisq)"]),"\n")

@@ -7,6 +7,7 @@ fitLMER.fnc <- function(model=as.character(),
 		     corr=as.character(),
                      by.vars=as.character()),
     alpha=0.05,
+    if.warn.not.add=TRUE,
     llrt=FALSE,
     prune.ranefs=TRUE, # remove or not random effects for which the variable is not in the fixed effects structure. 
     p.value="upper", # or "lower"
@@ -39,7 +40,7 @@ fitLMER.fnc <- function(model=as.character(),
   cat("======================================================\n")
   cat("===            forwardfitting random effects       ===\n")
   cat("======================================================\n")
-  mod=ffRanefLMER.fnc(model=mod,data=data,ran.effects=ran.effects,alpha=alpha,log.file=FALSE)
+  mod=ffRanefLMER.fnc(model=mod,data=data,ran.effects=ran.effects,alpha=alpha,if.warn.not.add=if.warn.not.add,log.file=FALSE)
 
 
   cat("======================================================\n")

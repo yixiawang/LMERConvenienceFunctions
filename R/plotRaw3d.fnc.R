@@ -2,6 +2,7 @@ plotRaw3d.fnc<-function(data=NULL,
 			response=NULL,
 			pred=NULL,
 			intr=NULL,
+			xy=TRUE,
 			color="topo",
 			zlim=NULL,
 			xlab=NULL,
@@ -10,6 +11,8 @@ plotRaw3d.fnc<-function(data=NULL,
 			main=NULL,
 			shift=NULL,
 			plot.type="persp",
+			add=FALSE,
+			alpha=1,
 			theta=30,
 			phi=30,
 			ticktype="detailed",
@@ -59,6 +62,8 @@ plotRaw3d.fnc<-function(data=NULL,
 		}	
 		require(rgl,quietly=TRUE) 
 
+		dev.new()
+
 		# the color portion of this code is adapted from the persp() help page
 		#par(bg="white")
 		nrz<-nrow(x)
@@ -94,10 +99,31 @@ plotRaw3d.fnc<-function(data=NULL,
 		nx=nrz
 		ny=ncz
 		col <- rbind(0, cbind(matrix(facetcol, nx-1, ny-1), 0))
+
+
+		if(add){
+			box=FALSE
+			axes=FALSE
+			main=""
+			xlab=""
+			ylab=""
+			zlab=""
+		}else{
+			box=TRUE
+			axes=TRUE
+		}
 	
-		persp3d(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x+shift,
-			xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,zlim=zlim,
-			smooth=FALSE)
+		if(xy){
+			persp3d(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x+shift,
+				xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,zlim=zlim,
+				smooth=FALSE,add=add,alpha=alpha,box=box,axes=axes)
+		}else{
+			persp3d(z=x+shift,xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,
+				zlim=zlim,smooth=FALSE,add=add,alpha=alpha,box=box,axes=axes)
+		}
+
+		dev.off()
+
 		if(ret){
 			return(list(z=x,col=col))
 		}
@@ -128,7 +154,7 @@ plotRaw3d.fnc<-function(data=NULL,
 		zfacet<-x[-1,-1]+x[-1,-ncz]+x[-nrz,-1]+x[-nrz,-ncz]
 		# Recode facet z-values into color indices
 		facetcol<-cut(zfacet,nbcol)
-	
+
 		persp(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x+shift,xlab=xlab,
 			ylab=ylab,zlab=zlab,main=main,col=color[facetcol],zlim=zlim,theta=theta,
 			phi=phi,ticktype=ticktype)
