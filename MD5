@@ -1,6 +1,6 @@
-15b93781748280de6f37f5d8f7bdf74d *DESCRIPTION
-fd7c610be2289cc0c5ce3699fa890130 *NAMESPACE
-a42700144c26ea5bedf55c211f2576de *NEWS
+0c18fc9081d4e400507622b6d1a974c6 *DESCRIPTION
+ad11c73f647a4bff8bc9db229fd67a12 *NAMESPACE
+2468fb23dd1b609b43395f76b1fdc951 *NEWS
 11915f879e87278db0f964b70ae285fa *R/bfFixefLMER_F.fnc.R
 d0db332a000dbabdd2b30e16b97eec07 *R/bfFixefLMER_t.fnc.R
 c12d15c79ce0595d68ebfb95a942cba0 *R/cd.R
@@ -21,7 +21,7 @@ b535e7b9ae1f5c581b425ca4b76fc069 *R/plotLMER3d.fnc.R
 6129ee2340a7b30e96b54e3ca94926f2 *R/romr.fnc.R
 7cdb28836bdca6205ec17a1f9ee0dea5 *data/erpFz.rda
 b509b30e6898d254db7b9f55206a5ec8 *data/z.rda
-56dd72dfd187e7c635510f2baf609d93 *man/LMERConvenienceFunctions-package.Rd
+388bf56e91dd0d2bdbae4bd2e6fda9c6 *man/LMERConvenienceFunctions-package.Rd
 969c4721e42c7b632f5ff36b0cc4d47d *man/bfFixefLMER_F.fnc.Rd
 bbbb1e0113db3f82c6e1e6f8f86e2aa0 *man/bfFixefLMER_t.fnc.Rd
 34fb05c66ad8d30205cc5b1e321398c0 *man/cd.Rd
@@ -32,7 +32,7 @@ c8af3af272c596f00dd7fd932a832226 *man/cdup.Rd
 ab35284e981c1213f2ef1e4242c77784 *man/f.Rd
 2f69f6409d821af35f27dd110d089564 *man/ffRanefLMER.fnc.Rd
 ce6c18378bc6154ebcabf7c2d6f6e7b9 *man/fitLMER.fnc.Rd
-f09330863091dcc8da56fa42b416e1b8 *man/mcp.fnc.Rd
+db8a8fb9c10919658092ee7b2fbe9447 *man/mcp.fnc.Rd
 e1bc624f9a60e6f50ec87c1424f0d61a *man/mcposthoc.fnc.Rd
 974b27feec5f171abb84e8842cf8dff9 *man/pamer.fnc.Rd
 eef8a58be70754c7489ae1a7d543adb5 *man/perSubjectTrim.fnc.Rd

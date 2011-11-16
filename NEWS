@@ -1,4 +1,9 @@
 --------------------
+version 1.6.6
+-----
+* Removed suggestion to package ``Design''
+and changed examples accordingly.
+--------------------
 version 1.6.4
 -----
 * Fixed little bug in function ``ffRanefLMER.fnc''.
