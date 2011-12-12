@@ -40,18 +40,20 @@ x=x,y=y,xd=xd,yd=yd,mat=mat,col
 \code{\link{outer}}
 }
 \examples{
-data(erpFz)
-devAskNewPage(ask=FALSE)
-plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "contour")
-
-dev.new()
-devAskNewPage(ask=FALSE)
-plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp",
-	phi = 10, theta = 30)
-
-if("rgl" \%in\% .packages(all.available = TRUE)){
-library(rgl)
-plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp3d")
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	data(erpFz)
+	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "contour")
+	
+	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp",
+		phi = 10, theta = 30)
+	
+	if("rgl" \%in\% .packages(all.available = TRUE)){
+	library(rgl)
+	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp3d")
+	}
+	
+	devAskNewPage(ask=FALSE)
 }
 }
 \keyword{hplot}

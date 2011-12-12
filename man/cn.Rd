@@ -10,6 +10,9 @@
 \code{\link{colnames}}
 }
 \examples{
-data(lexdec)
-cn(lexdec)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata) 
+  data(eeg)
+  cn(eeg)
+}
 }

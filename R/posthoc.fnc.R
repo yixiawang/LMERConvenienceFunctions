@@ -10,9 +10,9 @@ posthoc.fnc<-function(
     nsim=10000,
     addPlot=FALSE
 ){
-  if(MCMC){
-    pdf(file="posthoc.fnc_MCMC_plots.pdf")
-  }
+  #if(MCMC){
+    #pdf(file="posthoc.fnc_MCMC_plots.pdf")
+  #}
 
   #data<-model@frame
   if(!is.null(prior.releveling)){
@@ -66,16 +66,17 @@ posthoc.fnc<-function(
       posthoc[[lev]]<-temp
 
       if(MCMC){
-        model.mcmc=pvals.fnc(model,nsim,ndigits=ndigits,withMCMC=TRUE,addPlot=addPlot)
-        posthoc[[paste(lev,"MCMC",sep="")]]=model.mcmc$fixed
-        posthoc[[paste(lev,"mcmcMat",sep="")]]=model.mcmc$mcmc
+        stop("MCMC not implemented\n")
+        #model.mcmc=pvals.fnc(model,nsim,ndigits=ndigits,withMCMC=TRUE,addPlot=addPlot)
+        #posthoc[[paste(lev,"MCMC",sep="")]]=model.mcmc$fixed
+        #posthoc[[paste(lev,"mcmcMat",sep="")]]=model.mcmc$mcmc
       }
     }
   }
   cat("\n")
-  if(MCMC){
-    dev.off()
-  }
+  #if(MCMC){
+    #dev.off()
+  #}
   return(posthoc)
 }
 

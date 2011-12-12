@@ -1,4 +1,3 @@
 import(Matrix)
 import(lme4)
-import(languageR)
 exportPattern("^[^\\.]")

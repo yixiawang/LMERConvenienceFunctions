@@ -31,32 +31,40 @@ paste("ffRanefLMER_log_", gsub(":", "-", gsub(" ", "_", date())),
 \code{\link{perSubjectTrim.fnc}; }
 }
 \examples{
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-
-# fit initial model
-m0 = lmer(RT ~ Class + Sex + NativeLanguage + PrevType + 
-	Frequency + FamilySize + Length + DerivEntropy + 
-	(1|Subject), data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on initial model residuals
-dat.trimmed = romr.fnc(m0, lexdec3, trim = 2.5)
-lexdec3 = dat.trimmed$data
-
-# update initial model on trimmed data
-m0 = update(m0)
-mA = ffRanefLMER.fnc(m0, lexdec3, ran.effects = list(ran.intercepts = 
-    "Word", slopes = c("Frequency", "Length", "XXX","FamilySize","Class"), 
-    by.vars = "Subject"), log.file = FALSE)
-print(mA, corr = FALSE)
-mB = ffRanefLMER.fnc(m0, lexdec3, ran.effects = c("(1+Length|Subject)", 
-    "(1+Frequency|Subject)", "(1+FamilySize|Subject)", "(XXX|Subject)"), 
-	log.file = FALSE)
-print(mB, corr = FALSE)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata) 
+	library(lme4)
+  # bfFixefLMER -- backfit on t
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+	
+	# fit initial model
+	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	mcp.fnc(m1, trim = 2.5)
+	
+	# trim data on initial model residuals
+	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+	eeg = eeg.trimmed$data
+	
+	# update initial model on trimmed data
+	mB = update(m1)
+	dev.new()
+	mcp.fnc(mB, trim = 2.5)
+	
+	# backfit fixed effects on F
+	m2 = bfFixefLMER_t.fnc(mB, eeg, log.file = FALSE,
+	     llrt = FALSE)
+	print(m2,corr=FALSE)
+	
+	m3<-ffRanefLMER.fnc(m2, eeg, ran.effects = c("(FreqB | Subject)",
+	"(LengthB | Subject)", "(WMC | Item)"))
+	print(m3,corr=FALSE)
+	
+	plotLMER3d.fnc(m3, "LengthB", "WMC")
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{models & regression}

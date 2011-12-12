@@ -12,13 +12,17 @@
 \references{\url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}}
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}}
 \examples{
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
-    FamilySize + SynsetCount + Length + DerivEntropy + (1|Subject), 
-    data = lexdec3)
-pamer.fnc(m0)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	library(lme4)
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+	
+	# fit initial model
+	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	pamer.fnc(m1)
+}
 }
 \keyword{models & regression}

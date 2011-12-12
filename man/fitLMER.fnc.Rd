@@ -2,16 +2,14 @@
 \alias{fitLMER.fnc}
 \title{Back-fit fixed effects and forward-fit random effects of an LMER model.}
 \description{The function follows these steps: (1) If \code{llrt} is set to \code{TRUE}, set \code{REML} to \code{FALSE} (unless specified otherwise); (2) back-fit initial model either on \emph{F}- (by default) or on \emph{t}-values; (3) forward-fit random effects; (4) re-back-fit fixed effects; (5) if \code{llrt} is set to \code{TRUE}, set \code{REML} to \code{TRUE} (unless specified otherwise). Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
-\usage{
-fitLMER.fnc(model, data, backfit.on = "F", item = FALSE, 
+\usage{fitLMER.fnc(model, data, backfit.on = "F", item = FALSE, 
 ran.effects = list(ran.intercepts= as.character(), 
 slopes = as.character(), corr = as.character(), 
 by.vars = as.character()), alpha = 0.05, if.warn.not.add = TRUE, 
 llrt = FALSE, prune.ranefs = TRUE, p.value = "upper", 
 t.threshold = 2, set.REML.FALSE = TRUE, reset.REML.TRUE = TRUE, 
 log.file.name = file.path(tempdir(), paste("fitLMER_log_", 
-gsub(":", "-", gsub(" ", "_", date())), ".txt", sep="")))
-}
+gsub(":", "-", gsub(" ", "_", date())), ".txt", sep="")))}
 \arguments{
   \item{model}{A \code{mer} object (fitted by function \code{lmer}). Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
   \item{data}{The data frame on which the \code{mer} object was fitted.}
@@ -54,66 +52,35 @@ Tremblay, A. and Tucker B. V. (Accepted). The Effects of N-gram Probabilistic Me
 \code{\link{perSubjectTrim.fnc}; }
 }
 \examples{
-# Example 1
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-
-# fit initial model
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency +
-    FamilySize + Length + DerivEntropy + (1|Subject), 
-    data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on initial model residuals
-dat.trimmed = romr.fnc(m0, lexdec3, trim = 2.5)
-lexdec3 = dat.trimmed$data
-
-# update initial model on trimmed data
-m0 = update(m0)
-
-# fitLMER #1 -- backfit on t
-mA = fitLMER.fnc(m0, lexdec3,item = "Word", ran.effects = 
-    list(ran.intercepts = "Class", slopes = c("Frequency", 
-    "Length", "FamilySize"), by.vars = "Subject"), 
-    log.file.name = FALSE, backfit.on = "t")
-pamer.fnc(mA)
-
-# fitLMER #2 -- backfit on F
-mB = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
-    c("(1+Length|Subject)", "(1+Frequency|Subject)", 
-    "(1+FamilySize|Subject)"), log.file.name = FALSE)
-pamer.fnc(mB)
-
-# Example 2
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
-
-# fit initial model
-m0 = lmer(RT ~ Frequency * FamilySize * Length * 
-    DerivEntropy + (1|Subject), data = lexdec3)
-
-# look at criticism plots
-mcp.fnc(m0, trim = 2.5)
-
-# trim data on initial model residuals
-dat.trimmed = romr.fnc(m0, lexdec3, trim = 2.5)
-lexdec3 = dat.trimmed$data
-
-# update initial model on trimmed data
-m0 = update(m0)
-
-# fitLMER #3 -- backfit on F
-mA = fitLMER.fnc(m0, lexdec3, item = "Word", ran.effects = 
-    list(slopes = c("Frequency", "FamilySize", "Length", 
-    "DerivEntropy"), by.vars = "Subject"), log.file.name = FALSE)
-
-# look at model criticism plots
-mcp.fnc(mA, trim = 2.5)
-pamer.fnc(mA)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	library(lme4)
+	# bfFixefLMER -- backfit on t
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+	
+	# fit initial model
+	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	mcp.fnc(m1, trim = 2.5)
+	
+	# trim data on initial model residuals
+	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+	eeg = eeg.trimmed$data
+	
+	# update initial model on trimmed data
+	mB = update(m1)
+	dev.new()
+	mcp.fnc(mB, trim = 2.5)
+	
+	# forward and backward fit model on t
+	m2<-fitLMER.fnc(mB, eeg, backfit.on = "t", item = FALSE, 
+	ran.effects = c("(FreqB | Subject)",
+	"(LengthB | Subject)", "(WMC | Item)"))
+	
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{models & regression}

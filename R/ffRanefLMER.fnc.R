@@ -191,6 +191,7 @@ ffRanefLMER.fnc <- function(model,
      } # close if(length(ran.effects$slopes)>0)
     }else{
     for(ranef in ran.effects){
+          ranef<-gsub(" ","",ranef)
           cat("evaluating addition of",ranef,"to model\n")
 		model.term<-gsub("\\((.*)\\|.*","\\1",ranef)
 		model.term<-gsub(".\\+(.*)","\\1",model.term)

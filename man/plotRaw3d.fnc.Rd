@@ -33,40 +33,47 @@ contourstepsize = 1, ret = FALSE)
 \value{Either a dynamic 3d perspective plot, a perspective plot, or a contour plot.}
 \author{Antoine Tremblay, IWK Health Center \email{trea26@gmail.com}}
 \examples{
-# if package rgl is available, a dynamic perspective plot example
-if("rgl" \%in\% .packages(all.available = TRUE)){
-library(rgl)
-data(erpFz)
-open3d()
-plotRaw3d.fnc(data = erpFz, response = "Amplitude", pred = "LengthBc", intr = "WMCc",
-	plot.type = "persp3d", zlim = c(-10,2))
-
-
-# plot model derived 3d-plot with raw data
-# the grey spiky plot are is the raw data
-# the colored plot is the model-derived surface (using LMER)
-open3d()
-data(z)
-temp.dir <- tempdir()
-save(z,file=file.path(temp.dir,"lmer___z.rda"))
-
-plotLMER3d.fnc(pred = "LengthBc", intr = "WMCc", zlim = c(-6,0), 
-	plot.type = "persp3d", plot.dat = "z", path = temp.dir)
-
-plotRaw3d.fnc(erpFz, "Amplitude", "LengthBc", "WMCc", plot.type = "persp3d",
-	zlim = c(-6,0), add = TRUE, alpha = 0.4, xy = FALSE, col = "bw")
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	data(erpFz)
+  # if package rgl is available, a dynamic perspective plot example
+  if("rgl" \%in\% .packages(all.available = TRUE)){
+    library(rgl)
+	  open3d()
+	  plotRaw3d.fnc(data = erpFz, response = "Amplitude", 
+	  pred = "LengthBc", intr = "WMCc",
+		plot.type = "persp3d", zlim = c(-10,2))
+	
+	
+	# plot model derived 3d-plot with raw data
+	# the grey spiky plot are is the raw data
+	# the colored plot is the model-derived surface (using LMER)
+	open3d()
+	data(z)
+	temp.dir <- tempdir()
+	save(z,file=file.path(temp.dir,"lmer___z.rda"))
+	
+	plotLMER3d.fnc(pred = "LengthBc", intr = "WMCc", 
+	  zlim = c(-6,0), plot.type = "persp3d", 
+	  plot.dat = "z", path = temp.dir)
+	
+	plotRaw3d.fnc(erpFz, "Amplitude", "LengthBc", 
+	  "WMCc", plot.type = "persp3d", zlim = c(-6,0), 
+	  add = TRUE, alpha = 0.4, xy = TRUE, col = "bw")
+	}
+	
+	data(erpFz)
+	# contour plot example
+	plotRaw3d.fnc(data = erpFz, response = "Amplitude", 
+	  pred = "LengthBc", intr = "WMCc",
+		plot.type = "contour", zlim = c(-10,2))
+	
+	# perspective plot example
+	plotRaw3d.fnc(data = erpFz, response = "Amplitude", 
+	  pred = "LengthBc", intr = "WMCc",
+		plot.type= "persp", theta = 50, phi = 20, zlim = c(-10,2))
+	
+	devAskNewPage(ask=FALSE)
 }
-
-data(erpFz)
-# contour plot example
-devAskNewPage(ask=FALSE)
-plotRaw3d.fnc(data = erpFz, response = "Amplitude", pred = "LengthBc", intr = "WMCc",
-	plot.type = "contour", zlim = c(-10,2))
-
-# perspective plot example
-dev.new()
-devAskNewPage(ask=FALSE)
-plotRaw3d.fnc(data = erpFz, response = "Amplitude", pred = "LengthBc", intr = "WMCc",
-	plot.type= "persp", theta = 50, phi = 20, zlim = c(-10,2))
 }
 \keyword{ hplot }

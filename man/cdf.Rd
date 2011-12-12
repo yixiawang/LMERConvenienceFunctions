@@ -11,5 +11,5 @@
 \code{\link{f}; }
 \code{\link{cd}; }
 \code{\link{cdup}; }
-\code{\link{setwd}; }
+\code{\link{setwd} }
 }

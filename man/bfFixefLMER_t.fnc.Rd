@@ -58,35 +58,40 @@ Tremblay, A. and Tucker B. V. (Accepted). The Effects of N-gram Probabilistic Me
 \code{\link{pamer.fnc}; }
 \code{\link{mcp.fnc}; }
 \code{\link{romr.fnc}; }
-\code{\link{perSubjectTrim.fnc}; }
+\code{\link{perSubjectTrim.fnc} }
 }
+
 \examples{
-### bfFixefLMER -- backfit on t
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-lexdec$RT<-exp(lexdec$RT)
-
-# fit initial model
-m1 = lmer(log(RT) ~ Frequency * FamilySize * Length * 
-    DerivEntropy + (1|Subject), data = lexdec3)
-
-# look at model criticism plots
-mcp.fnc(m1, trim = 2.5)
-
-# trim data on initial model residuals
-dat.trimmed = romr.fnc(m1, lexdec3, trim = 2.5)
-lexdec3 = dat.trimmed$data
-
-# update initial model on trimmed data
-mB = update(m1)
-dev.new()
-mcp.fnc(mB, trim = 2.5)
-
-# backfit fixed effects on t
-m2 = bfFixefLMER_t.fnc(mB, lexdec3, log.file = FALSE, 
-    llrt = TRUE)
-pamer.fnc(m2)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata) 
+  # bfFixefLMER -- backfit on t
+  library(lme4)
+  data(eeg)
+  eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+  
+  # fit initial model
+  m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+      (1 | Item), data = eeg)
+  
+  # look at model criticism plots
+  mcp.fnc(m1, trim = 2.5)
+  
+  # trim data on initial model residuals
+  eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+  eeg = eeg.trimmed$data
+  
+  # update initial model on trimmed data
+  mB = update(m1)
+  dev.new()
+  mcp.fnc(mB, trim = 2.5)
+  
+  # backfit fixed effects on F
+  m2 = bfFixefLMER_t.fnc(mB, eeg, log.file = FALSE,
+      llrt = FALSE)
+  pamer.fnc(m2)
+  
+  plotLMER3d.fnc(m2, "LengthB", "WMC")
+  devAskNewPage(ask=FALSE)
+}
 }
 \keyword{models & regression}

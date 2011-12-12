@@ -20,7 +20,5 @@ Antoine Tremblay, IWK Health Center, <trea26@gmail.com>
 \code{\link{f}; }
 \code{\link{cd}; }
 \code{\link{cdf}; }
-\code{\link{setwd}; }
+\code{\link{setwd} }
 }
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }

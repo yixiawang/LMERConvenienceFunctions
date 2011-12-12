@@ -1,4 +1,15 @@
 --------------------
+version 1.6.7
+-----
+* Added arguments ``add.raw'', ``color.raw'', and ``alpha.raw'' to 
+function ``plotLMER3d.fnc'', and fixed a little bug in that function.
+* Removed argument ``ret'' from function ``plotLMER3d.fnc''. The plotting
+data is now invisibly returned.
+* Removed dependency on package ``languageR''.
+* Fixed a little bug in function ``ffRanefLMER.fnc''.
+* Removed all data sets and put them in a new package called ``LCFdata'',
+which is now suggested. 
+--------------------
 version 1.6.6
 -----
 * Removed suggestion to package ``Design''

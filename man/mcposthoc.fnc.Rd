@@ -54,51 +54,58 @@ num.comp = NULL, ndigits = 4, verbose = FALSE)}
 }
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 \seealso{
+\code{\link{bfFixefLMER_F.fnc}; }
+\code{\link{bfFixefLMER_t.fnc}; }
+\code{\link{ffRanefLMER.fnc}; }
+\code{\link{fitLMER.fnc}; }
+\code{\link{pamer.fnc}; }
+\code{\link{mcp.fnc}; }
 \code{\link{posthoc.fnc} }
+\code{\link{romr.fnc}; }
+\code{\link{perSubjectTrim.fnc} }
 }
 \examples{
 if("multicore" \%in\% .packages(all.available = TRUE)){
-library(lme4)
-library(languageR)
-library(multicore)
-data(dative)
-
-m0 <- glmer(RealizationOfRecipient ~ SemanticClass * 
-	LengthOfRecipient + AnimacyOfRec * DefinOfRec 
-	* PronomOfTheme + (1 | Speaker) + (1 | Verb), 
-	data = dative)
-
-m0.posthoc <- mcposthoc.fnc(model = m0, data = dative, 
-	var = list(ph1 = c("PronomOfTheme", "AnimacyOfRec", 
-	"DefinOfRec"), ph2 = c("SemanticClass")), 
-	verbose = TRUE)
-
-names(m0.posthoc)
-#      [,1]       
-# [1,] "n"        
-# [2,] "var"      
-# [3,] "summaries"
-
-as.matrix(names(m0.posthoc$var))
-#      [,1] 
-# [1,] "ph1"
-# [2,] "ph2"
-
-as.matrix(names(m0.posthoc$summaries))
-#     [,1]                                    
-# [1,] "ph1_nonpronominal_animate_definite"    
-# [2,] "ph1_nonpronominal_inanimate_definite"  
-# [3,] "ph1_nonpronominal_animate_indefinite"  
-# [4,] "ph1_pronominal_animate_definite"       
-# [5,] "ph1_nonpronominal_inanimate_indefinite"
-# [6,] "ph1_pronominal_animate_indefinite"     
-# [7,] "ph1_pronominal_inanimate_indefinite"   
-# [8,] "ph1_pronominal_inanimate_definite"     
-# [9,] "ph2_t"                                 
-# [10,] "ph2_a"                                 
-# [11,] "ph2_c"                                 
-# [12,] "ph2_p"                                 
-# [13,] "ph2_f"     
+  library(multicore)
+  if("LCFdata"\%in\%.packages(all.available=TRUE)){
+    library(LCFdata)
+    library(lme4)
+		data(eeg)
+		eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175,,drop = TRUE]
+		eeg$FreqBd <- as.factor(cut(eeg$FreqB, 3, 
+		c("low", "med", "high")))
+		eeg$LengthBd <- as.factor(cut(eeg$LengthB, 3, 
+		c("short", "med", "long")))
+		
+		# fit initial model
+		m1 = lmer(Fz ~ WMC * (FreqBd + LengthBd) + (1 | Subject) + 
+		     (1 | Item), data = eeg)
+		
+		# look at model criticism plots
+		dev.off()
+		mcp.fnc(m1, trim = 2.5)
+		
+		# trim data on initial model residuals
+		eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+		eeg = eeg.trimmed$data
+		
+		# update initial model on trimmed data
+		mB = update(m1)
+		
+		# look at model criticism plots
+		dev.off()
+		mcp.fnc(mB, trim = 2.5)
+		
+		m1.posthoc <- mcposthoc.fnc(mB, data = eeg, 
+			var = list(ph1 = "FreqBd", ph2 = "LengthBd"), 
+			verbose = TRUE)
+		
+		names(m1.posthoc)
+		as.matrix(names(m1.posthoc$var))
+		as.matrix(names(m1.posthoc$summaries))
+		
+		devAskNewPage(ask=FALSE)
+  }
 }
 }
 \keyword{models & regression}

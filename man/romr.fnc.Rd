@@ -25,22 +25,41 @@ Tremblay, A. and Tucker B. V. (submitted). What can the production of four-word 
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 
 \seealso{
+\code{\link{mcp.fnc}}
 \code{\link{perSubjectTrim.fnc}}
 }
 
 \examples{
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
-    FamilySize + SynsetCount + Length + DerivEntropy + (1|Subject), 
-    data = lexdec3)
-mcp.fnc(m0, trim = 2.5)
-dat.trimmed = romr.fnc(m0, lexdec3, trim = 2.5)
-names(dat.trimmed)
-lexdec3 = dat.trimmed$data
-m0 = update(m0)
-mcp.fnc(m0, trim = 2.5)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	library(lme4)
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175,,drop = TRUE]
+	eeg$FreqBd <- as.factor(cut(eeg$FreqB, 3, 
+	c("low", "med", "high")))
+	eeg$LengthBd <- as.factor(cut(eeg$LengthB, 3, 
+	c("short", "med", "long")))
+	
+	# fit initial model
+	m1 = lmer(Fz ~ WMC * (FreqBd + LengthBd) + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	dev.off()
+	mcp.fnc(m1, trim = 2.5)
+	
+	# trim data on initial model residuals
+	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+	eeg = eeg.trimmed$data
+	
+	# update initial model on trimmed data
+	mB = update(m1)
+	
+	# look at model criticism plots
+	dev.off()
+	mcp.fnc(mB, trim = 2.5)
+	
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{manip}

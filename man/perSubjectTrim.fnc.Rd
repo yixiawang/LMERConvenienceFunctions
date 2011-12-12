@@ -19,23 +19,28 @@ The function returns the following objects:
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 
 \seealso{
+\code{\link{mcp.fnc}}
 \code{\link{romr.fnc}}
 }
 
 \examples{
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct == "correct", ]
-m0 = lmer(RT ~ Sex + NativeLanguage + PrevType + Frequency + 
-    FamilySize + SynsetCount + Length + DerivEntropy + (1|Subject), 
-    data = lexdec3)
-mcp.fnc(m0, trim = 2.5)
-dat.trimmed = perSubjectTrim.fnc(data = lexdec3, subject = "Subject",
-	response = "RT", trim = 2.5)
-lexdec3 = dat.trimmed$data
-m0 = update(m0)
-mcp.fnc(m0, trim = 2.5)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+	
+	eeg <- perSubjectTrim.fnc(eeg, "Fz", "Subject", 2.5)
+	eeg <- eeg$data
+	
+	# fit initial model
+	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	mcp.fnc(m1, trim = 2.5)
+	
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{manip}
 

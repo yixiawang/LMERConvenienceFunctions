@@ -26,20 +26,47 @@ nsim = 10000, addPlot = FALSE)}
 \code{\link{fitLMER.fnc}; }
 \code{\link{pamer.fnc}; }
 \code{\link{mcp.fnc}; }
+\code{\link{mcposthoc.fnc}; }
 \code{\link{romr.fnc}; }
 \code{\link{perSubjectTrim.fnc} }
 }
 \examples{
-library(lme4)
-library(languageR)
-data(dative)
-m0 <- glmer(RealizationOfRecipient ~ SemanticClass + 
-	LengthOfRecipient + AnimacyOfRec + DefinOfRec + 
-	(1 | Speaker) + (1 | Verb), data = dative)
-m0.posthoc <- posthoc.fnc(model = m0, data = dative, 
-	factor = "SemanticClass", prior.releveling = 
-	list(c("AnimacyOfRec", "inanimate"), c("DefinOfRec", 
-	"indefinite")), two.tailed = TRUE, num.comp = 6)
-m0.posthoc
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	library(lme4)
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175,,drop = TRUE]
+	eeg$FreqBd <- as.factor(cut(eeg$FreqB, 3, 
+	c("low", "med", "high")))
+	eeg$LengthBd <- as.factor(cut(eeg$LengthB, 3, 
+	c("short", "med", "long")))
+	
+	# fit initial model
+	m1 = lmer(Fz ~ WMC * (FreqBd + LengthBd) + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	dev.off()
+	mcp.fnc(m1, trim = 2.5)
+	
+	# trim data on initial model residuals
+	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
+	eeg = eeg.trimmed$data
+	
+	# update initial model on trimmed data
+	mB = update(m1)
+	
+	# look at model criticism plots
+	dev.off()
+	mcp.fnc(mB, trim = 2.5)
+	
+	m1.posthoc <- posthoc.fnc(mB, eeg, 
+		factor = "FreqBd", prior.releveling = 
+		list(c("LengthBd", "long")), two.tailed = TRUE, 
+	  num.comp = 6)
+	m1.posthoc
+	
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{models & regression}

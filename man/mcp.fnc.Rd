@@ -14,19 +14,20 @@
 \author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
 
 \examples{
-# Example 3
-library(lme4)
-library(languageR)
-data(lexdec)
-lexdec3 = lexdec[lexdec$Correct=="correct", ]
-
-# base model
-m0 = lmer(RT ~  (Frequency + I(Frequency^2)) * (Sex + 
-    NativeLanguage + FamilySize + SynsetCount + Length) + 
-    (1|Subject), data = lexdec3)
-
-# look at model criticism plots
-devAskNewPage(ask=FALSE)
-mcp.fnc(m0, trim = 2.5)
+if("LCFdata"\%in\%.packages(all.available=TRUE)){
+  library(LCFdata)
+	library(lme4)
+	data(eeg)
+	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
+	
+	# fit initial model
+	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
+	     (1 | Item), data = eeg)
+	
+	# look at model criticism plots
+	mcp.fnc(m1, trim = 2.5)
+	
+	devAskNewPage(ask=FALSE)
+}
 }
 \keyword{hplot}
