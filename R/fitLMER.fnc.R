@@ -1,5 +1,4 @@
 fitLMER.fnc <- function(model=as.character(),
-    data=as.character(),
     backfit.on="F", #can also be "t"
     item=FALSE, # can be an item identifier such as "Item" or "Word"
     ran.effects=list(ran.intercepts=as.character(),
@@ -27,11 +26,11 @@ fitLMER.fnc <- function(model=as.character(),
   cat("===              backfitting fixed effects         ===\n")
   cat("======================================================\n")
   if(backfit.on=="F"){
-    mod=bfFixefLMER_F.fnc(model=model,data=data,item=item,alpha=alpha,llrt=llrt,
+    mod=bfFixefLMER_F.fnc(model=model,item=item,alpha=alpha,llrt=llrt,
 	prune.ranefs=prune.ranefs,p.value=p.value,set.REML.FALSE=set.REML.FALSE,
 	reset.REML.TRUE=FALSE,log.file=FALSE)
   }else{
-    mod=bfFixefLMER_t.fnc(model=model,data=data,item=item,alpha=alpha,llrt=llrt,
+    mod=bfFixefLMER_t.fnc(model=model,item=item,alpha=alpha,llrt=llrt,
 	prune.ranefs=prune.ranefs,t.threshold=t.threshold,set.REML.FALSE=set.REML.FALSE,
 	reset.REML.TRUE=FALSE,log.file=FALSE)
   }
@@ -40,18 +39,18 @@ fitLMER.fnc <- function(model=as.character(),
   cat("======================================================\n")
   cat("===            forwardfitting random effects       ===\n")
   cat("======================================================\n")
-  mod=ffRanefLMER.fnc(model=mod,data=data,ran.effects=ran.effects,alpha=alpha,if.warn.not.add=if.warn.not.add,log.file=FALSE)
+  mod=ffRanefLMER.fnc(model=mod,ran.effects=ran.effects,alpha=alpha,if.warn.not.add=if.warn.not.add,log.file=FALSE)
 
 
   cat("======================================================\n")
   cat("===            re-backfitting fixed effects        ===\n")
   cat("======================================================\n")
   if(backfit.on=="F"){
-    mod=bfFixefLMER_F.fnc(model=mod,data=data,item=FALSE,alpha=alpha,llrt=llrt,
+    mod=bfFixefLMER_F.fnc(model=mod,item=FALSE,alpha=alpha,llrt=llrt,
 	prune.ranefs=prune.ranefs,p.value=p.value,set.REML.FALSE=FALSE,
 	reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
   }else{
-    mod=bfFixefLMER_t.fnc(model=mod,data=data,item=FALSE,alpha=alpha,llrt=llrt,
+    mod=bfFixefLMER_t.fnc(model=mod,item=FALSE,alpha=alpha,llrt=llrt,
 	prune.ranefs=prune.ranefs,t.threshold=t.threshold,set.REML.FALSE=FALSE,
 	reset.REML.TRUE=reset.REML.TRUE,log.file=FALSE)
   }

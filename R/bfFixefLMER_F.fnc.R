@@ -1,5 +1,4 @@
 bfFixefLMER_F.fnc <- function(model,
-        data,
         item=FALSE, # can be an item identifier such as "Item" or "Word"
         alpha=0.05,
 	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
@@ -28,6 +27,9 @@ bfFixefLMER_F.fnc <- function(model,
   if(as.vector(model@call[1])=="glmer()"){
     stop("sorry, glmer models not yet supported")
   }
+
+
+  data<-model@frame
 
   if(llrt && set.REML.FALSE){
     cat("setting REML to FALSE\n")

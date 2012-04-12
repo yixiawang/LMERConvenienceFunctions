@@ -2,7 +2,7 @@
 \alias{bfFixefLMER_F.fnc}
 \title{Back-fits an LMER model on p-values from ANOVA and, optionally, on LLRT.}
 \description{This function back-fits an initial LMER model on upper- or lower-bound \emph{p}-values obtained from function \code{pamer.fnc} and, if enabled, log-likelihood ratio testing. Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
-\usage{bfFixefLMER_F.fnc(model, data,  item = FALSE, 
+\usage{bfFixefLMER_F.fnc(model, item = FALSE, 
 alpha = 0.05, llrt = FALSE, prune.ranefs = TRUE, 
 p.value = "upper", set.REML.FALSE = TRUE, 
 reset.REML.TRUE = TRUE, log.file = file.path(tempdir(), 
@@ -10,7 +10,6 @@ paste("bfFixefLMER_F_log_", gsub(":", "-",
 gsub(" ", "_", date())), ".txt", sep="")))}
 \arguments{
   \item{model}{A \code{mer} object (fitted by function \code{lmer}). Note that, at the moment, this function cannot be used with generalized linear mixed-effects models (\code{glmer}s).}
-  \item{data}{The data frame on which the \code{mer} object was fitted.}
   \item{item}{Whether or not to evaluate the addition of by-item random intercepts to the model, evaluated by way of log-likelihood ratio test. Either \code{FALSE} (the default) or the column name (quoted) of the item identifier (e.g., \code{"Item"}, or \code{"Word"}).}
   \item{alpha}{Level of significance (for ANOVA and log-likelihood ratio test). Defaults to 0.05.}
   \item{llrt}{Logical. Whether log-likelihood ratio testing between the complex and simple models should be performed. Defaults to \code{FALSE}.}
@@ -44,11 +43,12 @@ In brief, if \code{llrt} is set to \code{FALSE}, a term remains in the model if 
 
 This backfitting method was used in Newman, Tremblay, Nichols, Neville, and Ullman (accepted). If factorial terms are included in the initial model, back-fitting on F is recommended. 
 }
+\note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.}
 \value{A \code{mer} model with back-fitted fixed effects (on F values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file in a temporary file.}
 \references{
 Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (Resubmitted). The Influence of Language Proficiency on Lexical-Semantic Processing in Native and Late Learners of English: ERP evidence. Submitted to the \emph{Journal of Cognitive Neuroscience}.
 }
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
 
 \section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while lower-bound \emph{p}-values can be conservative. See \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests} and function \code{pamer.fnc}.}
 
@@ -56,13 +56,14 @@ Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (Resu
 \code{\link{bfFixefLMER_t.fnc}; }
 \code{\link{ffRanefLMER.fnc}; }
 \code{\link{fitLMER.fnc}; }
-\code{\link{posthoc.fnc}; }
+\code{\link{mcposthoc.fnc}; }
 \code{\link{pamer.fnc}; }
 \code{\link{mcp.fnc}; }
 \code{\link{romr.fnc}; }
 \code{\link{perSubjectTrim.fnc} }
 }
 \examples{
+\dontrun{
 if("LCFdata"\%in\%.packages(all.available=TRUE)){
   library(LCFdata)
   # bfFixefLMER -- backfit on F
@@ -87,12 +88,13 @@ if("LCFdata"\%in\%.packages(all.available=TRUE)){
   mcp.fnc(mB, trim = 2.5)
   
   # backfit fixed effects on F
-  m2 = bfFixefLMER_F.fnc(mB, eeg, log.file = FALSE,
+  m2 = bfFixefLMER_F.fnc(mB, log.file = FALSE,
       llrt = FALSE)
   pamer.fnc(m2)
 
   plotLMER3d.fnc(m2, "LengthB", "WMC")
   devAskNewPage(ask=FALSE)
+}
 }
 }
 \keyword{models & regression}

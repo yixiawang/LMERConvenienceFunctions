@@ -18,20 +18,21 @@ paste("ffRanefLMER_log_", gsub(":", "-", gsub(" ", "_", date())),
 }
 \value{A \code{mer} object with forward-fitted random effect structure as well as a log of the process is printed on screen and, optionally, printed in a log file.}
 \references{Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.}
-\author{Antoine Tremblay, IWK Health Center, \code{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \code{trea26@gmail.com}.}
 
 \seealso{
 \code{\link{bfFixefLMER_F.fnc}; }
 \code{\link{bfFixefLMER_t.fnc}; }
 \code{\link{fitLMER.fnc}; }
-\code{\link{posthoc.fnc}; }
+\code{\link{mcposthoc.fnc}; }
 \code{\link{pamer.fnc}; }
 \code{\link{mcp.fnc}; }
 \code{\link{romr.fnc}; }
 \code{\link{perSubjectTrim.fnc}; }
 }
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
+\dontrun{
+if("LCFdata" \%in\% .packages(all.available=TRUE)){
   library(LCFdata) 
 	library(lme4)
   # bfFixefLMER -- backfit on t
@@ -65,6 +66,7 @@ if("LCFdata"\%in\%.packages(all.available=TRUE)){
 	
 	plotLMER3d.fnc(m3, "LengthB", "WMC")
 	devAskNewPage(ask=FALSE)
+}
 }
 }
 \keyword{models & regression}

@@ -9,6 +9,8 @@ plotLMER3d.fnc<-function(model=NULL,
 			ylab=NULL, 
 			zlab=NULL, 
 			main=NULL, 
+                        shift=0,
+                        scale=1,
 			cex=1,
 			fun=NA, 
 			n=30,
@@ -712,6 +714,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 		}
 	}
 
+
 	if(is.null(zlim)){
 		zlim=range(z,na.rm=TRUE)
 	}
@@ -743,7 +746,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                 x<-as.numeric(rownames(z))
                 y<-as.numeric(colnames(z))
 
-		jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		err<-try(image(x=x,y=x,z=z,col=pal,zlim=zlim,main=main,
                         cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,
                         ylab=ylab,axes=TRUE),silent=TRUE)
@@ -757,7 +760,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                             y<-sort(jitter(y,factor=0.01))
                         }
 
-		        jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		        err<-try(image(x=x,y=y,z=z,col=pal,zlim=zlim,main=main,
 			        cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,
                                 ylab=ylab,axes=TRUE),silent=TRUE)
@@ -822,7 +825,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                 x<-as.numeric(rownames(z))
                 y<-as.numeric(colnames(z))
 
-		jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		err<-try(persp(x=x,y=y,z=z,ticktype="detailed",
                         col=color[facetcol],phi=phi,theta=theta,
 			zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,
@@ -838,7 +841,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                             y<-sort(jitter(y,factor=0.01))
                         }
 
-		        jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		        err<-try(persp(x=x,y=y,z=z,ticktype="detailed",
                                 col=color[facetcol],phi=phi,theta=theta,
 			        zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,
@@ -921,7 +924,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                 par3d(cex=cex)
 
 		# create persp3d plot
-		jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
 				zlab=zlab,main=main,alpha=alpha,
                                 smooth=FALSE,lit=lit,xlab=xlab,
@@ -936,7 +939,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                             y<-sort(jitter(y,factor=0.01))
                         }
 
-		        jpeg(file=file.path(tempdir(),"tmp.jpeg"))
+		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
 		        err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
 				        zlab=zlab,main=main,alpha=alpha,
                                         smooth=FALSE,lit=lit,xlab=xlab,
@@ -961,7 +964,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 			xy<-ifelse(length(grep("Error",err))>0,FALSE,TRUE)
 			plotRaw3d.fnc(data=model@frame,response=response,pred=pred,intr=intr,xy=xy,
 				color=color.raw,alpha=alpha.raw,plot.type="persp3d",xlab="",ylab="",
-				zlab="",main="",add=TRUE)
+				zlab="",main="",add=TRUE,shift=shift,scale=scale)
 		}
 
 		rm(err)

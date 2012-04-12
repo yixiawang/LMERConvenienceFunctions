@@ -10,9 +10,10 @@
 \details{Upper-bound \emph{p}-values are computed by using as denominator \emph{df} \code{nrow(model@frame) - qr(model@X)4rank} (i.e., number of data points minus number of fixed effects including the intercept), which are anti-conservative. Lower-bound \emph{p}-values are computed by using as denominator \emph{df} \code{nrow(model@frame) - qr(model@X)4rank - number of random effects} (e.g., if by-subject intercepts and slopes, and there are 10 subjects, \code{10 * 2 = 20}). See \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests} for more details. The amount of deviance explained by each model term is calculated as follows: sum of squares of a fixed-effect divided by the sum of squares total, which is calculated here as the variance of the independent variable multiplied by its length.}
 \value{This function returns an object of class \code{data frame} with upper- and lower-bound (anti-conservative and conservative, respectively) \emph{df}s, \emph{p}-values, and deviance explained (\%) for each model term.}
 \references{\url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}}
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
+\dontrun{
+if("LCFdata" \%in\% .packages(all.available=TRUE)){
   library(LCFdata)
 	library(lme4)
 	data(eeg)
@@ -23,6 +24,7 @@ if("LCFdata"\%in\%.packages(all.available=TRUE)){
 	     (1 | Item), data = eeg)
 	
 	pamer.fnc(m1)
+}
 }
 }
 \keyword{models & regression}

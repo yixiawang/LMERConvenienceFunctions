@@ -32,7 +32,7 @@ x=x,y=y,xd=xd,yd=yd,mat=mat,col
 \item{mat }{The outer product of the \code{x} and \code{y} densities in matrix format.}
 \item{col }{The color used for plotting.}
 }
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.} 
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.} 
 \seealso{
 \code{\link{contour}};
 \code{\link{persp}};
@@ -40,7 +40,7 @@ x=x,y=y,xd=xd,yd=yd,mat=mat,col
 \code{\link{outer}}
 }
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
+if("LCFdata" \%in\% .packages(all.available=TRUE)){
   library(LCFdata)
 	data(erpFz)
 	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "contour")

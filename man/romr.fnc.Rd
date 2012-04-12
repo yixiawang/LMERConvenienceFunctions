@@ -22,7 +22,7 @@ Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (subm
 
 Tremblay, A. and Tucker B. V. (submitted). What can the production of four-word sequences tell us about the mental lexicon? Submitted to \emph{The Mental Lexicon}.
 }
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
 
 \seealso{
 \code{\link{mcp.fnc}}
@@ -30,7 +30,8 @@ Tremblay, A. and Tucker B. V. (submitted). What can the production of four-word 
 }
 
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
+\dontrun{
+if("LCFdata" \%in\% .packages(all.available=TRUE)){
   library(LCFdata)
 	library(lme4)
 	data(eeg)
@@ -60,6 +61,7 @@ if("LCFdata"\%in\%.packages(all.available=TRUE)){
 	mcp.fnc(mB, trim = 2.5)
 	
 	devAskNewPage(ask=FALSE)
+}
 }
 }
 \keyword{manip}

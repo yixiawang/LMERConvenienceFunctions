@@ -9,7 +9,8 @@ plotRaw3d.fnc<-function(data=NULL,
 			ylab=NULL,
 			zlab=NULL,
 			main=NULL,
-			shift=NULL,
+			shift=0,
+                        scale=1,
 			plot.type="persp",
 			add=FALSE,
 			alpha=1,
@@ -49,10 +50,10 @@ plotRaw3d.fnc<-function(data=NULL,
 	x<-tapply(data[,response],list(data[,pred],data[,intr]),function(x)mean(x,na.rm=TRUE))
 	x[is.na(x)]<-0
 
-	if(is.null(shift))shift<-0
+        x<-x*scale+shift
 	
 	if(is.null(zlim[1])){
-		zlim=range(x+shift)
+		zlim=range(x)
 	}
 
 	if(plot.type=="persp3d"){
@@ -114,11 +115,11 @@ plotRaw3d.fnc<-function(data=NULL,
 		}
 	
 		if(xy){
-			persp3d(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x+shift,
+			persp3d(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,
 				xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,zlim=zlim,
 				smooth=FALSE,add=add,alpha=alpha,box=box,axes=axes)
 		}else{
-			persp3d(z=x+shift,xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,
+			persp3d(z=x,xlab=xlab,ylab=ylab,zlab=zlab,main=main,col=col,
 				zlim=zlim,smooth=FALSE,add=add,alpha=alpha,box=box,axes=axes)
 		}
 
@@ -155,7 +156,7 @@ plotRaw3d.fnc<-function(data=NULL,
 		# Recode facet z-values into color indices
 		facetcol<-cut(zfacet,nbcol)
 
-		persp(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x+shift,xlab=xlab,
+		persp(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,xlab=xlab,
 			ylab=ylab,zlab=zlab,main=main,col=color[facetcol],zlim=zlim,theta=theta,
 			phi=phi,ticktype=ticktype)
 		if(ret){

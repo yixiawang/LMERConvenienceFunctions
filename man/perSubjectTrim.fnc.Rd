@@ -16,7 +16,7 @@ The function returns the following objects:
 \item{n.removed}{The number of data points removed.}
 \item{percent.removed}{The percentage of removed data points.}
 }
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
 
 \seealso{
 \code{\link{mcp.fnc}}
@@ -24,22 +24,13 @@ The function returns the following objects:
 }
 
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
+if("LCFdata" \%in\% .packages(all.available=TRUE)){
   library(LCFdata)
 	data(eeg)
 	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
 	
 	eeg <- perSubjectTrim.fnc(eeg, "Fz", "Subject", 2.5)
 	eeg <- eeg$data
-	
-	# fit initial model
-	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
-	     (1 | Item), data = eeg)
-	
-	# look at model criticism plots
-	mcp.fnc(m1, trim = 2.5)
-	
-	devAskNewPage(ask=FALSE)
 }
 }
 \keyword{manip}

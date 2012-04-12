@@ -11,9 +11,10 @@
 \details{The first of the four plots graphs the density of the model residuals. The second plot graphs the quantile-quantile plot (actual standardized residuals versus theoretical quantiles). The third plot illustrates the fitted values versus the standardized residuals. The fourth graph plots the absolute values of the \code{dffits} of the residuals.}
 \value{Returns the four plots described above.}
 \references{Baayen, R.H. (2008). \emph{Analyzing Linguistic Data. A Practical Introduction to Statistics Using R}. Cambridge, UK: Cambridge University Press.}
-\author{Antoine Tremblay, IWK Health Center, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
 
 \examples{
+\dontrun{
 if("LCFdata"\%in\%.packages(all.available=TRUE)){
   library(LCFdata)
 	library(lme4)
@@ -28,6 +29,7 @@ if("LCFdata"\%in\%.packages(all.available=TRUE)){
 	mcp.fnc(m1, trim = 2.5)
 	
 	devAskNewPage(ask=FALSE)
+}
 }
 }
 \keyword{hplot}

@@ -1,5 +1,4 @@
 bfFixefLMER_t.fnc <- function(model,
-        data,
         item=FALSE, # otherwise, put between quotes an item identifier such as "Item" or "Word"
         alpha=0.05,
 	llrt=FALSE, # or TRUE to have an extra step of log-likelihood ratio testing
@@ -25,10 +24,13 @@ bfFixefLMER_t.fnc <- function(model,
     stop("please supply a value to the ''reset.REML.TRUE'' argument")
   }
 
+  data<-model@frame
+
   if(llrt && set.REML.FALSE){
     cat("setting REML to FALSE\n")
     model=update(model,.~.,REML=FALSE)
   }
+
 
   temp.dir=tempdir()
   tempdir()
@@ -129,7 +131,28 @@ bfFixefLMER_t.fnc <- function(model,
       cat("\t\tt-value for term",paste("\"",row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),]),"\"",sep=""),"=",smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),3],"<",t.threshold,"\n")
 
       # Is the fixed-effect term part of a higher-order interaction? If it is, skip it and proceed with backfitting, otherwise evaluate it.
-      if(length(grep(gsub("\\)","",gsub("\\(","",as.character(row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),])))),gsub("\\)","",gsub("\\(","",intr.order[intr.order$Order>order,"Coef"]))))>0){
+      #Problem with finding terms in higher order interactions (hoi)
+      #if(length(grep(gsub("\\)","",gsub("\\(","",as.character(row.names(smry.temp2[smry.temp2[,3]==min(smry.temp2[,3]),])))),gsub("\\)","",gsub("\\(","",intr.order[intr.order$Order>order,"Coef"]))))>0){
+#########  changed from here
+      # thanks to Johannes Ransijn <johannesransijn@gmail.com> for this bit of code
+            fac<-unlist(strsplit(gsub("\\)", "",gsub("\\(", "", 
+                as.character(row.names(smry.temp2[smry.temp2[,
+                3] == min(smry.temp2[, 3]), ])))),":"))
+            hoi<- gsub("\\)","", gsub("\\(", "", intr.order[intr.order$Order > 
+                  order, "Coef"]))
+            for(i in 1:length(fac)) {
+              if(i==1) {
+                nn<-as.data.frame(grep(fac[1],hoi))
+                names(nn)[1]<-"pos"} 
+              else{
+                nn2<-as.data.frame(grep(fac[i],hoi))
+                names(nn2)[1]<-"pos"
+                nn<-merge(nn,nn2)
+              }
+            }
+            if (dim(nn)[1]> 0) {
+######### changed until here
+
         cat("\t\tpart of higher-order interaction\n")
         cat("\t\tskipping term\n")
         keepers=row.names(smry.temp2)
