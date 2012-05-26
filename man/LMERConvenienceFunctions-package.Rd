@@ -9,13 +9,13 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 1.6.8.2\cr
-Date: \tab 12-04-2012\cr
+Version: \tab 1.6.8.3\cr
+Date: \tab 26-05-2012\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
 }
-\author{Antoine Tremblay, Dalhousie University
+\author{Antoine Tremblay, Dalhousie University, and Johannes Ransijn, University of Copenhagen
 
 Maintainer: Antoine Tremblay <trea26@gmail.com>
 }
@@ -25,7 +25,12 @@ Baayen, R.H. (2008). \emph{Analyzing Linguistic Data. A Practical Introduction t
 
 Baayen, R.H., Davidson, D.J. and Bates, D.M. (2008). Mixed-effects modeling with crossed random effects for subjects and items. \emph{Journal of Memory and Language}, \emph{59}, 390--412.
 
-Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (In Press). The Influence of Language Proficiency on Lexical-Semantic Processing in Native and Late Learners of English: ERP evidence. Submitted to the \emph{Journal of Cognitive Neuroscience}.
+Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (2012). The Influence of Language Proficiency on Lexical Semantic Processing in Native and Late Learners of English. \emph{Journal of Cognitive Neuroscience}, \emph{25}, 1205--1223.
+
+Newman, A.J., Tremblay, A., Neville, H.J., and Ullman, M.T. (In preparation).  The relationship between proficiency and ERP components evoked by grammatical violations in native and late learners of English.
+
+
+The Influence of Language Proficiency on Lexical Semantic Processing in Native and Late Learners of English. \emph{Journal of Cognitive Neuroscience}, \emph{25}, 1205--1223.
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.
 

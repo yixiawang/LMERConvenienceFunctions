@@ -22,7 +22,7 @@ Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (subm
 
 Tremblay, A. and Tucker B. V. (submitted). What can the production of four-word sequences tell us about the mental lexicon? Submitted to \emph{The Mental Lexicon}.
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}, with contrbutions from Andy Flies, Michigan State University.}
 
 \seealso{
 \code{\link{mcp.fnc}}

@@ -4,6 +4,20 @@ Wish List
 * Automatic AIC-based model selection.
 
 --------------------
+version 1.6.8.3
+-----
+* Fixed a bug in ``bfFixefLMER_F.fnc'': The script did not 
+update the model after removing the last parameter within 
+a specific order. Now it does.
+* In functions ``bfFixefLMER_t.fnc'' and ``bfFixefLMER_F.fnc'', 
+prior to this change, it was absolutely necessary that names of 
+factors should not occur as parts of other factor namess, e.g. "c"  
+and "cv". The script would recognise presence of "c" whereever "cv"
+is present. Now it looks for an exact string match, so factor "c" 
+will not be found in factor "cv".
+* Added glmer capabilites for function ``mcposthoc.fnc''.
+
+--------------------
 version 1.6.8.2
 -----
 * Fixed an issues in ``bfFixefLMER_t.fnc'' with keeping 

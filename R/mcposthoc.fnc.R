@@ -91,8 +91,13 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
 			multip<-ifelse(two.tailed,2,1)
 			temp[,"udf"]<-udf
 			temp[,"ldf"]<-ldf
-			temp[,"up.p.unadj."]<-round(multip*(1-pt(abs(temp[,"t value"]),udf)),ndigits)
-			temp[,"low.p.unadj."]<-round(multip*(1-pt(abs(temp[,"t value"]),ldf)),ndigits)
+                        if(as.vector(model@call[1])=="glmer()"){
+			        temp[,"upper.p.val"]<-round(multip*(1-pt(abs(temp[,"z value"]),udf)),ndigits)
+			        temp[,"lower.p.val"]<-round(multip*(1-pt(abs(temp[,"z value"]),ldf)),ndigits)
+                        }else{
+			        temp[,"upper.p.val"]<-round(multip*(1-pt(abs(temp[,"t value"]),udf)),ndigits)
+			        temp[,"lower.p.val"]<-round(multip*(1-pt(abs(temp[,"t value"]),ldf)),ndigits)
+                        }
 	      
 			# put temp back in summary object
 			ph.smrys[[mm]]<-temp

@@ -47,7 +47,7 @@ This backfitting method was used in Tremblay & Tucker (accepted). If factorial t
 \note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.}
 \value{A \code{mer} model with back-fitted fixed effects (on \code{t}-values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file.}
 \references{
-Tremblay, A. and Tucker B. V. (Accepted). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}.
+Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
 }
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com} with contributions from Johannes Ransijn \email{johannesransijn@gmail.com}.}
 \seealso{

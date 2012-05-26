@@ -48,6 +48,52 @@ mcmc = FALSE, nsim = 10000, ndigits = 4, mc.cores = 1, ...)}
     data$AnimacyOfTheme <- relevel(data$AnimacyOfTheme = "inanimate")
     data$DefinOfTheme <- relevel(data$DefinOfTheme = "definite")
 }
+
+On a cluster, instead of using \code{mcposthoc.fnc} it is better (faster and less complicated) to write a bash script that will create (1) \code{.R} files that will relevel the conditions and update the model, and (2) an associated \code{.sh} job submission script to submit the \code{.R} files. For example, let's consider two ERP analyses (regular past tense inflection and phrase structure) with three time windows each (300--400 ms, 550--700 ms, 750--850 in the regular past tense analysis, and 300--400 ms, 400--600 ms, and 750--850 ms in the phrase structure analysis). We investigated the effects of proficiency on ERP amplitudes. The initial models included a four-way interaction between Region of Interest (ROI) -- with levels left anterior, left central, left posterior, midline anterior, midline central, midline posterior, right anterior, right central, and right posterior) -- Group (with levels L1 and L2), Condition (wth levels control and violation), and Proficiency. After back-fitting the fixed effects, forward-fitting randomg effects, and reback-fitting the fixed effects as per \code{fitLMER.fnc}, the four-way interaction remained in every model. See Newman et al. (In preparation) for more details. The posthoc analysis script named \code{posthocs.sh} we used on the ACEnet cluster is as follows: 
+\preformatted{
+      time=(Reg300400 Reg550700 Reg750850 PS300400 PS400600 PS750850)
+      condition=(Good Bad)
+      group=(L1 L2)
+      roi=(Lant Lcent Lpost Mant Mcent Mpost Rant Rcent Rpost)
+      
+      for t in ${time[*]}; do for i in ${condition[*]}; do for j in ${group[*]}; do for k in ${roi[*]}; do 
+          ### create .R file where the modell is updated on the data where 
+          ### re-leveld on each possible combination of variable levels
+          export CONDITION=$i;
+          export GROUP=$j;
+          export ROI=$k; 
+          echo 'condition<-Sys.getenv("CONDITION")' > "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'group<-Sys.getenv("GROUP")' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'roi<-Sys.getenv("ROI")' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'load("models/m1'$t'.rda")' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'dat<-m1@frame' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'dat$Condition<-relevel(dat$Condition,'condition')' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'dat$Group<-relevel(dat$Group,'group')' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'dat$ROI<-relevel(dat$ROI,'roi')' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'm1<-update(m1,.~.,data=dat)' >> "ph"$t$CONDITION$GROUP$ROI".R"
+          echo 'save(m1,file="ph'$t$CONDITION$GROUP$ROI'.rda")' >> "ph"$t$CONDITION$GROUP$ROI".R"
+      
+          ### create the job submission script for the .R file created above
+          echo '#$ -S /bin/bash' > "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -cwd' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -j y' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -l h_rt=48:00:00' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -l h_vmem=8G' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -R y' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo '#$ -N "ph'$t$CONDITION$GROUP$ROI'"' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+          echo 'R -q -f ph'$t$CONDITION$GROUP$ROI'.R' >> "job.ph"$t$CONDITION$GROUP$ROI".sh"
+      
+          ### submit the job
+          qsub  "job.ph"$t$CONDITION$GROUP$ROI".sh"
+      done; done; done; done
+
+}
+and then type in the console
+\preformatted{
+      . posthocs.sh
+
+}
+On the ACEnet cluster, this results in all 2 * 3 * 9 * 2 * 2 = 216 independent analyses, simultaneously using a total of 216 cores and 1728 GB of RAM. This posthoc analysis completes in about 3-6 hours.
 }
 \value{
 An object of class "mcposthoc" with the following slots:
@@ -56,6 +102,9 @@ An object of class "mcposthoc" with the following slots:
 \item{summaries }{A named list containing the posthoc summaries for each factor re-leveling. If \code{mcmc = FALSE}, data frames with upper- and lower-bound (anti-conservative and conservative, respectively) \emph{df}s, \emph{p}-values, and deviance explained (\%) for each model term. If \code{mcmc = TRUE}, data frames with the estimated coefficients, their MCMC mean, the HPD 95 and the probability based on the \emph{t} distribution with the number of observations minus the number of fixed-effects coefficients as degrees of freedom.  This last \emph{p}-value is anti-conservative, especially for small data sets.}
 }
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
+\references{
+Newman, A.J., Tremblay, A., Neville, H.J., and Ullman, M.T. (In preparation).  The relationship between proficiency and ERP components evoked by grammatical violations in native and late Learners of English.
+}
 \seealso{
 \code{\link{bfFixefLMER_F.fnc}; }
 \code{\link{bfFixefLMER_t.fnc}; }

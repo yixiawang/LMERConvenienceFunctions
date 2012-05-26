@@ -46,9 +46,9 @@ This backfitting method was used in Newman, Tremblay, Nichols, Neville, and Ullm
 \note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.}
 \value{A \code{mer} model with back-fitted fixed effects (on F values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file in a temporary file.}
 \references{
-Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (Resubmitted). The Influence of Language Proficiency on Lexical-Semantic Processing in Native and Late Learners of English: ERP evidence. Submitted to the \emph{Journal of Cognitive Neuroscience}.
+Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (2012). The Influence of Language Proficiency on Lexical Semantic Processing in Native and Late Learners of English. \emph{Journal of Cognitive Neuroscience}, \emph{25}, 1205--1223.
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com} with contributions from Johannes Ransijn \email{johannesransijn@gmail.com}.}
 
 \section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while lower-bound \emph{p}-values can be conservative. See \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests} and function \code{pamer.fnc}.}
 

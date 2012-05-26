@@ -36,8 +36,8 @@ function(model,ndigits=4){
 		}
 		names(expl.dev)<-rownames(aov.table)
 	
-		anova.table=round(cbind(anova.table,"upper.p.val."=p.values.upper,
-			"lower.den.df"=nrow(model@frame)-rank.X-lower.bound,"lower.p.val."=p.values.lower,"expl.dev.(%)"=expl.dev*100),
+		anova.table=round(cbind(anova.table,"upper.p.val"=p.values.upper,
+			"lower.den.df"=nrow(model@frame)-rank.X-lower.bound,"lower.p.val"=p.values.lower,"expl.dev.(%)"=expl.dev*100),
 			ndigits)
 	
 		return(anova.table)
