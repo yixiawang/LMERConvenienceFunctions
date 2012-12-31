@@ -12,19 +12,6 @@
 \references{\url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}}
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
 \examples{
-\dontrun{
-if("LCFdata" \%in\% .packages(all.available=TRUE)){
-  library(LCFdata)
-	library(lme4)
-	data(eeg)
-	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
-	
-	# fit initial model
-	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
-	     (1 | Item), data = eeg)
-	
-	pamer.fnc(m1)
-}
-}
+# see example LMERConvenienceFunctions help page.
 }
 \keyword{models & regression}

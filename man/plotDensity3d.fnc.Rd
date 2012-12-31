@@ -5,9 +5,9 @@
 \usage{plotDensity3d.fnc(x, y, plot.type = "contour", color = "terrain", 
 xlab = NULL, ylab = NULL, zlab = NULL, main = NULL, cex = 1, alpha = 1, 
 lit = TRUE, theta = 0, phi = 0, bw = "nrd0", adjust = 1, kernel = c("gaussian", 
-"epanechnikov", "rectangular", "triangular", "biweight", "cosine", "optcosine"), 
-weights = NULL, window = kernel, width, give.Rkern = FALSE, n = 50, from, to, 
-cut = 3, na.rm = FALSE, ret = FALSE)}
+"epanechnikov", "rectangular", "triangular", "biweight", "cosine", 
+"optcosine"), weights = NULL, window = kernel, width, give.Rkern = FALSE, 
+n = 50, from, to, cut = 3, na.rm = FALSE, ...)}
 \arguments{
   \item{x, y}{Numeric vectors.}
   \item{plot.type}{The type of plot to make. Can be any of \code{"contour"} (default), \code{"persp"}, or, if package \code{rgl} is available, \code{"persp3d"}.}
@@ -20,11 +20,10 @@ cut = 3, na.rm = FALSE, ret = FALSE)}
   \item{theta}{Angle defining the viewing direction. \code{theta} gives the azimuthal direction. Used only if \code{plot.type = "persp"}.}
   \item{phi}{Angle defining the viewing direction. \code{phi} gives the colatitude. Used only if \code{plot.type = "persp"}.}
   \item{bw, adjust, kernel, weights, window, width, give.Rkern, n, from, to, cut, na.rm}{See help page to function \code{density}.}
-  \item{ret}{Whether the plotting information ought to be returned. Defaults to \code{FALSE}.}
+  \item{...}{Further arguments passed to functions \code{image}, \code{contour}, \code{persp}, or \code{persp3d}.}
 }
 \details{See help page to the \code{density} function as well as to Duncan Murdoch's \code{persp3d} function for more information. To save screenshots of "persp3d" plots (after plotting), use function \code{rgl.snapshot} (produces \code{png} files) or function \code{rgl.postscript} (produces \code{eps} files).}
-\value{Either a contour map or a (dynamic) perspective plot. If \code{ret = TRUE}, returns
-x=x,y=y,xd=xd,yd=yd,mat=mat,col
+\value{Either a contour map or a (dynamic) perspective plot. Invisibly returns
 \item{x }{The numeric vector supplied in argument \code{x}.}
 \item{y }{The numeric vector supplied in argument \code{y}.}
 \item{xd }{The density object tied to vector \code{x}.}
@@ -40,21 +39,7 @@ x=x,y=y,xd=xd,yd=yd,mat=mat,col
 \code{\link{outer}}
 }
 \examples{
-if("LCFdata" \%in\% .packages(all.available=TRUE)){
-  library(LCFdata)
-	data(erpFz)
-	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "contour")
-	
-	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp",
-		phi = 10, theta = 30)
-	
-	if("rgl" \%in\% .packages(all.available = TRUE)){
-	library(rgl)
-	plotDensity3d.fnc(x = erpFz$LengthBc, y = erpFz$WMCc, plot.type = "persp3d")
-	}
-	
-	devAskNewPage(ask=FALSE)
-}
+# see example in LMERConvenienceFunctions help page.
 }
 \keyword{hplot}
 \keyword{dynamic}

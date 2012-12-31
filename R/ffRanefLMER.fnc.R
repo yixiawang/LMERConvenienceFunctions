@@ -1,13 +1,14 @@
 ffRanefLMER.fnc <- function(model,
-          data,
-          ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
-                           slopes=as.character(),# of random effects to consider, e.g.,
-			   corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
-                           by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
-          alpha=0.05,
-	  if.warn.not.add=TRUE,
-          log.file=file.path(tempdir(),paste("ffRanefLMER_log_",gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
-          ){
+                            data,
+                            ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
+                            slopes=as.character(),# of random effects to consider, e.g.,
+			    corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
+                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
+                            alpha=0.05,
+	                    if.warn.not.add=TRUE,
+                            log.file=file.path(tempdir(),paste("ffRanefLMER_log_",
+                              gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
+){
   if(length(alpha)==0){
     stop("please supply a value to the ''alpha'' argument")
   }

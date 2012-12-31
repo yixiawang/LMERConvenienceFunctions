@@ -31,42 +31,6 @@ paste("ffRanefLMER_log_", gsub(":", "-", gsub(" ", "_", date())),
 \code{\link{perSubjectTrim.fnc}; }
 }
 \examples{
-\dontrun{
-if("LCFdata" \%in\% .packages(all.available=TRUE)){
-  library(LCFdata) 
-	library(lme4)
-  # bfFixefLMER -- backfit on t
-	data(eeg)
-	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
-	
-	# fit initial model
-	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
-	     (1 | Item), data = eeg)
-	
-	# look at model criticism plots
-	mcp.fnc(m1, trim = 2.5)
-	
-	# trim data on initial model residuals
-	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
-	eeg = eeg.trimmed$data
-	
-	# update initial model on trimmed data
-	mB = update(m1)
-	dev.new()
-	mcp.fnc(mB, trim = 2.5)
-	
-	# backfit fixed effects on F
-	m2 = bfFixefLMER_t.fnc(mB, eeg, log.file = FALSE,
-	     llrt = FALSE)
-	print(m2,corr=FALSE)
-	
-	m3<-ffRanefLMER.fnc(m2, eeg, ran.effects = c("(FreqB | Subject)",
-	"(LengthB | Subject)", "(WMC | Item)"))
-	print(m3,corr=FALSE)
-	
-	plotLMER3d.fnc(m3, "LengthB", "WMC")
-	devAskNewPage(ask=FALSE)
-}
-}
+# see example in LMERConvenienceFunctions help page.
 }
 \keyword{models & regression}

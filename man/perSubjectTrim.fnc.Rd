@@ -24,13 +24,19 @@ The function returns the following objects:
 }
 
 \examples{
+\dontrun{
 if("LCFdata" \%in\% .packages(all.available=TRUE)){
-  library(LCFdata)
-	data(eeg)
-	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
-	
-	eeg <- perSubjectTrim.fnc(eeg, "Fz", "Subject", 2.5)
-	eeg <- eeg$data
+data(eegWide)
+dat<-eegWide
+rm(eegWide)
+gc(TRUE,TRUE)
+# per subject trimming
+dat <- perSubjectTrim.fnc(dat, response = "Fz", 
+      subject = "Subject", trim = 2.5)$data
+# ......
+# n.removed = 5130 
+# percent.removed = 1.584507 
+}
 }
 }
 \keyword{manip}

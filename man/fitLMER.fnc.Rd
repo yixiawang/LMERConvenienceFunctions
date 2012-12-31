@@ -25,11 +25,74 @@ gsub(":", "-", gsub(" ", "_", date())), ".txt", sep="")))}
   \item{reset.REML.TRUE}{Logical. Whether or not to re-set the back-fitted model to \code{REML = TRUE}.}
   \item{log.file.name}{Should the back-fitting log be saved? By default, it is saved in a temporary folder (platform dependent) as \code{file.path(tempdir(), paste("fitLMER_log_", gsub(":", "-", gsub(" ", "_", date())), ".txt", sep = ""))}. The path and file name of the log can be changed to whatever the use wishes. Set to \code{FALSE} to disable.}
 }
-\details{The process has three stages. In the first stage, either \code{bfFixefLMER_F.fnc} or \code{bfFixefLMER_t.fnc} is called (depending on the user's choice) and the fixed effects are back-fitted accordingly. In the second stage, \code{ffRanefLMER.fnc} is called and random effects are forward-fitted. In the third stage, the fixed effects are back-fitted again. This is done because the inclusion of certain random effects sometimes renders certain fixed effects non-significant. This process was used in Tremblay and Tucker (Accepted) and in Newman, Tremblay, Nichols, Neville, and Ullman (Resubmitted).}
-\note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.}
+\details{The process has three stages. In the first stage, either \code{bfFixefLMER_F.fnc} or \code{bfFixefLMER_t.fnc} is called (depending on the user's choice) and the fixed effects are back-fitted accordingly. In the second stage, \code{ffRanefLMER.fnc} is called and random effects are forward-fitted. In the third stage, the fixed effects are back-fitted again. This is done because the inclusion of certain random effects sometimes renders certain fixed effects non-significant. This process was used in Tremblay and Tucker (2011) and in Newman, Tremblay, Nichols, Neville, and Ullman (2012).
+
+If, for example, you have many analyses to run and a cluster is available, write a bash script that will create (1) \code{.R} files that will relevel the conditions and update the model, and (2) an associated \code{.sh} job submission script to submit the \code{.R} files. For example, let's consider two ERP analyses all in a time window ranging from 100 to 250 ms. Two three-way interactons were considered: Position (factor; 1 to 6) X  Length of the second word of a four-word sequence (e.g., \emph{in the middle of}) X Working Memory Capacity score (continuous, from 0 to 100) and Trial (continuous; 1 to 432) X Length X Working Memory Capacity. Analyses were performed at electrodes Fp1 Fp2 AF3 AF4 F7 F3 Fz F4 F8 FC5 FC1 FC2 FC6 T7 C3 Cz C4 T8 CP5 CP1 CP2 CP6. See Tremblay and Newman (In preparation) for more details. The analysis script named \code{Fp1-CP6_100250.sh} we used on the ACEnet cluster is as follows: 
+\preformatted{
+      electrodes=(Fp1 Fp2 AF3 AF4 F7 F3 Fz F4 F8 FC5 FC1 FC2 FC6 T7 C3 Cz C4 T8 CP5 CP1 CP2 CP6)
+      for e in ${electrodes[*]}; do 
+            export E=$e;
+            # create .R script to load data, perform necessary manipulations
+            # and perform the analysis using fitLMER.fnc
+            echo 'e<-Sys.getenv("E")' > $e".R"
+            echo 'load("../data/eeg600_trim_v2.rda")' >> $e".R"
+            echo 'dat0<-dat' >> $e".R"
+            echo 'rm(dat);gc(T,T)' >> $e".R"
+            echo 'dat <- dat0[dat0$Time >= 100 & dat0$Time <= 250, , drop = TRUE]' >> $e".R"
+            echo 'dat <- dat[dat$Electrode == e, , drop = TRUE]' >> $e".R"
+            echo 'subj<-sort(unique(dat$Subject))' >> $e".R"
+            echo 'for(i in subj){' >> $e".R"
+            echo 'tmp<-dat[dat$Subject==i,,drop=TRUE]' >> $e".R"
+            echo 'tmp$newfact<-paste(tmp$Block,tmp$Position,sep="_")' >> $e".R"
+            echo 'newvec<-vector("numeric")' >> $e".R"
+            echo 'for(j in 1:length(unique(tmp$newfact))){' >> $e".R"
+            echo 'newvec<-c(newvec,rep(j,nrow(tmp[tmp$newfact==unique(tmp$newfact)[j],])))' >> $e".R"
+            echo '}' >> $e".R"
+            echo 'tmp$Trial<-newvec' >> $e".R"
+            echo 'if(grep(i,subj)[1]==1){' >> $e".R"
+            echo 'newdat<-tmp' >> $e".R"
+            echo '}else{' >> $e".R"
+            echo 'newdat<-rbind(newdat,tmp)' >> $e".R"
+            echo '}' >> $e".R"
+            echo '}' >> $e".R"
+            echo 'dat<-newdat' >> $e".R"
+            echo 'dat$Position<-as.factor(dat$Position)' >> $e".R"
+            echo 'm7 <- lmer(Amplitude ~ (Position + Trial)*(LengthBc * WMCc) + ' >> $e".R"
+            echo '(1 | Subject), data = dat)' >> $e".R"
+            echo 'm7b<-fitLMER.fnc(m7,item="Item",ran.effects=c("(0+Trial|Subject)",' >> $e".R"
+            echo '"(0+LengthBc|Subject)","(0+Trial|Item)","(0+WMCc|Item)",' >> $e".R"
+            echo '"(Position|Subject)"))' >> $e".R"
+            echo 'smry<-pamer.fnc(m7b)' >> $e".R"
+            echo 'save(m7b,file=file.path("..","models",paste("m7b_",e,"_100250.rda",sep="")))' >> $e".R"
+            echo 'save(smry,file=file.path("..","summaries",paste("smry_m7b_",e,"_100250.rda",sep="")))' >> $e".R"
+  
+            ### create the job submission script for the .R file created above
+            echo '#$ -S /bin/bash' > "job."$e".sh"
+            echo '#$ -cwd' >> "job."$e".sh"
+            echo '#$ -j y' >> "job."$e".sh"
+            echo '#$ -l h_rt=48:00:00' >> "job."$e".sh"
+            echo '#$ -l h_vmem=8G' >> "job."$e".sh"
+            echo '#$ -R y' >> "job."$e".sh"
+            echo '#$ -N '$e >> "job."$e".sh"
+            echo 'R -q -f '$e'.R' >> "job."$e".sh"
+            
+            ### submit the job
+            qsub  "job."$e".sh"
+      done;
+
+}
+and then type in the console
+\preformatted{
+      . Fp1-CP6_100250.sh
+
+}
+On the ACEnet cluster, this results in 22 independent analyses, simultaneously using a total of 22 cores and 176 GB of RAM. This analysis completes in about 30 minutes to 1 hour.
+}
 \value{A \code{mer} object with fixed effects (on \emph{F}- or \code{t}-values) and back-fitted forward-fitted random effect structure as well as a log of the process is printed on screen and, optionally, printed in a log file.}
 \references{
 Baayen, R.H., Davidson, D.J. and Bates, D.M. (2008). Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
+
+Tremblay, A., and Newman, A.J. (In preparation). Linear Mixed-effects Regression, Item-wise Random Effects, and the Analysis of Event-related Potentials.
 
 Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J., and Ullman, M.T. (2012). The Influence of Language Proficiency on Lexical Semantic Processing in Native and Late Learners of English. \emph{Journal of Cognitive Neuroscience}, \emph{25}, 1205--1223.
 
@@ -52,36 +115,6 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 \code{\link{perSubjectTrim.fnc}. }
 }
 \examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
-  library(LCFdata)
-	library(lme4)
-	# bfFixefLMER -- backfit on t
-	data(eeg)
-	eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
-	
-	# fit initial model
-	m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
-	     (1 | Item), data = eeg)
-	
-	# look at model criticism plots
-	mcp.fnc(m1, trim = 2.5)
-	
-	# trim data on initial model residuals
-	eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
-	eeg = eeg.trimmed$data
-	
-	# update initial model on trimmed data
-	mB = update(m1)
-	dev.new()
-	mcp.fnc(mB, trim = 2.5)
-	
-	# forward and backward fit model on t
-	m2<-fitLMER.fnc(mB, backfit.on = "t", item = FALSE, 
-	    ran.effects = c("(FreqB | Subject)",
-	    "(LengthB | Subject)", "(WMC | Item)"))
-
-  # look at results using pamer.fnc()
-  pamer.fnc(m2)
-}
+# see example LMERConvenienceFunctions help page.
 }
 \keyword{models & regression}

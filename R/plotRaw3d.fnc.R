@@ -11,14 +11,15 @@ plotRaw3d.fnc<-function(data=NULL,
 			main=NULL,
 			shift=0,
                         scale=1,
-			plot.type="persp",
+			plot.type="contour",
 			add=FALSE,
 			alpha=1,
 			theta=30,
 			phi=30,
 			ticktype="detailed",
 			contourstepsize=1,
-			ret=FALSE
+                        legend.args=NULL,
+                        ...
 ){
 	if(is.null(data))stop("please specify a data frame\n")
 	if(is.null(response))stop("please specify a response variable\n")
@@ -56,10 +57,43 @@ plotRaw3d.fnc<-function(data=NULL,
 		zlim=range(x)
 	}
 
-	if(plot.type=="persp3d"){
+	if(plot.type[1]=="image.plot"){
+	  if(!try(require(fields,quietly=TRUE))){
+	    stop("Package \"fields\" not available.\n    Please set argument \"plot.type\" to \"contour\", \n    \"persp\", or \"persp3d\".\n")
+	  }
+	  require(fields,quietly=TRUE)
+          contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
+	                                        
+	  # Determine color.
+          if(color=="heat"){
+            pal=heat.colors(50)
+            con.col=3
+          }else if(color=="topo"){
+            pal=topo.colors(50)
+            con.col=2
+          }else if(color=="cm"){
+            pal=cm.colors(50)
+            con.col=1
+          }else if(color=="terrain"){
+            pal=terrain.colors(50)
+            con.col=2
+          }else if(color=="gray"||color=="bw"||color=="grey"){
+            pal=gray(seq(0.1,0.9,length=50))
+            con.col=1
+          }else{
+	    stop("color scheme not recognised")
+	  }
+
+	  image.plot(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,col=pal,
+	    zlim=zlim,xlab=xlab,ylab=ylab,main=zlab,...)
+          contour(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,
+	    col=con.col,zlim=zlim,add=TRUE,levels=round(contourlevels,2),...)
+
+          return(invisible(list(z=x,col=pal)))
+      }else if(plot.type[1]=="persp3d"){
 		# check if rgl is available
-		if(!"rgl"%in%.packages(all.available=TRUE)){
-			stop("Package ''rgl'' not available.")
+		if(!try(require(rgl,quietly=TRUE))){
+			stop("Package \"rgl\" not available.")
 		}	
 		require(rgl,quietly=TRUE) 
 
@@ -99,7 +133,7 @@ plotRaw3d.fnc<-function(data=NULL,
 		# this portion is from the persp3d() help page
 		nx=nrz
 		ny=ncz
-		col <- rbind(0, cbind(matrix(facetcol, nx-1, ny-1), 0))
+		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
 
 
 		if(add){
@@ -125,10 +159,8 @@ plotRaw3d.fnc<-function(data=NULL,
 
 		dev.off()
 
-		if(ret){
-			return(list(z=x,col=col))
-		}
-	}else if(plot.type=="persp"){
+		return(invisible(list(z=x,col=col)))
+	}else if(plot.type[1]=="persp"){
 		# the color portion of this code is adapted from the persp() help page
 		#par(bg="white")
 		nrz<-nrow(x)
@@ -159,10 +191,8 @@ plotRaw3d.fnc<-function(data=NULL,
 		persp(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,xlab=xlab,
 			ylab=ylab,zlab=zlab,main=main,col=color[facetcol],zlim=zlim,theta=theta,
 			phi=phi,ticktype=ticktype)
-		if(ret){
-			return(list(z=x,col=color[facetcol]))
-		}
-	}else if(plot.type=="contour"){
+		return(invisible(list(z=x,col=color[facetcol])))
+	}else if(plot.type[1]=="contour"){
 			contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
 			
 			# Determine color.
@@ -190,9 +220,7 @@ plotRaw3d.fnc<-function(data=NULL,
 			contour(x=as.numeric(rownames(x)),y=as.numeric(colnames(x)),z=x,
 				col=con.col,zlim=zlim,add=TRUE,levels=round(contourlevels,2))
 			box()
-			if(ret){
-				return(list(z=x,col=pal))
-			}
+			return(invisible(list(z=x,col=pal)))
 	}else{
 		stop("Plot type unrecognizable!\n")
 	}

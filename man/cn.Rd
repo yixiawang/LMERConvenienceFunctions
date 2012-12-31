@@ -9,10 +9,3 @@
 \seealso{
 \code{\link{colnames}}
 }
-\examples{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
-  library(LCFdata) 
-  data(eeg)
-  cn(eeg)
-}
-}

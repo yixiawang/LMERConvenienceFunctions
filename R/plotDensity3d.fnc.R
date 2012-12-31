@@ -23,7 +23,7 @@ plotDensity3d.fnc<-function(x,
 			to,
 			cut=3,
 			na.rm=FALSE,
-			ret=FALSE
+                        ...
 ){
 	# get unique values
 	x<-sort(unique(x))
@@ -86,15 +86,13 @@ plotDensity3d.fnc<-function(x,
 		# plot
 		image(x=seq(min(x),max(x),length=nrow(mat)),y=seq(min(y),max(y),length=ncol(mat)),
 			z=mat,col=pal,main=main,xlab=xlab,ylab=ylab,axes=TRUE,cex.main=cex,
-			cex.lab=cex,cex.axis=cex)
+			cex.lab=cex,cex.axis=cex,...)
 		contour(x=seq(min(x),max(x),length=nrow(mat)),y=seq(min(y),max(y),length=ncol(mat)),
-			z=mat,add=TRUE,axes=FALSE)
+			z=mat,add=TRUE,axes=FALSE,...)
 		box()
 
 		# return info
-		if(ret){
-			return(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=pal))
-		}
+                return(invisible(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=pal)))
 	}
 
 	# perspective plot
@@ -131,18 +129,16 @@ plotDensity3d.fnc<-function(x,
 		# plot
 		persp(x=seq(min(x),max(x),length=nrow(mat)),y=seq(min(y),max(y),length=ncol(mat)),
 			z=mat,ticktype="detailed",col=color[facetcol],phi=phi,theta=theta,
-			zlab=zlab,xlab=xlab,ylab=ylab,main=main,axes=TRUE)->res
+			zlab=zlab,xlab=xlab,ylab=ylab,main=main,axes=TRUE,...)
 
 		# return info
-		if(ret){
-			return(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=color[facetcol]))
-		}
+	        return(invisible(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=color[facetcol])))
 	}
 
 	# dynamic 3d plot
 	if(plot.type=="persp3d"){
-		if(!"rgl"%in%.packages(all.available=TRUE)){
-			stop("Package ''rgl'' not available.\n Please set ''plot.type'' to ''contour'' or ''persp''.\n")
+		if(!try(require(rgl,quietly=TRUE))){
+			stop("Package \"rgl\" not available.\n Please set \"plot.type\" to \"contour\" or \"persp\".\n")
 		}	
 		require(rgl,quietly=TRUE) 
 
@@ -178,16 +174,14 @@ plotDensity3d.fnc<-function(x,
 		# this portion is from the persp3d() help page
 		nx=nrow(mat)
 		ny=ncol(mat)
-		col <- rbind(0, cbind(matrix(facetcol, nx-1, ny-1), 0))
+		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
 
 		# plot
 		persp3d(x=seq(min(x),max(x),length=nrow(mat)),y=seq(min(y),max(y),length=ncol(mat)),
 			z=mat,col=col,zlab=zlab,main=main,alpha=alpha,smooth=FALSE,lit=lit,
-			xlab=xlab,ylab=ylab)
+			xlab=xlab,ylab=ylab,...)
 
 		# return info
-		if(ret){
-			return(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=pal))
-		}
+		return(invisible(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=pal)))
 	}
 }

@@ -1,8 +1,9 @@
 mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
-    mcmc=FALSE,nsim=10000,ndigits=4,mc.cores=1,...){
-	# check if multicore is available
-	if(!"multicore" %in% .packages(all.available = TRUE)){
-		stop("package multicore not available on this machine\n")
+    mcmc=FALSE,nsim=10000,ndigits=4,mc.cores=1,
+    verbosity=1,...){
+	# check if parallel is available
+	if(!"parallel" %in% .packages(all.available = TRUE)){
+		stop("package parallel not available on this machine\n")
 	}
 
         if(mcmc){
@@ -14,7 +15,7 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
         }
 
 	# load library
-	require(multicore,quietly=TRUE)
+	require(parallel,quietly=TRUE)
 
 	if(!is.list(var)){
 		stop("argument \"var\" must be a list\n")
@@ -48,20 +49,30 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
 		}
 	}
 
+        # create vector of collapsed names for cat
+        my.nms<-vector("character")
+        for(ff in 1:length(ph.list)){
+                my.nms<-c(my.nms,paste("\"",gsub(" ","",paste(names(ph.list[[ff]]),ph.list[[ff]],collapse="_")),"\"",sep=""))
+        }
+
         if(!mcmc){
-		my.update<-function(model,ph.list.element){
-			# do posthoc for an element of ph.list --> relevel and update model
+		my.update<-function(model,ph.list.element,verbosity){
+			        # do posthoc for an element of ph.list --> relevel and update model
 				for(j in 1:(length(names(ph.list.element)))){
 					predictor<-names(ph.list.element)[j]
 					data[,predictor]<-relevel(data[,predictor],
 						as.character(ph.list.element[j]))
 				}
+                                myjob<-paste("\"",gsub(" ","",paste(names(ph.list.element),
+                                        ph.list.element,collapse="_")),"\"",sep="")
+                                oneofwhat<-paste("(",which(my.nms==myjob)," of ",length(my.nms),")",sep="")
+                                if(verbosity>0)cat("processing job",myjob,oneofwhat,"...\n")
 				return(invisible(summary(update(model,.~.,data=data))@coefs))
 		}
 	
-		ph.smrys<-mclapply(ph.list,FUN=function(x)my.update(model=model,ph.list.element=x),
-				mc.cores=mc.cores,...)
-	
+		ph.smrys<-mclapply(ph.list,FUN=function(x)my.update(model=model,
+                        ph.list.element=x,verbosity=verbosity),mc.cores=mc.cores,...)
+
 		# create ph.names
 		ph.names<-gsub("(.*)__.*","\\1",names(ph.smrys))
 		for(ii in 1:length(ph.names)){
@@ -107,14 +118,17 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
 
         if(mcmc){
 		my.mc.update<-function(model,ph.list.element,nsim=nsim,
-                                    ndigits=ndigits,...){
-			# do posthoc for an element of ph.list --> relevel and update model
+                                    ndigits=ndigits,verbosity=verbosity,...){
+			        # do posthoc for an element of ph.list --> relevel and update model
 				for(j in 1:(length(names(ph.list.element)))){
 					predictor<-names(ph.list.element)[j]
 					data[,predictor]<-relevel(data[,predictor],
 						as.character(ph.list.element[j]))
 				}
-
+                                myjob<-paste("\"",gsub(" ","",paste(names(ph.list.element),
+                                        ph.list.element,collapse="_")),"\"",sep="")
+                                oneofwhat<-paste("(",which(my.nms==myjob)," of ",length(my.nms),")",sep="")
+                                if(verbosity>0)cat("processing job",myjob,oneofwhat,"...\n")
                                 updated.model<-update(model,.~.,data=data)
                                 model.mcmc<-pvals.fnc(object=updated.model,nsim=nsim,
                                     ndigits=ndigits,withMCMC=FALSE,addPlot=FALSE,...)
@@ -122,7 +136,8 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
 		}
 	
 		ph.smrys<-mclapply(ph.list,FUN=function(x)my.mc.update(model=model,
-                        ph.list.element=x,nsim=nsim,ndigits=ndigits),mc.cores=mc.cores,...)
+                        ph.list.element=x,nsim=nsim,ndigits=ndigits,verbosity=verbosity),
+                        mc.cores=mc.cores,...)
 	
 		# create ph.names
 		ph.names<-gsub("(.*)__.*","\\1",names(ph.smrys))

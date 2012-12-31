@@ -1,7 +1,31 @@
 --------------------
 Wish List
 -----
-* Automatic AIC-based model selection.
+* Automatic AIC-, BIC-, and relative-likelyhood-based model 
+selection.
+
+--------------------
+version 1.7
+-----
+* Fixed little bug in functions ``bfFixefLMER_t.fnc'' and 
+``bfFixefLMER_F.fnc'' regarding the pruning of random effects.
+* Put back a piece of code that was mistakingly removed in 
+previous version in ``bfFixefLMER_t.fnc''.
+* When the model is a GLMER, ``z-value'' instead of
+``t-value'' is printed.
+* Added function ``relLik''.
+* Added argument ``verbosity'' to function ``mcposthoc.fnc''.
+* Added function ``summary.mcposthoc''.
+* In ``plotLMER3d.fnc'', ``plotDensity3d.fnc'', and ``plotRaw3d.fnc'', 
+for 3d perspective plots (``persp3d'') changed the edges of the color 
+matrix from 0 to 1.
+* Re-vamped examples to make them run faster.
+* Added comments to code. 
+* Function ``posthoc.fnc'' now depends on package ``parallel''. 
+* In ``plotDensity3d.fnc'', ``plotLMER3d.fnc'', and ``plotRaw3d.fnc'', 
+removed argument ``ret''. now invisibly returns potting information.
+* Added plot.type = ``image.plot'' to functions ``plotLMER3d.fnc'' and 
+``plotRaw3d.fnc''.
 
 --------------------
 version 1.6.8.3

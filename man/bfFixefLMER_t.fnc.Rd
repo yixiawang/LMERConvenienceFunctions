@@ -44,7 +44,16 @@ In brief, if \code{llrt} is set to \code{FALSE}, a term remains in the model if 
 
 This backfitting method was used in Tremblay & Tucker (accepted). If factorial terms with more than two levels are included in the initial model, back-fitting on F is recommended. 
 }
-\note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.}
+\note{At the moment, it is absolutely necessary that names of variables not occur as parts of other variable names, e.g. "c"  and "cv". The script will recognise the presence of "c" where ever "cv" is present.
+
+If you get this error:
+\preformatted{
+
+Error in model.frame.default(data = ..2, formula = log_Segment_Duration ~  : 
+  The ... list does not contain 2 elements
+}
+
+It is probably because you updated the model using function \code{update} and the data now appears as \code{data = ..2} or something similar to this. You can check this by typing \code{model@call}. If this is the case, re-fit your model as \code{lmer(DV ~ IV + IV + (RANEF), data = dat)}.}
 \value{A \code{mer} model with back-fitted fixed effects (on \code{t}-values) is returned and a log of the back-fitting process is printed on screen and (by default) in a log file.}
 \references{
 Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
@@ -62,38 +71,6 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 }
 
 \examples{
-\dontrun{
-if("LCFdata"\%in\%.packages(all.available=TRUE)){
-  library(LCFdata) 
-  # bfFixefLMER -- backfit on t
-  library(lme4)
-  data(eeg)
-  eeg <- eeg[eeg$Time >= 100 & eeg$Time <= 175, , drop = TRUE]
-  
-  # fit initial model
-  m1 = lmer(Fz ~ FreqB * LengthB * WMC + (1 | Subject) + 
-      (1 | Item), data = eeg)
-  
-  # look at model criticism plots
-  mcp.fnc(m1, trim = 2.5)
-  
-  # trim data on initial model residuals
-  eeg.trimmed = romr.fnc(m1, eeg, trim = 2.5)
-  eeg = eeg.trimmed$data
-  
-  # update initial model on trimmed data
-  mB = update(m1)
-  dev.new()
-  mcp.fnc(mB, trim = 2.5)
-  
-  # backfit fixed effects on F
-  m2 = bfFixefLMER_t.fnc(mB, log.file = FALSE,
-      llrt = FALSE)
-  pamer.fnc(m2)
-  
-  plotLMER3d.fnc(m2, "LengthB", "WMC")
-  devAskNewPage(ask=FALSE)
-}
-}
+# see example in LMERConvenienceFunctions help page.
 }
 \keyword{models & regression}

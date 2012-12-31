@@ -1,7 +1,7 @@
 plotLMER3d.fnc<-function(model=NULL,
 			pred,
 			intr,
-			plot.type="contour", # or "persp" or "persp3d"
+			plot.type="contour", # or "persp" or "persp3d" or "image.plot"
 			xlim = range(x, na.rm = TRUE),
 			ylim = range(y, na.rm = TRUE),
 			zlim=range(z, na.rm = TRUE), 
@@ -22,6 +22,7 @@ plotLMER3d.fnc<-function(model=NULL,
 			theta=0,
 			phi=0,
 			contourstepsize=0.2,
+                        legend.args=NULL,
 			play3d=FALSE,   # or TRUE or a list with first element axis, e.g., c(0,0,1), second element rpm, 
 					# e.g., 4, and third element duration, e.g., 20.			
 			ref.surf=FALSE,
@@ -32,7 +33,9 @@ plotLMER3d.fnc<-function(model=NULL,
 			rug=FALSE,
 			rug.u=FALSE,
 			plot.dat="default",
-			path="default"
+			path="default",
+                        ...
+
 ){
 	if(is.null(model) && plot.dat=="default"){
 		stop("either provide a value to argument ''model'' (an object of class ''mer'') \n 
@@ -645,13 +648,13 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 	}
 
 	# create file name for saving in temp dir
-	if(plot.dat!=FALSE){
+	if(plot.dat[1]!=FALSE){
 		if(path=="default"){
 			temp.dir<-tempdir()
 		}else{
 			temp.dir=path
 		}
-		if(plot.dat=="default"){
+		if(plot.dat[1]=="default"){
 			model.name<-as.character(model@call)
 			model.name<-gsub(" ","",model.name)
 			model.name<-paste(model.name[1],"___",model.name[2],"___",model.name[3],"___",pred,"_",intr,sep="")
@@ -671,7 +674,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 
 
 	# get previously generated plotting info if it exists
-	if(plot.dat!=FALSE){
+	if(plot.dat[1]!=FALSE){
 		if(!model.name%in%list.files(path=temp.dir,pattern="lmer___.*\\.rda$")){
 			# create LMER plot and store values
 			list1<-plotLMERTweaked(model=model,fun=fun,pred=pred,intr=list(intr,
@@ -720,7 +723,75 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 	}
 
 
-	if(plot.type=="contour"){
+	if(plot.type[1]=="image.plot"){
+	  if(!try(require(fields,quietly=TRUE))){
+	    stop("Package \"fields\" not available.\n    Please set argument \"plot.type\" to \"contour\", \n    \"persp\", or \"persp3d\".\n")
+	  }
+	  require(fields,quietly=TRUE)
+          contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
+	                                        
+	  # Determine color.
+          if(color=="heat"){
+            pal=heat.colors(50)
+            con.col=3
+          }else if(color=="topo"){
+            pal=topo.colors(50)
+            con.col=2
+          }else if(color=="cm"){
+            pal=cm.colors(50)
+            con.col=1
+          }else if(color=="terrain"){
+            pal=terrain.colors(50)
+            con.col=2
+          }else if(color=="gray"||color=="bw"||color=="grey"){
+            pal=gray(seq(0.1,0.9,length=50))
+            con.col=1
+          }else{
+	    stop("color scheme not recognised")
+	  }
+
+          x<-as.numeric(rownames(z))
+          y<-as.numeric(colnames(z))
+
+          jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
+	  err<-try(image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
+                xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim),
+                silent=TRUE)
+	  dev.off()
+
+	  if(length(grep("Error",err))>0){
+            if(length(unique(x))!=length(x)){
+              x<-sort(jitter(x,factor=0.01))
+            }
+            if(length(unique(y))!=length(y)){
+              y<-sort(jitter(y,factor=0.01))
+            }
+
+            jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
+	    err<-try(image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
+                  xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim),
+                  silent=TRUE)
+	    dev.off()
+          }
+
+          if(length(grep("Error",err))>0){
+	    cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
+            image.plot(z,col=pal,main=main,legend.args=legend.args,
+              xlab=paste(xlab,"-- Random Units",sep=" "),ylab=paste(ylab,"-- Random Units",
+              sep=" "),xlim=xlim,ylim=ylim,zlim=zlim,...)
+	  }else{
+            image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
+              xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim,...)
+            contour(x,y,z,add=TRUE,nlevel=round(contourlevels,2),col=con.col,...)
+          }
+
+	  if(rug){
+            xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
+	    points(xy[,1],xy[,2],pch=19,cex=0.05)
+          }
+
+          return(invisible(list(z=z,col=pal)))
+        }else if(plot.type[1]=="contour"){
 		contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
 			
 		# Determine color.
@@ -771,12 +842,13 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
 			image(z=z,col=pal,zlim=zlim,main=main,cex.main=cex,cex.lab=cex,cex.axis=cex,
 				axes=TRUE,xlab=paste(xlab,"-- Random Units",sep=" "),
-				ylab=paste(ylab,"-- Random Units",sep=" "))
-			contour(z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),axes=FALSE)
+				ylab=paste(ylab,"-- Random Units",sep=" "),...)
+			contour(z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),axes=FALSE,...)
 		}else{
-		        image(x=x,y=y,z=z,col=pal,zlim=zlim,main=main,
-			        cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,ylab=ylab,axes=TRUE)
-			contour(x=x,y=y,z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),axes=FALSE)
+		        image(x=x,y=y,z=z,col=pal,zlim=zlim,main=main,cex.main=cex,cex.lab=cex,
+                          cex.axis=cex,xlab=xlab,ylab=ylab,axes=TRUE,...)
+			contour(x=x,y=y,z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),
+                            axes=FALSE,...)
                 }
 
 		rm(err)
@@ -790,7 +862,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 
 		return(invisible(list(z=z,col=pal)))
 
-	}else if (plot.type=="persp"){
+	}else if (plot.type[1]=="persp"){
 		# the color portion of this code is adapted from the persp() help page
 		#par(bg="white")
 		nrz<-nrow(z)
@@ -853,11 +925,12 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
 			persp(z=z,ticktype="detailed",col=color[facetcol],phi=phi,theta=theta,
 				zlab=zlab,zlim=zlim,xlab=paste(xlab,"-- Random Units",sep=" "),
-				ylab=paste(ylab,"-- Random Units",sep=" "),main=main,axes=TRUE)->res
+				ylab=paste(ylab,"-- Random Units",sep=" "),main=main,axes=TRUE,
+                                ...)->res
 		}else{
 		        persp(x=x,y=y,z=z,ticktype="detailed",col=color[facetcol],
                             phi=phi,theta=theta,zlab=zlab,zlim=zlim,xlab=xlab,
-                            ylab=ylab,main=main,axes=TRUE)
+                            ylab=ylab,main=main,axes=TRUE,...)->res
                 }
 
 		rm(err)
@@ -875,8 +948,8 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 		return(invisible(list(z=z,col=color[facetcol])))
 
 	}else{
-		if(!"rgl"%in%.packages(all.available=TRUE)){
-			stop("Package ''rgl'' not available.\n Please set ''plot.type'' to ''contour'' or ''persp''.\n")
+		if(!try(require(rgl,quietly=TRUE))){
+			stop("Package \"rgl\" not available.\n Please set \"plot.type\" to \"contour\", \"image.plot\", or \"persp\".\n")
 		}	
 		require(rgl,quietly=TRUE) 
 
@@ -914,7 +987,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 		# this portion is from the persp3d() help page
 		nx=length(rownames(z))
 		ny=length(colnames(z))
-		col <- rbind(0, cbind(matrix(facetcol, nx-1, ny-1), 0))
+		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
 
 
                 x<-as.numeric(rownames(z))
@@ -952,11 +1025,11 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 			persp3d(z=z,col=col,zlim=zlim,zlab=zlab,main=main,
                             alpha=alpha,smooth=FALSE,lit=lit,xlab=paste(xlab,
                             "-- Random Units",sep=" "),ylab=paste(ylab,
-                            "-- Random Units",sep=" "))
+                            "-- Random Units",sep=" "),...)
 		}else{
 		        persp3d(x=x,y=y,z=z,col=col,zlim=zlim,zlab=zlab,
                             main=main,alpha=alpha,smooth=FALSE,lit=lit,
-                            xlab=xlab,ylab=ylab)
+                            xlab=xlab,ylab=ylab,...)
                 }
 
 		if(add.raw){
@@ -1005,7 +1078,6 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 			}
 		}
 
-		dev.off()
                 par3d(cex=op3d)
 
 		return(invisible(list(z=z,col=col)))
