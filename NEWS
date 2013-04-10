@@ -1,11 +1,29 @@
 --------------------
-Wish List
+version 2.0
 -----
-* Automatic AIC-, BIC-, and relative-likelyhood-based model 
-selection.
+* In functions ``bfFixefLMER_t.fnc'', backfitting when the
+model has factor variables with levels greater than 2 will
+issue a warning (instead of stopping the process).
+* Added backfitting on AIC, BIC, relLik.AIC, or relLik.BIC
+capabilities to functions ``bfFixefLMER_F.fnc'',
+``bfFixefLMER_t.fnc'', and ``fitLMER.fnc''.
+* Also added functions ``bfFixefLMER_F.fnc'',``bfFixefLMER_t.fnc'', 
+and ``fitLMER.fnc'' an option to not test (and thus not remove) 
+main effects.
+* Updated the arguments in function ``fitLMER.fnc'' accordingly.
+* In function ``ffRanefLMER.fnc'', changed the default of argument 
+``log.file'' to ``NULL''.
+* Fixed a bug in fucntion ``bfFixefLMER_t.fnc'' when 
+backfitting glmer models.
+* Function ``ffRanefLMER.fnc'' can now be used with glmer models.
+* Fixed a bug in function ``fitLMER.fnc'' regarding the forward
+fitting of random effects.
+* WISH LIST: AIC, BIC, relLik.AIC, and relLik.BIC for 
+random effect forward fitting (for function 
+``ffRanefLMER.fnc'').
 
 --------------------
-version 1.7
+version 1.7.0
 -----
 * Fixed little bug in functions ``bfFixefLMER_t.fnc'' and 
 ``bfFixefLMER_F.fnc'' regarding the pruning of random effects.

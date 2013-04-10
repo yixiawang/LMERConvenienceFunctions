@@ -9,11 +9,11 @@
   \item{ndigits}{An integer denoting the number of decimal digits in the output.}
   \item{\dots}{Further arguments to pass to \code{AIC} or \code{BIC}.}
 }
-\details{The relative log-likelihood is calcyulated as \code{exp((abs(AIC(x) - AIC(y)))/2)} or \code{exp((abs(BIC(x) - BIC(y)))/2)}, depending on the method.}
+\details{The relative log-likelihood is calculated as \code{exp((abs(AIC(x) - AIC(y)))/2)} or \code{exp((abs(BIC(x) - BIC(y)))/2)}, depending on the method.}
 \value{A vector with values:
 \item{AIC(x), BIC(x) }{The \code{AIC} or ]code{BIC} value of the first model object.}
 \item{AIC(y), BIC(y) }{The \code{AIC} or ]code{BIC} value of the second model object.}
-\item{relLik }{The relative likelihood between the two models. The model with the lowest \code{AIC}/\code{BIC} will be that much more likely given the data than the other one.}
+\item{relLik }{The relative likelihood between the two models. Model \code{y} will be that much more likely given the data than model \code{x}.}
 }
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
 \seealso{

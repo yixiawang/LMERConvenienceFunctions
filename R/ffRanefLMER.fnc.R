@@ -1,18 +1,20 @@
-ffRanefLMER.fnc <- function(model,
-                            data,
-                            ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
-                            slopes=as.character(),# of random effects to consider, e.g.,
-			    corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
-                            by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
-                            alpha=0.05,
-	                    if.warn.not.add=TRUE,
-                            log.file=file.path(tempdir(),paste("ffRanefLMER_log_",
-                              gsub(":","-",gsub(" ","_",date())),".txt",sep="")) # or other path and file name or FALSE
+ffRanefLMER.fnc <- function(model,data,
+    ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
+    	slopes=as.character(),# of random effects to consider, e.g.,
+  		corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
+    	by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
+    alpha=0.05,
+	if.warn.not.add=TRUE,
+    log.file=NULL # or other path and file name or FALSE
 ){
   if(length(alpha)==0){
-    stop("please supply a value to the ''alpha'' argument")
+    stop("please supply a value to the \"alpha\" argument")
   }
-  
+ 
+	if(is.null(log.file)){
+		log.file<-file.path(tempdir(),paste("ffRanefLMER_log_",
+    		gsub(":","-",gsub(" ","_",date())),".txt",sep=""))
+	}
   options(warn=1)
 
   temp.dir=tempdir()
@@ -196,6 +198,7 @@ ffRanefLMER.fnc <- function(model,
           cat("evaluating addition of",ranef,"to model\n")
 		model.term<-gsub("\\((.*)\\|.*","\\1",ranef)
 		model.term<-gsub(".\\+(.*)","\\1",model.term)
+		#model.term<-gsub("(.*)\\|.*","\\1",model.term)
         	if(!model.term%in%coefs){
           		cat("warning: variable",model.term,"not part of model coefficients\n")
           		cat("\tskipping\n")
