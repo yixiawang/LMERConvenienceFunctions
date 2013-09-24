@@ -28,7 +28,7 @@ function(model,ndigits=4){
 		}
 	
 		dv<-gsub(" ","",gsub("(.*)~.*","\\1",as.character(model@call)[2]))
-		ss.tot<-var(model@frame[,dv])*nrow(model@frame)
+		ss.tot<-sum((model@frame[, dv]-mean(model@frame[, dv]))^2)
 		aov.table<-as.data.frame(anova(model))
 		expl.dev<-vector("numeric")
 		for(i in rownames(aov.table)){

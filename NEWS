@@ -1,4 +1,28 @@
 --------------------
+version 2.1
+-----
+* Updated the percentage of deviance explained in function 
+``pamer.fnc''.
+* Revised the random effects backfitting algorithm: 
+  If you have the model
+
+      lmm.1<-lmer(abundance~year+(year|site))
+
+  where year is not significant, then
+
+  -- old backfit:
+     - year is removed from fixed effects
+     - random effect is completely removed (which can actually 
+       be problematic (statistically), if it is part of your 
+       experimental set up, leading to pseudoreplicates).
+     - problems with lmer because no random effect in formula
+
+  -- new backkfit:
+     - year is removed from fixed effects
+     - random effect is adjusted. new formula: abundance~(1|year)
+     - no problems with lmer because no random effect in formula
+
+--------------------
 version 2.0
 -----
 * In functions ``bfFixefLMER_t.fnc'', backfitting when the

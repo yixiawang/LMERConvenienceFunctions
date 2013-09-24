@@ -9,8 +9,8 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2013-04-10\cr
+Version: \tab 2.1\cr
+Date: \tab 2013-09-24\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -40,10 +40,6 @@ Tremblay, Antoine. (2009). \emph{Processing Advantages of Lexical Bundles: Evide
 
 
 Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
-
-
-Tremblay, Antoine, & Newman, Aaron J. (2013). Modelling event-related potentials using linear mixed-effects regression. \emph{NeuroImage}. 55 pages.
-
 
 \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}
 }
