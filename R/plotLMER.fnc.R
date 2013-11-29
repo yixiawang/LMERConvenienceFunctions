@@ -1,46 +1,5 @@
-plotLMER3d.fnc<-function(model=NULL,
-			pred,
-			intr,
-			plot.type="contour", # or "persp" or "persp3d" or "image.plot"
-			xlim = range(x, na.rm = TRUE),
-			ylim = range(y, na.rm = TRUE),
-			zlim=range(z, na.rm = TRUE), 
-			xlab=NULL, 
-			ylab=NULL, 
-			zlab=NULL, 
-			main=NULL, 
-                        shift=0,
-                        scale=1,
-			cex=1,
-			fun=NA, 
-			n=30,
-			color="topo",
-			alpha=1,
-			alpha.rs=0.65,
-			alpha.u=1,
-			lit=TRUE,
-			theta=0,
-			phi=0,
-			contourstepsize=0.2,
-            legend.args=NULL,
-			play3d=FALSE,   # or TRUE or a list with first element axis, e.g., c(0,0,1), second element rpm, 
-					# e.g., 4, and third element duration, e.g., 20.			
-			ref.surf=FALSE,
-			underneath=FALSE,
-			add.raw=FALSE,
-			color.raw="grey",
-			alpha.raw=0.5,
-			rug=FALSE,
-			rug.u=FALSE,
-			plot.dat="default",
-			path="default",
-                        ...
+plotLMER.fnc<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit = NA, ilabel = NA, fun = NA, pred = NA, control = NA, ranefs = NA, n = 100, intr = NA, lockYlim = TRUE, addlines = FALSE, withList = FALSE, cexsize = 0.5, linecolor = 1, addToExistingPlot = FALSE, verbose = TRUE, ...) {
 
-){
-	if(is.null(model) && plot.dat=="default"){
-		stop("either provide a value to argument ''model'' (an object of class ''mer'') \n 
-			or provide a file name containing plotting information \n")
-	}
 ####################################################
 #               DEFINE SOME FUNCTIONS              #
 ####################################################
@@ -443,11 +402,189 @@ preparePredictor.fnc<-function (pred, model, m, ylabel, fun, val, xlabel, ranefs
     return(dfr)
 }
 
-#######################################################################	
-# define function plotLMERTweaked
-plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit = NA, ilabel = NA, fun = NA, pred = NA, control = NA, ranefs = NA, n = 100, intr = NA, lockYlim = TRUE, addlines = FALSE, withList = FALSE, cexsize = 0.5, linecolor = 1, addToExistingPlot = FALSE, verbose = TRUE, ...) {
-    if (!(is(model, "lmerMod") || (is(model, "glmerMod")))) {
-        stop("argument should be a (g)lmerMod object")
+
+####################################################
+# define function plotAll.fnc
+plotAll.fnc<-function (reslist, sameYrange = TRUE, ylabel, xlabel = NA, intrName = NA, pos = "end", ylimit = NA, addlines = FALSE, cexsize = 0.6, conditioningVals = NA, conditioningColors = 1, conditioningLines = 1, lineColor = 1, addToExistingPlot = FALSE, ...) {
+    if (length(conditioningColors) == 1) 
+        conditioningColors = rep(lineColor, 1000)
+    if (length(conditioningLines) == 1) 
+        conditioningLines = rep(1, 1000)
+    if (sameYrange) {
+        ylimit = getRange.fnc(reslist)
+    }
+    if (is.na(pos)) 
+        pstn = 2
+    else {
+        if (pos == "beg") 
+            pstn = 4
+        else pstn = 2
+    }
+    for (i in 1:length(reslist)) {
+        if ((!sameYrange) & (length(ylimit) == 1)) {
+            ylimit = getRange.fnc(reslist[[i]])
+        }
+        if (is.data.frame(reslist[[i]])) {
+            lst = reslist[[i]]
+            n = 1
+        }
+        else {
+            lst = reslist[[i]][[1]]
+            n = length(reslist[[i]])
+        }
+        if ("Levels" %in% colnames(lst)) {
+            isfactor = TRUE
+        }
+        else {
+            isfactor = FALSE
+        }
+        if (lst$Type[1] == FALSE) {
+            if (is.na(xlabel[1])) {
+                xlabl = as.character(lst$Predictor[1])
+            }
+            else {
+                xlabl = xlabel[i]
+            }
+            if (!addToExistingPlot) {
+                plot(lst$X, lst$Y, ylim = ylimit, type = "l", 
+                  col = conditioningColors[1], lty = conditioningLines[1], 
+                  xlab = xlabl, ylab = ylabel, ...)
+            }
+            else {
+                lines(lst$X, lst$Y, col = conditioningColors[1], 
+                  lty = conditioningLines[1], ...)
+            }
+            if ("lower" %in% colnames(lst)) {
+                lines(lst$X, lst$lower, lty = 2, col = conditioningColors[1], 
+                  ...)
+                lines(lst$X, lst$upper, lty = 2, col = conditioningColors[1], 
+                  ...)
+            }
+            if (n > 1) {
+                if (!is.na(pos)) {
+                  ps = getPos.fnc(lst$Y, pos)
+                  epsilon = (max(ylimit) - min(ylimit))/40
+                  text(lst$X[ps], lst$Y[ps] + epsilon, as.character(lst$Interaction[1]), 
+                    cex = cexsize, pos = pstn, ...)
+                }
+                mtext(intrName, side = 4, line = 1, cex = cexsize, 
+                  adj = 0, ...)
+            }
+        }
+        else {
+            d = max(lst$X) - min(lst$X)
+            xlimit = c(min(lst$X) - 0.1 * d, max(lst$X) + 0.1 * 
+                d)
+            if (is.na(xlabel[1])) {
+                xlabl = as.character(lst$Predictor[1])
+            }
+            else {
+                xlabl = xlabel[i]
+            }
+            if (addlines) {
+                if (!addToExistingPlot) {
+                  plot(lst$X, lst$Y, ylim = ylimit, type = "b", 
+                    pch = 21, xlim = xlimit, xlab = xlabl, ylab = ylabel, 
+                    xaxt = "n", col = conditioningColors[1], 
+                    ...)
+                }
+                else {
+                  lines(lst$X, lst$Y, type = "b", pch = 21, col = conditioningColors[1], 
+                    ...)
+                }
+            }
+            else {
+                if (!addToExistingPlot) {
+                  plot(lst$X, lst$Y, ylim = ylimit, type = "p", 
+                    pch = 21, xlim = xlimit, xlab = xlabl, ylab = ylabel, 
+                    xaxt = "n", col = lineColor, ...)
+                }
+                else {
+                  points(lst$X, lst$Y, pch = 21, col = conditioningColors[1], 
+                    ...)
+                }
+            }
+            mtext(lst$Levels, at = lst$X, side = 1, line = 1, 
+                cex = cexsize, ...)
+            if (n > 1) {
+                if (!is.na(pos) & !is.na(conditioningVals[1][1])) {
+                  ps = getPos.fnc(lst$Y, pos)
+                  epsilon = (max(ylimit) - min(ylimit))/40
+                  text(lst$X[ps], lst$Y[ps] + epsilon, labels = as.character(conditioningVals[1]), 
+                    cex = cexsize, pos = pstn, ...)
+                }
+            }
+            if ("lower" %in% colnames(lst)) {
+                points(lst$X, lst$lower, lty = 2, pch = "-", 
+                  col = conditioningColors[1], ...)
+                points(lst$X, lst$upper, lty = 2, pch = "-", 
+                  col = conditioningColors[1], ...)
+            }
+        }
+        if (n > 1) {
+            for (j in 2:n) {
+                lst = reslist[[i]][[j]]
+                if (lst$Type[1] == FALSE) {
+                  lines(lst$X, lst$Y, ylim = ylimit, type = "l", 
+                    col = conditioningColors[j], lty = conditioningLines[j], 
+                    ...)
+                  if ("lower" %in% colnames(lst)) {
+                    lines(lst$X, lst$lower, lty = 2, col = conditioningColors[j], 
+                      ...)
+                    lines(lst$X, lst$upper, lty = 2, col = conditioningColors[j], 
+                      ...)
+                  }
+                  if (!is.na(pos[1]) & !is.na(conditioningVals[1][1])) {
+                    ps = getPos.fnc(lst$Y, pos)
+                    epsilon = (max(ylimit) - min(ylimit))/40
+                    text(lst$X[ps], lst$Y[ps] + epsilon, labels = as.character(lst$Interaction[1]), 
+                      cex = cexsize, pos = pstn, ...)
+                  }
+                }
+                else {
+                  if (is.na(xlabel[1])) {
+                    xlabl = as.character(lst$Predictor[1])
+                  }
+                  else {
+                    xlabl = xlabel[i]
+                  }
+                  if (addlines) {
+                    lines(lst$X, lst$Y, ylim = ylimit, type = "b", 
+                      pch = 21, col = conditioningColors[j], 
+                      lty = conditioningLines[j], xlab = xlabl, 
+                      ylab = ylabel, ...)
+                  }
+                  else {
+                    points(lst$X, lst$Y, ylim = ylimit, type = "p", 
+                      pch = 21, xlab = xlabl, ylab = ylabel, 
+                      col = conditioningColors[j], ...)
+                  }
+                  mtext(intrName, side = 4, line = 1, cex = cexsize, 
+                    adj = 0, ...)
+                  if (!is.na(pos) & !is.na(conditioningVals[1][1])) {
+                    ps = getPos.fnc(lst$Y, pos)
+                    epsilon = (max(ylimit) - min(ylimit))/40
+                    text(lst$X[ps], lst$Y[ps] + epsilon, labels = as.character(conditioningVals[j]), 
+                      cex = cexsize, pos = pstn, ...)
+                  }
+                  if ("lower" %in% colnames(lst)) {
+                    points(lst$X, lst$lower, lty = 2, pch = "-", 
+                      col = conditioningColors[j], ...)
+                    points(lst$X, lst$upper, lty = 2, pch = "-", 
+                      col = conditioningColors[j], ...)
+                  }
+                }
+            }
+        }
+    }
+}
+
+
+#################################################################
+#               function plotLMER.fnc starts here               #
+#################################################################
+    if (!is(model, "merMod")) {
+        stop("argument should be a merMod model object")
     }
     if (!is.na(xlabel[1])) {
         if (!is.character(xlabel)) 
@@ -573,7 +710,9 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
             m = makeDefaultMatrix.fnc(model, n, conditioningPred, 
                 val, control)
             subplots = list()
-            dfr = preparePredictor.fnc(predictors[i], model, m, ylabel, fun, val, xlabel = xlabel, ranefs, lty = 1, col = 0, ...)
+            dfr = preparePredictor.fnc(predictors[i], model, 
+                m, ylabel, fun, val, xlabel = xlabel, 
+                ranefs, lty = 1, col = 0, ...)
             subplots[[1]] = dfr
             if (verbose == TRUE) {
                 cat("effect sizes (ranges) for the interaction of ", 
@@ -586,7 +725,8 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
                 m = makeDefaultMatrix.fnc(model, n, conditioningPred, 
                   val, control)
                 dfr = preparePredictor.fnc(predictors[i], model, 
-                  m, ylabel, fun, val, ranefs, lty = j, xlabel = xlabel, ...)
+                  m, ylabel, fun, val, ranefs, 
+                  lty = j, xlabel = xlabel, ...)
                 subplots[[j]] = dfr
                 if (verbose == TRUE) {
                   cat("   ", conditioningPred, " = ", val, ": ", 
@@ -599,7 +739,8 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
             lineTypes = 1
             m = makeDefaultMatrix.fnc(model, n, "", NULL, control)
             dfr = preparePredictor.fnc(predictors[i], model, 
-                m, ylabel, fun, val = NA, xlabel = xlabel, ranefs, ...)
+                m, ylabel, fun, val = NA, xlabel = xlabel, 
+                ranefs, ...)
             plots[[i]] = dfr
             if (verbose == TRUE) {
                 cat("effect size (range) for ", predictors[i], 
@@ -614,480 +755,6 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
     else {
         intrName = conditioningPred
     }
-    #plotAll.fnc(plots, sameYrange = lockYlim, ylabel, xlabel = xlabelShow, 
-        #intrName = intrName, pos = conditioningPos, ylimit = ylimit, 
-        #addlines = addlines, cexsize = cexsize, conditioningVals = conditioningVals, 
-        #conditioningColors = colors, conditioningLines = lineTypes, 
-        #lineColor = linecolor, addToExistingPlot, ...)
-    #if (withList) 
-        return(invisible(plots))
-}
-
-
-###########################################################################
-#                    rest of function continues here                      #
-###########################################################################
-	# set labels if NULL
-	if(is.null(xlab)){
-		xlab=pred
-	}
-
-	if(is.null(ylab)){
-		ylab=intr
-	}
-
-     	options(warn=-1)
-	if(is.null(zlab)){
-		if(try(is.null(model),silent=TRUE)){
-			zlab="Response"
-		}else{
-			zlab<-as.character(model@call)[2]
-			zlab<-gsub(" ","",unlist(strsplit(zlab,"~"))[1])
-		}
-	}
-     	options(warn=0)
-
-	if(is.null(main)){
-		if(plot.type=="contour"){
-			main=zlab
-		}else{
-			main=""
-		}
-	}
-
-	# create file name for saving in temp dir
-	if(plot.dat[1]!=FALSE){
-		if(path=="default"){
-			temp.dir<-tempdir()
-		}else{
-			temp.dir=path
-		}
-		if(plot.dat[1]=="default"){
-			model.name<-as.character(model@call)
-			model.name<-gsub(" ","",model.name)
-			model.name<-paste(model.name[1],"___",model.name[2],"___",model.name[3],"___",pred,"_",intr,sep="")
-			model.name<-gsub("\\+","__",model.name)
-			model.name<-gsub("\\:","_",model.name)
-			model.name<-gsub("\\*","_",model.name)
-			model.name<-gsub("\\^","_",model.name)
-			model.name<-gsub("\\|","_",model.name)
-			model.name<-gsub("\\~","_",model.name)
-			model.name<-gsub("\\(","WWW",model.name)
-			model.name<-gsub("\\)","WWW",model.name)
-			model.name<-paste(model.name,".rda",sep="")
-		}else{
-			model.name=paste("lmer___",plot.dat,".rda",sep="")
-		}
-	}
-
-
-	# get previously generated plotting info if it exists
-	if(plot.dat[1]!=FALSE){
-		if(!model.name%in%list.files(path=temp.dir,pattern="lmer___.*\\.rda$")){
-			# create LMER plot and store values
-			list1<-plotLMERTweaked(model=model,fun=fun,pred=pred,intr=list(intr,
-				quantile(model@frame[,intr],seq(0,1,1/n)),"end",list(seq(1,length(seq(0,1,1/n)),1),
-				seq(1,length(seq(0,1,1/n)),1))),n=n,verbose=TRUE)
-		
-			# get info from stored plotting list
-			length.intr<-eval(parse(text=paste("length(list1$",pred,")",sep="")))
-			x<-eval(parse(text=paste("list1$",pred,"[[1]]$X",sep="")))
-			y=quantile(model@frame[,intr],seq(0,1,1/n))
-		
-			# create plotting matrix
-			for(i in 1:length.intr){
-				if(i==1){
-					z<-eval(parse(text=paste("list1$",pred,"[[",i,"]]$Y",sep="")))
-				}else{
-					z<-cbind(z,eval(parse(text=paste("list1$",pred,"[[",i,"]]$Y",sep=""))))
-				}	
-			}
-			z<-as.matrix(z)
-		
-			# add row and column names to matrix
-			rownames(z)<-x
-			colnames(z)<-y
-		
-			# remove identical columns
-			rem<-vector("numeric")
-			for(i in 2:ncol(z)){
-				if(unique(z[,i-1]==z[,i])[1]){
-					rem<-c(rem,i)
-				}
-			}
-			if(length(rem)!=0){
-				z<-z[,-rem]
-			}
-			
-			save(z,file=file.path(temp.dir,model.name))
-		}else{
-			load(file.path(temp.dir,model.name))
-		}
-	}
-
-
-	if(is.null(zlim)){
-		zlim=range(z,na.rm=TRUE)
-	}
-
-
-	if(plot.type[1]=="image.plot"){
-	  if(!try(require(fields,quietly=TRUE))){
-	    stop("Package \"fields\" not available.\n    Please set argument \"plot.type\" to \"contour\", \n    \"persp\", or \"persp3d\".\n")
-	  }
-	  require(fields,quietly=TRUE)
-          contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
-	                                        
-	  # Determine color.
-          if(color=="heat"){
-            pal=heat.colors(50)
-            con.col=3
-          }else if(color=="topo"){
-            pal=topo.colors(50)
-            con.col=2
-          }else if(color=="cm"){
-            pal=cm.colors(50)
-            con.col=1
-          }else if(color=="terrain"){
-            pal=terrain.colors(50)
-            con.col=2
-          }else if(color=="gray"||color=="bw"||color=="grey"){
-            pal=gray(seq(0.1,0.9,length=50))
-            con.col=1
-          }else{
-	    stop("color scheme not recognised")
-	  }
-
-          x<-as.numeric(rownames(z))
-          y<-as.numeric(colnames(z))
-
-          jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-	  err<-try(image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
-                xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim),
-                silent=TRUE)
-	  dev.off()
-
-	  if(length(grep("Error",err))>0){
-            if(length(unique(x))!=length(x)){
-              x<-sort(jitter(x,factor=0.01))
-            }
-            if(length(unique(y))!=length(y)){
-              y<-sort(jitter(y,factor=0.01))
-            }
-
-            jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-	    err<-try(image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
-                  xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim),
-                  silent=TRUE)
-	    dev.off()
-          }
-
-          if(length(grep("Error",err))>0){
-	    cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
-            image.plot(z,col=pal,main=main,legend.args=legend.args,
-              xlab=paste(xlab,"-- Random Units",sep=" "),ylab=paste(ylab,"-- Random Units",
-              sep=" "),xlim=xlim,ylim=ylim,zlim=zlim,...)
-	  }else{
-            image.plot(x,y,z,col=pal,main=main,legend.args=legend.args,
-              xlab=xlab,ylab=ylab,xlim=xlim,ylim=ylim,zlim=zlim,...)
-            contour(x,y,z,add=TRUE,nlevel=round(contourlevels,2),col=con.col,...)
-          }
-
-	  if(rug){
-            xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
-	    points(xy[,1],xy[,2],pch=19,cex=0.05)
-          }
-
-          return(invisible(list(z=z,col=pal)))
-        }else if(plot.type[1]=="contour"){
-		contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
-			
-		# Determine color.
-        	if(color=="heat"){
-            		pal=heat.colors(50)
-            		con.col=3
-        	}else if(color=="topo"){
-            		pal=topo.colors(50)
-            		con.col=2
-        	}else if(color=="cm"){
-            		pal=cm.colors(50)
-            		con.col=1
-        	}else if(color=="terrain"){
-            		pal=terrain.colors(50)
-            		con.col=2
-        	}else if(color=="gray"||color=="bw"||color=="grey"){
-            		pal=gray(seq(0.1,0.9,length=50))
-            		con.col=1
-        	}else{
-			stop("color scheme not recognised")
-		}
-
-                x<-as.numeric(rownames(z))
-                y<-as.numeric(colnames(z))
-
-		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		err<-try(image(x=x,y=x,z=z,col=pal,zlim=zlim,main=main,
-                        cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,
-                        ylab=ylab,axes=TRUE),silent=TRUE)
-		dev.off()
-
-		if(length(grep("Error",err))>0){
-                        if(length(unique(x))!=length(x)){
-                            x<-sort(jitter(x,factor=0.01))
-                        }
-                        if(length(unique(y))!=length(y)){
-                            y<-sort(jitter(y,factor=0.01))
-                        }
-
-		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		        err<-try(image(x=x,y=y,z=z,col=pal,zlim=zlim,main=main,
-			        cex.main=cex,cex.lab=cex,cex.axis=cex,xlab=xlab,
-                                ylab=ylab,axes=TRUE),silent=TRUE)
-		        dev.off()
-                 }
-
-		if(length(grep("Error",err))>0){
-			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
-			image(z=z,col=pal,zlim=zlim,main=main,cex.main=cex,cex.lab=cex,cex.axis=cex,
-				axes=TRUE,xlab=paste(xlab,"-- Random Units",sep=" "),
-				ylab=paste(ylab,"-- Random Units",sep=" "),...)
-			contour(z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),axes=FALSE,...)
-		}else{
-		        image(x=x,y=y,z=z,col=pal,zlim=zlim,main=main,cex.main=cex,cex.lab=cex,
-                          cex.axis=cex,xlab=xlab,ylab=ylab,axes=TRUE,...)
-			contour(x=x,y=y,z=z,zlim=zlim,add=TRUE,levels=round(contourlevels,2),
-                            axes=FALSE,...)
-                }
-
-		rm(err)
-
-		if(rug){
-			xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
-			points(xy[,1],xy[,2],pch=19,cex=0.05)
-		}
-
-		box()
-
-		return(invisible(list(z=z,col=pal)))
-
-	}else if (plot.type[1]=="persp"){
-		# the color portion of this code is adapted from the persp() help page
-		#par(bg="white")
-		nrz<-nrow(z)
-		ncz<-ncol(z)
-
-		# Create a function interpolating colors in the range of specified colors
-        	if(color=="heat"){
-            		jet.colors<-colorRampPalette(heat.colors(50))
-        	}else if(color=="topo"){
-			#jet.colors <- colorRampPalette( c("purple","blue", "green","yellow","red","white") ) 
-			jet.colors <- colorRampPalette(topo.colors(50)) 
-        	}else if(color=="cm"){
-            		jet.colors<-colorRampPalette(cm.colors(50))
-        	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(terrain.colors(50))
-        	}else if(color=="gray"||color=="bw"||color=="grey"){
-            		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
-        	}else{
-			stop("color scheme not recognised")
-		}
-
-		# Generate the desired number of colors from this palette
-		nbcol<-100
-		color<-jet.colors(nbcol)
-
-		# Compute the z-value at the facet centres
-		zfacet<-z[-1,-1]+z[-1,-ncz]+z[-nrz,-1]+z[-nrz,-ncz]
-
-		# Recode facet z-values into color indices
-		facetcol<-cut(zfacet,nbcol)
-
-                x<-as.numeric(rownames(z))
-                y<-as.numeric(colnames(z))
-
-		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		err<-try(persp(x=x,y=y,z=z,ticktype="detailed",
-                        col=color[facetcol],phi=phi,theta=theta,
-			zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,
-                        main=main,axes=TRUE),silent=TRUE)
-		dev.off()
-
-
-		if(length(grep("Error",err))>0){
-                        if(length(unique(x))!=length(x)){
-                            x<-sort(jitter(x,factor=0.01))
-                        }
-                        if(length(unique(y))!=length(y)){
-                            y<-sort(jitter(y,factor=0.01))
-                        }
-
-		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		        err<-try(persp(x=x,y=y,z=z,ticktype="detailed",
-                                col=color[facetcol],phi=phi,theta=theta,
-			        zlab=zlab,zlim=zlim,xlab=xlab,ylab=ylab,
-                                main=main,axes=TRUE),silent=TRUE)
-		        dev.off()
-                 }
-
-		if(length(grep("Error",err))>0){
-			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
-			persp(z=z,ticktype="detailed",col=color[facetcol],phi=phi,theta=theta,
-				zlab=zlab,zlim=zlim,xlab=paste(xlab,"-- Random Units",sep=" "),
-				ylab=paste(ylab,"-- Random Units",sep=" "),main=main,axes=TRUE,
-                                ...)->res
-		}else{
-		        persp(x=x,y=y,z=z,ticktype="detailed",col=color[facetcol],
-                            phi=phi,theta=theta,zlab=zlab,zlim=zlim,xlab=xlab,
-                            ylab=ylab,main=main,axes=TRUE,...)->res
-                }
-
-		rm(err)
-
-
-		if(rug){
-			xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
-			temp<-vector("numeric")
-			for(i in 1:nrow(xy)){
-				temp<-c(temp,z[as.character(xy$Var1[i]),as.character(xy$Var2[i])])
-			}
-			points(trans3d(xy[,1],xy[,2],temp,pmat=res),pch=19,cex=0.5)
-		}
-
-		return(invisible(list(z=z,col=color[facetcol])))
-
-	}else{
-		if(!try(require(rgl,quietly=TRUE))){
-			stop("Package \"rgl\" not available.\n Please set \"plot.type\" to \"contour\", \"image.plot\", or \"persp\".\n")
-		}	
-		require(rgl,quietly=TRUE) 
-
-		# the color portion of this code is adapted from the persp() help page
-		#par(bg="white")
-		nrz<-nrow(z)
-		ncz<-ncol(z)
-
-		# Create a function interpolating colors in the range of specified colors
-        	if(color=="heat"){
-            		jet.colors<-colorRampPalette(heat.colors(100))
-        	}else if(color=="topo"){
-			jet.colors <- colorRampPalette(topo.colors(100)) 
-        	}else if(color=="cm"){
-            		jet.colors<-colorRampPalette(cm.colors(100))
-        	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(terrain.colors(100))
-        	}else if(color=="gray"||color=="bw"||color=="grey"){
-            		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
-        	}else{
-			stop("color scheme not recognised")
-		}
-
-		# Generate the desired number of colors from this palette
-		nbcol<-100
-		color<-jet.colors(nbcol)
-
-		# Compute the z-value at the facet centres
-		zfacet<-z[-1,-1]+z[-1,-ncz]+z[-nrz,-1]+z[-nrz,-ncz]
-
-		# Recode facet z-values into color indices
-		facetcol<-cut(zfacet,nbcol)
-		facetcol=color[facetcol]
-
-		# this portion is from the persp3d() help page
-		nx=length(rownames(z))
-		ny=length(colnames(z))
-		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
-
-
-                x<-as.numeric(rownames(z))
-                y<-as.numeric(colnames(z))
-
-                op3d<-par3d()$cex
-                par3d(cex=cex)
-
-		# create persp3d plot
-		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
-				zlab=zlab,main=main,alpha=alpha,
-                                smooth=FALSE,lit=lit,xlab=xlab,
-                                ylab=ylab),silent=TRUE)
-		dev.off()
-
-		if(length(grep("Error",err))>0){
-                        if(length(unique(x))!=length(x)){
-                            x<-sort(jitter(x,factor=0.01))
-                        }
-                        if(length(unique(y))!=length(y)){
-                            y<-sort(jitter(y,factor=0.01))
-                        }
-
-		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		        err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
-				        zlab=zlab,main=main,alpha=alpha,
-                                        smooth=FALSE,lit=lit,xlab=xlab,
-                                        ylab=ylab),silent=TRUE)
-		        dev.off()
-                 }
-
-		if(length(grep("Error",err))>0){
-			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
-			persp3d(z=z,col=col,zlim=zlim,zlab=zlab,main=main,
-                            alpha=alpha,smooth=FALSE,lit=lit,xlab=paste(xlab,
-                            "-- Random Units",sep=" "),ylab=paste(ylab,
-                            "-- Random Units",sep=" "),...)
-		}else{
-		        persp3d(x=x,y=y,z=z,col=col,zlim=zlim,zlab=zlab,
-                            main=main,alpha=alpha,smooth=FALSE,lit=lit,
-                            xlab=xlab,ylab=ylab,...)
-                }
-
-		if(add.raw){
-			response<-gsub(" ","",strsplit(as.character(model@call)[2],"~")[[1]][1])
-			xy<-ifelse(length(grep("Error",err))>0,FALSE,TRUE)
-			plotRaw3d.fnc(data=model@frame,response=response,pred=pred,intr=intr,xy=xy,
-				color=color.raw,alpha=alpha.raw,plot.type="persp3d",xlab="",ylab="",
-				zlab="",main="",add=TRUE,shift=shift,scale=scale)
-		}
-
-		rm(err)
-
-		if(ref.surf){
-			persp3d(x=x,y=y,matrix(mean(z),ncol=ncol(z),
-				nrow=nrow(z),byrow=TRUE),col="grey",
-                                alpha=alpha.rs,zlim=zlim,add=TRUE,
-                                lit=lit)
-		}
-
-		if(underneath){
-			persp3d(x=x,y=y,z=(matrix(min(z),nrow(z),ncol(z))+zlim[1]),
-				col=col,alpha=alpha.u,add=TRUE,smooth=FALSE,lit=lit,
-                                zlim=zlim)	
-			if(rug.u){
-				for(i in 1:nrow(z)){
-					plot3d(x=x[i],y=y,z=(matrix(min(z),
-                                                nrow(z),ncol(z))+zlim[1])[i,],
-                                                add=TRUE,col="black",size=3)
-				}
-			}
-		}
-
-		if(rug){
-			for(i in 1:nrow(z)){
-				plot3d(x=x[i],y=y,z=z[i,],add=TRUE,
-                                    col="black",size=3)
-			}
-		}
-
-
-		if(play3d || is.list(play3d)){
-			if(is.list(play3d)){
-				play3d(spin3d(axis=play3d[[1]], rpm=play3d[[2]]), duration=play3d[[3]])
-			}else{
-				play3d(spin3d(axis=c(0,0,1),rpm=4),duration=20)
-			}
-		}
-
-                par3d(cex=op3d)
-
-		return(invisible(list(z=z,col=col)))
-	}
+    plotAll.fnc(plots, sameYrange = lockYlim, ylabel, xlabel = xlabelShow, intrName = intrName, pos = conditioningPos, ylimit = ylimit, addlines = addlines, cexsize = cexsize, conditioningVals = conditioningVals, conditioningColors = colors, conditioningLines = lineTypes, lineColor = linecolor, addToExistingPlot, ...)
+    if (withList) return(plots)
 }

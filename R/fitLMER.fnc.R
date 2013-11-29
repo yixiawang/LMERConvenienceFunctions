@@ -1,5 +1,4 @@
 fitLMER.fnc <- function(model,
-	data,
     item=FALSE, # can be an item identifier such as "Item" or "Word"
 	backfit.on=c("F","t"),
 	method=c("F","t","llrt","AIC", "BIC","relLik.AIC","relLik.BIC"),
@@ -67,7 +66,7 @@ fitLMER.fnc <- function(model,
 	cat("======================================================\n")
 	cat("===            forwardfitting random effects       ===\n")
 	cat("======================================================\n")
-	mod=ffRanefLMER.fnc(model=mod,data=data,ran.effects=ran.effects,
+	mod=ffRanefLMER.fnc(model=mod,ran.effects=ran.effects,
 		alpha=ifelse(is.null(alpha),0.05,alpha),
 		if.warn.not.add=if.warn.not.add,log.file=FALSE)
 

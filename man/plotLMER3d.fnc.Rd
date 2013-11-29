@@ -47,6 +47,7 @@ plot.dat = "default", path = "default", ...)}
 \seealso{
 \code{\link{persp}};
 \code{\link{contour}};
+\code{\link{plotLMER.fnc}}.
 }
 \examples{
 if(try(require(LCFdata,quietly=TRUE))){

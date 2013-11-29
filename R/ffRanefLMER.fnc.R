@@ -1,8 +1,8 @@
-ffRanefLMER.fnc <- function(model,data,
-    ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
-    	slopes=as.character(),# of random effects to consider, e.g.,
-  		corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
-    	by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
+ffRanefLMER.fnc <- function(model,
+	ran.effects=list(ran.intercepts=as.character(), # or can specify a vector
+	slopes=as.character(),# of random effects to consider, e.g.,
+	corr=as.character(), # for each slope, if not a factor, specify whether correlations (1) or not (0) should be added. 
+	by.vars=as.character()), # c("(0+Length|Subject)","(1+Frequency|Subject)")
     alpha=0.05,
 	if.warn.not.add=TRUE,
     log.file=NULL # or other path and file name or FALSE
@@ -17,6 +17,8 @@ ffRanefLMER.fnc <- function(model,data,
 	}
   options(warn=1)
 
+  data<-model@frame
+
   temp.dir=tempdir()
   tempdir()
 
@@ -29,7 +31,10 @@ ffRanefLMER.fnc <- function(model,data,
   if(as.vector(model@call[1])=="glmer()"){
     odv=data[,as.character(unlist(as.list(model@call))$formula[2])]
     data[,as.character(unlist(as.list(model@call))$formula[2])]=rnorm(nrow(data),0,1)
-    temp.lmer=update(model,.~.,family="gaussian",data=data)
+	wo<-options()$warn
+	options(warn=-1)
+    temp.lmer <- update(model, . ~ ., family = "gaussian", data = data)
+	options(warn=wo)
     coefs=row.names(anova(temp.lmer))
     data[,as.character(unlist(as.list(model@call))$formula[2])]=odv
   } else {
@@ -38,7 +43,7 @@ ffRanefLMER.fnc <- function(model,data,
   coefs=unique(unlist(strsplit(coefs,":")))
   coefs=gsub("^rcs\\((.*), [[:digit:]]*\\)$","\\1",coefs)
   coefs=gsub("^rcs\\((.*), [[:digit:]]*\\)$","\\1",coefs)
-  coefs=c(names(model@flist),coefs)
+  coefs=c(names(getME(model,"flist")),coefs)
 
   if(is.list(ran.effects)){
 

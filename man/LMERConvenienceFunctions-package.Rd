@@ -3,14 +3,14 @@
 \alias{LMERConvenienceFunctions}
 \docType{package}
 \title{An suite of functions to facilitate modeling with LMER (other miscellanea).}
-\description{The main functions of the package are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} or \code{bfFixefLMER.fnc_t.fnc} and random effect forward fitting \code{ffRanefLMER.fnc}. The first two functions enable one to backfit the fixed effects of a model on "F" (\emph{p}-values), "t" (\emph{t} statisitc), "llrt" (log-likelihood ratio test), "AIC", "BIC", "relLik.AIC", and "relLik.BIC". The third function enables one to forward-fit a model's random-effect structure by way of log-likelihood ratio testing. See their respective help pages for details on the procedure. There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, functions to perform posthoc analyses (\code{mcposthoc.fnc}), a function to generate summaries of \code{mcposthoc} objects (\code{summary.mcposthoc}), a function to generate (dynamic) 3d plots of \code{mer} objects (\code{plotLMER3d.fnc}), a function to generate (dynamic) 3d plots of the raw data as a function of an interaction between two numeric variables (\code{plotRaw3d.fnc}), a function to plot (dynamic) 3d kernel estimates of two numeric variables (\code{plotDensity3d.fnc}), and a function to calculate the relative log-likehood between two models (\code{relLik}).. Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and a function to list in matrix format the column names of a data frame (\code{cn}). The data to run examples is contained in package \code{LCF_data}.
+\description{The main functions of the package are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} or \code{bfFixefLMER.fnc_t.fnc} and random effect forward fitting \code{ffRanefLMER.fnc}. The first two functions enable one to backfit the fixed effects of a model on "F" (\emph{p}-values), "t" (\emph{t} statisitc), "llrt" (log-likelihood ratio test), "AIC", "BIC", "relLik.AIC", and "relLik.BIC". The third function enables one to forward-fit a model's random-effect structure by way of log-likelihood ratio testing. See their respective help pages for details on the procedure. There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, functions to perform posthoc analyses (\code{mcposthoc.fnc}), a function to generate summaries of \code{mcposthoc} objects (\code{summary.mcposthoc}), a function to generate (dynamic) 3d plots of \code{mer} objects (\code{plotLMER3d.fnc}), a function to generate (dynamic) 3d plots of the raw data as a function of an interaction between two numeric variables (\code{plotRaw3d.fnc}), a function to plot (dynamic) 3d kernel estimates of two numeric variables (\code{plotDensity3d.fnc}), and a function to calculate the relative log-likehood between two models (\code{relLik}). Also, as of version 2.4, the package gains function ``plotLMER.fnc'' (revived from archived package ``languageR''). Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and a function to list in matrix format the column names of a data frame (\code{cn}). The data to run examples is contained in package \code{LCF_data}.
 }
 \details{
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 2.1\cr
-Date: \tab 2013-09-24\cr
+Version: \tab 2.4\cr
+Date: \tab 2013-11-29\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -55,6 +55,7 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 \code{\link{mcp.fnc}};
 \code{\link{relLik}};
 \code{\link{romr.fnc}};
+\code{\link{plotLMER.fnc}};
 \code{\link{plotLMER3d.fnc}};
 \code{\link{plotDensity3d.fnc}};
 \code{\link{plotRaw3d.fnc}};
@@ -63,12 +64,14 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 \code{\link{f}};
 \code{\link{cd}};
 \code{\link{cdf}};
-\code{\link{cdup}}
+\code{\link{cdup}}.
 }
 \examples{
 \dontrun{
 if(try(require(LCFdata,quietly=TRUE))){
-  ### Load and format data
+  ############################################
+  #            Load and format data.         #
+  ############################################
   require(LCFdata)
   data(eeg)
 
@@ -93,15 +96,26 @@ if(try(require(LCFdata,quietly=TRUE))){
   # mean center WMC
   eeg$WMCc <- eeg$WMC - mean(eeg$WMC)
 
-  ### demonstrate plotDensity3d,fnc
+  ############################################
+  #      Demonstrate plotDensity3d.fnc.      #
+  ############################################
   plotDensity3d.fnc(x = sort(unique(eeg$WMCc)), 
     y = sort(unique(eeg$LengthBc)))
 
-  ### demonstrate plotDensity3d,fnc
+  ############################################
+  #        Demonstrate plotRaw3d.fnc.        #
+  ############################################
   plotRaw3d.fnc(data = eeg, response = "Fz", pred = "WMCc",
     intr = "LengthBc", plot.type = "persp", theta = 150)
 
-  ### Analyze data
+  ############################################
+  #       Analyze data. Demonstrate model    #
+  #       selection, and diagnostic plots.   #
+  #       Also demonstrate forward fitting   #
+  #       of random effects and back fitting #
+  #       of fixed effects. Finally,         #
+  #       demonstrate pamer.fnc.             # 
+  ############################################
   # fit initial model
   m0 <- lmer(Fz ~ (FreqBdc + LengthBc + WMCc)^2 + (1 | Subject), 
     data = eeg)
@@ -130,7 +144,7 @@ if(try(require(LCFdata,quietly=TRUE))){
 
   # forward-fit random effect structure (simple for the purposes
   # of the example).
-  m2 <- ffRanefLMER.fnc(model = m1, data = eeg, ran.effects = 
+  m2 <- ffRanefLMER.fnc(model = m1, ran.effects = 
     c("(0 + LengthBc | Subject)", "(0 + WMCc | Item)"), 
     log.file = FALSE)
 
@@ -157,25 +171,77 @@ if(try(require(LCFdata,quietly=TRUE))){
   # check significance of model terms
   pamer.fnc(m3)
 
+  ############################################
+  #       Demonstrate mcposthoc.fnc and      #
+  #       summary.mcposthoc.                 #
+  ############################################
   # Only the intercept is significant. For purposes of the 
   # example, let's perform a posthoc analysis on FreqBdc on
   # model m2.
   m2.ph <- mcposthoc.fnc(model = m2, var = list(ph1 = "FreqBdc"))
 
+  # Now check if and how the different levels differ between
+  # each other. First check high vs mid and high vs low:
+  summary(m2.ph, term = "FreqBdchigh") 
+  # Then low vs mid (the low vs high row is redundant from the 
+  # above summary):
+  summary(m2.ph, term = "FreqBdclow")
+  # Note that none of the levels differ from each other. Indeed, 
+  # the backfitting process indicated that the model only has an 
+  # intercept (i.e., the FreqBc factor variable was not significant).
 
-  if(try(require(languageR,quietly=TRUE))){
-  # Generate plot for Length X Freq with function plotLMER.fnc
-  require(languageR)
-  plotLMER.fnc(m2, pred = "LengthBc", intr = list("FreqBdc", 
-    levels(eeg$FreqBdc), "beg", list(1 : 3, 1 : 3)))
-  }
-  # effect of Length at each FreqB bin
+  # Just to show how one would look at posthocs for interactions. Let's 
+  # look at the effect of Length at each FreqB bin:
   summary(object = m2.ph, term = "LengthBc")
-  # Length effect different Freq bins? Start with low 
+  # Does Length effect different Freq bins? Start with low 
   # versus mid and high
   smry <- summary(object = m2.ph, term = "FreqBdclow:LengthBc")
-  # mid versus low and high
+  # then mid versus low and high
   smry <- summary(object = m2.ph, term = "FreqBdcmid:LengthBc")
+
+  ############################################
+  #       Demonstrate `revived' version of   #
+  #       plotLMER.fnc and plotLMER3d.fnc.   #
+  ############################################
+  # Generate plot for Length X Freq with function plotLMER.fnc.
+  plotLMER.fnc(m2, pred = "LengthBc", intr = list("FreqBdc", 
+    levels(eeg$FreqBdc), "beg", list(1 : 3, 1 : 3)))
+
+  # Plotting the Length:WMC interaction with plotLMER3d.fnc. It'll
+  # take a little bit of time.
+  plotLMER3d.fnc(m2,"LengthBc","WMCc")
+  # Plot it a second time to demonstrate caching. You notice the 
+  # speed-up.
+  plotLMER3d.fnc(m2,"LengthBc","WMCc")
+
+
+  ############################################
+  #       Demonstrate modeling and           #
+  #       backfitting of glmer.              #
+  ############################################
+  # Split FreqBc into 2 categories.
+  eeg$FreqBdc <- "high"
+  eeg$FreqBdc[eeg$FreqBc<=median(eeg$FreqBc)] <- "low"
+  eeg$FreqBdc <- as.factor(eeg$FreqBdc)
+  eeg$FreqBdc <- relevel(eeg$FreqBdc, "low")
+
+  # Fit glmer model.
+  m4 <- glmer(FreqBdc ~ (Fz + LengthBc + WMCc)^2 + (1 | Subject),
+	family = "binomial", data = eeg)
+  summary(m4)
+
+  # Back fit fixed effects, forward fit random effects, and then
+  # re-back fit fixed effects. Need to set argument backfit.on to "t".
+  m5 <- fitLMER.fnc(model = m4, ran.effects = "(0 + LengthBc | Subject)",
+	backfit.on = "t", log.file = FALSE)
+  summary(m5)
+
+  # Plot the 2-way interaction.
+  plotLMER.fnc(m5, pred = "Fz", intr = list("LengthBc", 
+	quantile(eeg$LengthBc), "med",list(1:5,1:5)))
+
+  # Look at the same plot, but in 3d.
+  plotLMER3d.fnc(m5, pred = "Fz", intr = "LengthBc")
   }
 }
 }

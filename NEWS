@@ -1,4 +1,17 @@
 --------------------
+version 2.4
+-----
+* Updated package to work with post-version 1.0 of 
+package lme4.
+* Revived, so to speak, function ``plotLMER.fnc'' from 
+archived package ``languageR'' and revised everything to 
+be compatible with lme4 version > 1.0.
+* Removed any mention of ``pvals.fnc'' and associated 
+functions from archived package ``languageR'' from any 
+function that used it.
+* In functions ``ffRanefLMER.fnc'' and ``fitLMER.fnc'', 
+argument ``data'' is depricated.
+--------------------
 version 2.1
 -----
 * Updated the percentage of deviance explained in function 

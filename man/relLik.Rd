@@ -9,7 +9,9 @@
   \item{ndigits}{An integer denoting the number of decimal digits in the output.}
   \item{\dots}{Further arguments to pass to \code{AIC} or \code{BIC}.}
 }
-\details{The relative log-likelihood is calculated as \code{exp((abs(AIC(x) - AIC(y)))/2)} or \code{exp((abs(BIC(x) - BIC(y)))/2)}, depending on the method.}
+\details{The relative log-likelihood is calculated as \code{exp((abs(AIC(x) - AIC(y)))/2)} or \code{exp((abs(BIC(x) - BIC(y)))/2)}, depending on the method.
+
+You can find information regarding differences between AIC and BIC from \code{http://methodology.psu.edu/eresources/ask/sp07}.}
 \value{A vector with values:
 \item{AIC(x), BIC(x) }{The \code{AIC} or ]code{BIC} value of the first model object.}
 \item{AIC(y), BIC(y) }{The \code{AIC} or ]code{BIC} value of the second model object.}

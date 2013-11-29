@@ -8,8 +8,10 @@ function(model,trim=2.5,col="red"){
 	qqline(data$rstand,col=col)
 	plot(data$rstand~fitted(model),pch=".")
 	abline(h = c(-trim, trim),col=col)
-	dffits = abs(resid(model, "dffits")) 
-	plot(dffits, type="h")
+	### removed this until can figure out how to calculate dffits 
+	### for a merMod. If you know how, please let the package 
+	### maintainer know :-)
+	#dffits = abs(resid(model, "dffits")) 
+	#plot(dffits, type="h")
 	par(mfrow=c(1,1))
 }
-

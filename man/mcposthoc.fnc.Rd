@@ -104,10 +104,8 @@ An object of class "mcposthoc" with the following slots:
 \item{var }{A named list containing the names of the variables used in the posthoc.}
 \item{summaries }{A named list containing the posthoc summaries for each factor re-leveling. If \code{mcmc = FALSE}, data frames with upper- and lower-bound (anti-conservative and conservative, respectively) \emph{df}s, \emph{p}-values, and deviance explained (\%) for each model term. If \code{mcmc = TRUE}, data frames with the estimated coefficients, their MCMC mean, the HPD 95 and the probability based on the \emph{t} distribution with the number of observations minus the number of fixed-effects coefficients as degrees of freedom.  This last \emph{p}-value is anti-conservative, especially for small data sets.}
 }
+\note{It is not possible anymore to get p-values with function \code{pvals.fnc} of package \code{languageR}. Please see \code{http://stackoverflow.com/questions/19199713/lme4-and-languager-compatibility-error-input-model-is-not-a-mer-object} for other possible avenues to get p-values.}
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
-\references{
-Newman, A.J., Tremblay, A., Neville, H.J., and Ullman, M.T. (In preparation).  The relationship between proficiency and ERP components evoked by grammatical violations in native and late Learners of English.
-}
 \seealso{
 \code{\link{summary.mcposthoc}}
 }
