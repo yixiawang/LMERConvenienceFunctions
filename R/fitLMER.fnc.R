@@ -1,7 +1,7 @@
 fitLMER.fnc <- function(model,
     item=FALSE, # can be an item identifier such as "Item" or "Word"
 	backfit.on=c("F","t"),
-	method=c("F","t","llrt","AIC", "BIC","relLik.AIC","relLik.BIC"),
+	method=c("F","t","z","llrt","AIC", "BIC","relLik.AIC","relLik.BIC"),
 	threshold=NULL,
 	t.threshold=NULL,
     ran.effects=list(ran.intercepts=as.character(),

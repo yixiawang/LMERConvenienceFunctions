@@ -9,8 +9,8 @@
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 2.4\cr
-Date: \tab 2013-11-29\cr
+Version: \tab 2.5\cr
+Date: \tab 2013-12-14\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -34,6 +34,8 @@ Newman, A.J., Tremblay, A., Neville, H.J., and Ullman, M.T. (In preparation).  T
 
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.
+
+Quene, H., & van den Bergh, H. (2008). Examples of mixed-effects modeling with crossed random effects and with binomial data. Journal of Memory and Language, 59, 413--425. doi: 10.1016/j.jml.2008.02.002.
 
 
 Tremblay, Antoine. (2009). \emph{Processing Advantages of Lexical Bundles: Evidence from Self-paced Reading, Word and Sentence Recall, and Free Recall with Event-related Brain Potential Recordings}. Ph.D. Dissertation. University of Alberta, Edmonton, Canada.
@@ -210,7 +212,7 @@ if(try(require(LCFdata,quietly=TRUE))){
   # Plotting the Length:WMC interaction with plotLMER3d.fnc. It'll
   # take a little bit of time.
   plotLMER3d.fnc(m2,"LengthBc","WMCc")
-  # Plot it a second time to demonstrate caching. You notice the 
+  # Plot it a second time to demonstrate caching. You can notice the 
   # speed-up.
   plotLMER3d.fnc(m2,"LengthBc","WMCc")
 
@@ -242,6 +244,53 @@ if(try(require(LCFdata,quietly=TRUE))){
 
   # Look at the same plot, but in 3d.
   plotLMER3d.fnc(m5, pred = "Fz", intr = "LengthBc")
+
+  ############################################
+  #       Test backfitting on AIC,           #
+  #       BIC, llrt, relLik.AIC, and         #
+  #       relLik.BIC.                        #
+  ############################################
+  # AIC
+  m.test <- bfFixefLMER_F.fnc(m2, method = "AIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m2, method = "AIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m4, method = "AIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_F.fnc(m4, method = "AIC",
+	log.file = FALSE)
+
+  # BIC
+  m.test <- bfFixefLMER_F.fnc(m2, method = "BIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m2, method = "BIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m4, method = "BIC",
+	log.file = FALSE)
+
+  # llrt
+  m.test <- bfFixefLMER_F.fnc(m2, method = "llrt",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m2, method = "llrt",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m4, method = "llrt",
+	log.file = FALSE)
+
+  # relLik.AIC
+  m.test <- bfFixefLMER_F.fnc(m2, method = "relLik.AIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m2, method = "relLik.AIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m4, method = "relLik.AIC",
+	log.file = FALSE)
+
+  # relLik.BIC
+  m.test <- bfFixefLMER_F.fnc(m2, method = "relLik.BIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m2, method = "relLik.BIC",
+	log.file = FALSE)
+  m.test <- bfFixefLMER_t.fnc(m4, method = "relLik.BIC",
+	log.file = FALSE)
   }
 }
 }

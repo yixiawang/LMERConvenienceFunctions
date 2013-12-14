@@ -1,4 +1,4 @@
-bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, t.threshold = NULL, alphaitem = NULL, prune.ranefs = TRUE, set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, log.file = NULL){
+bfFixefLMER_t.fnc<-function (model, item = FALSE, method = c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, t.threshold = NULL, alphaitem = NULL, prune.ranefs = TRUE, set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, log.file = NULL) {
   if (length(item) == 0) {
     stop("please supply a value to argument \"item\".\n")
   }
@@ -8,22 +8,20 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
   if (length(reset.REML.TRUE) == 0) {
     stop("please supply a value to argument \"reset.REML.TRUE\".\n")
   }
-  if (!method[1] %in% c("t", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC")) {
-    stop("please supply a proper method name (t, llrt, AIC, BIC, relLik.AIC, or relLik.BIC).\n")
+  if (!method[1] %in% c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC")) {
+    stop("please supply a proper method name (t, z, llrt, AIC, BIC, relLik.AIC, or relLik.BIC).\n")
   }
-  datclasses<-attributes(attributes(model@frame)$terms)$dataClasses
-  ranefs.in.model<-names(ranef(model))
-  for(zz in ranefs.in.model){
-  	datclasses<-datclasses[-which(names(datclasses)==zz)]
-  }
-  if ("factor" %in% datclasses & max(c(0, apply(as.data.frame(model@frame[, names(datclasses[datclasses == "factor"])]), MARGIN = 2, FUN = function(x) length(levels(factor(x)))))) > 2) {
-    warning("factor variable with more than two levels in model terms, backfitting on t-values is not appropriate, please use function \"bfFixefLMER_F.fnc\" instead.\n")
+  if ("factor" %in% attributes(attributes(model@frame)$terms)$dataClasses & 
+        max(c(0, apply(as.data.frame(model@frame[, names(attributes(attributes(model@frame)$terms)$dataClasses[attributes(attributes(model@frame)$terms)$dataClasses == "factor"])]), MARGIN = 2, FUN = function(x) length(levels(factor(x)))))) > 2) {
+	if(!as.vector(model@call[1]) == "glmer()"){
+    	warning("factor variable with more than two levels in model terms, backfitting on t-values is not appropriate, please use function \"bfFixefLMER_F.fnc\" instead.\n")
+	}
   }
   if (is.null(threshold)) {
-    threshold <- c(2, 0.05, 5, 5, 4, 4)[match(method[1], c("t", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"))]
+    threshold <- c(2, 2, 0.05, 5, 5, 4, 4)[match(method[1], c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"))]
   }
   if (is.null(t.threshold)) {
-    if (method[1] == "t") {
+    if ((method[1] == "t") || (method[1] == "z")) {
       t.threshold <- 2
     }
     else {
@@ -41,8 +39,8 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
   if (is.null(log.file)) {
     log.file <- file.path(tempdir(), paste("bfFixefLMER_t_log_", gsub(":", "-", gsub("", "_", date())), ".txt", sep = ""))
   }
-  if (method[1] != "t" & set.REML.FALSE) {
-    if (!as.vector(model@call[1]) == "glmer()") {
+  if ((method[1] != "t" & set.REML.FALSE) || (method[1] != "z" & set.REML.FALSE)) {
+	if(!as.vector(model@call[1]) == "glmer()"){
     	cat("setting REML to FALSE\n")
     	model <- update(model, . ~ ., REML = FALSE)
 	}
@@ -74,10 +72,10 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
     statistic <- "z-value"
     odv <- data[, as.character(unlist(as.list(model@call))$formula[2])]
     data[, as.character(unlist(as.list(model@call))$formula[2])] = rnorm(nrow(data), 0, 1)
-	wo<-options()$warn
-	options(warn=-1)
+	ow<-options()$warn
+  	options(warn = -1)
     temp.lmer <- update(model, . ~ ., family = "gaussian", data = data)
-	options(warn=wo)
+	options(warn=ow)
     coefs <- row.names(anova(temp.lmer))
     data[, as.character(unlist(as.list(model@call))$formula[2])] <- odv
   }
@@ -89,7 +87,7 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
     smry <- as.data.frame(summary(model)$coefficients)
   }
   else {
-    stop("the input model is not a merMod object\n")
+    stop("the input model is not a mer object\n")
   }
   smry.temp <- smry[-c(1:nrow(smry)), ]
   smry <- as.data.frame(summary(model)$coefficients)
@@ -105,10 +103,8 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
     smry.temp3 <- smry.temp2
     smry.temp3 <- smry.temp3[-c(1:nrow(smry.temp3)), ]
     for (j in 1:nrow(smry.temp2)) {
-      if (length(unlist(strsplit(row.names(smry.temp2)[j], 
-                                 ":"))) == intr.order) {
-        smry.temp3 <- rbind(smry.temp3, smry.temp2[j, 
-                                                   ])
+      if (length(unlist(strsplit(row.names(smry.temp2)[j], ":"))) == intr.order) {
+        smry.temp3 <- rbind(smry.temp3, smry.temp2[j, ])
       }
     }
     smry.temp2 <- smry.temp3
@@ -137,13 +133,13 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
     cat("processing model terms of interaction level", order, "\n")
     keepers <- as.character(row.names(smry.temp[smry.temp$Order == order, ]))
     smry.temp2 <- smry.temp[keepers, ]
-    if (smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), 
-                   3][1] >= t.threshold) {
+    if (smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), 3][1] >= t.threshold) {
       cat("  all terms of interaction level", order, "significant\n")
     }
     while (smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), 3][1] < t.threshold) {
       cat("  iteration", count, "\n")
-      cat("    ", statistic, "for term", paste("\"", row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ])[1], "\"", sep = ""), "=", smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), 3][1], "<", t.threshold, "\n")
+      cat("    ", statistic, "for term", paste("\"", row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ])[1], "\"", sep = ""), 
+          "=", smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), 3][1], "<", t.threshold, "\n")
       fac <- unlist(strsplit(gsub("\\)", "", gsub("\\(", "", as.character(row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ]))[1])), ":"))
       hoi <- gsub("\\)", "", gsub("\\(", "", intr.order[intr.order$Order > order, "Coef"]))
       tt <- c()
@@ -177,8 +173,8 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
           }
         }
         if (method[1] %in% c("AIC", "BIC")) {
-          m.temp.ic <- attributes(summary(m.temp))$AICtab[1, method[1]]
-          model.ic <- attributes(summary(model))$AICtab[1, method[1]]
+          m.temp.ic <- summary(m.temp)$AICtab[method[1]]
+          model.ic <- summary(model)$AICtab[method[1]]
           ic.diff <- m.temp.ic - model.ic
           if (ic.diff >= threshold) {
             reduction <- FALSE
@@ -223,7 +219,7 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
             }
           }
           else {
-            cat(paste("     simple model more likely than", "complex model\n"))
+            cat(paste("     simple model more likely than complex model\n"))
           }
         }
         if (method[1] == "t") {
@@ -235,10 +231,10 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
           if (as.vector(model@call[1]) == "glmer()") {
             odv <- data[, as.character(unlist(as.list(model@call))$formula[2])]
             data[, as.character(unlist(as.list(model@call))$formula[2])] <- rnorm(nrow(data), 0, 1)
-			wo<-options()$warn
-			options(warn=-1)
+			ow<-options()$warn
+  			options(warn = -1)
             temp.lmer <- update(model, . ~ ., family = "gaussian", data = data)
-			options(warn=wo)
+			options(warn=ow)
             coefs <- row.names(anova(temp.lmer))
             data[, as.character(unlist(as.list(model@call))$formula[2])] <- odv
           }
@@ -258,9 +254,11 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
             coef <- gsub("(^.*$)", "\\1\\.\\*", coef)
             coef <- gsub("\\(", "\\\\(", coef)
             coef <- gsub("\\)", "\\\\)", coef)
-            smry.temp3 <- smry2[grep(paste("^", coef, sep = ""), row.names(smry2)), ]
+            smry.temp3 <- smry2[grep(paste("^", coef, 
+                                           sep = ""), row.names(smry2)), ]
             smry.temp4 <- smry.temp3
-            smry.temp4 <- smry.temp4[-c(1:nrow(smry.temp4)), ]
+            smry.temp4 <- smry.temp4[-c(1:nrow(smry.temp4)), 
+                                     ]
             for (j in 1:nrow(smry.temp3)) {
               if (length(unlist(strsplit(row.names(smry.temp3)[j], ":"))) == intr.order) {
                 smry.temp4 <- rbind(smry.temp4, smry.temp3[j, ])
@@ -295,7 +293,7 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
     }
   }
   if (reset.REML.TRUE) {
-    if (!as.vector(model@call[1]) == "glmer()") {
+	if(!as.vector(model@call[1]) == "glmer()"){
     	cat("resetting REML to TRUE\n")
     	model <- update(model, . ~ ., REML = TRUE)
 	}
@@ -316,10 +314,10 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
       statistic <- "z-value"
       odv <- data[, as.character(unlist(as.list(model@call))$formula[2])]
       data[, as.character(unlist(as.list(model@call))$formula[2])] = rnorm(nrow(data), 0, 1)
-	  wo<-options()$warn
-	  options(warn=-1)
+	  ow<-options()$warn
+  	  options(warn = -1)
       temp.lmer <- update(model, . ~ ., family = "gaussian", data = data)
-	  options(warn=wo)
+	  options(warn=ow)
       coefs <- row.names(anova(temp.lmer))
       data[, as.character(unlist(as.list(model@call))$formula[2])] <- odv
     }
@@ -341,7 +339,7 @@ bfFixefLMER_t.fnc=function (model, item = FALSE, method = c("t", "llrt", "AIC", 
       rtr2 <- vector("character")
       for (iii in ranef.to.remove) {
         rtr <- c(rtr, grep(iii, m.ranefs, value = TRUE))
-        cat(paste("  ", iii, " in random effects structure, but not in fixed effects structure\n", sep = ""))
+        cat(paste("  ", iii, " in random effects structure but not in fixed effects structure\n", sep = ""))
         cat("    removing", iii, "from model ...\n")
         rtr2 <- c(rtr2, sub(iii, 1, grep(iii, m.ranefs, value = TRUE)))
       }

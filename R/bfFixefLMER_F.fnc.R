@@ -1,4 +1,9 @@
-bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, alpha = NULL, alphaitem = NULL, prune.ranefs = TRUE, p.value = "upper", set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, log.file = NULL){
+bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC", 
+                                          "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, alpha = NULL, 
+          alphaitem = NULL, prune.ranefs = TRUE, p.value = "upper", 
+          set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, 
+          log.file = NULL) 
+{
   if (length(item) == 0) {
     stop("please supply a value to argument \"item\".\n")
   }
@@ -8,7 +13,8 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
   if (length(reset.REML.TRUE) == 0) {
     stop("please supply a value to argument \"reset.REML.TRUE\".\n")
   }
-  if (!method[1] %in% c("F", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC")) {
+  if (!method[1] %in% c("F", "llrt", "AIC", "BIC", "relLik.AIC", 
+                        "relLik.BIC")) {
     stop("please supply a proper method name (F llrt AIC BIC, relLik.AIC, or relLik.BIC).\n")
   }
   if (as.vector(model@call[1]) == "glmer()") {
@@ -59,7 +65,8 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
     }
     else {
       cat("  log-likelihood ratio test p-value =", as.vector(anova(model, model.updated)[2, "Pr(>Chisq)"]), "\n")
-      cat("  not adding", paste("by-", item, sep = ""), "random intercepts to model\n")
+      cat("  not adding", paste("by-", item, sep = ""), 
+          "random intercepts to model\n")
     }
   }
   coefs <- row.names(anova(model))
@@ -90,18 +97,16 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
       cat("  all terms of interaction level", order, "significant\n")
     }
     else {
-      while (smry.temp2[smry.temp2[, paste(p.value, ".p.val",sep = "")] == max(smry.temp2[, paste(p.value, ".p.val", sep = "")]), paste(p.value, ".p.val", sep = "")][1] >= alpha) {
+      while (smry.temp2[smry.temp2[, paste(p.value, ".p.val", sep = "")] == max(smry.temp2[, paste(p.value, ".p.val", sep = "")]), paste(p.value, ".p.val", sep = "")][1] >= alpha) {
         cat("  iteration", count, "\n")
-       
-        if(
-          length(smry.temp2[,paste(p.value, ".p.val", sep = "")] == max(smry.temp2[, paste(p.value, ".p.val", sep = "")]))>1){
+        if (length(smry.temp2[, paste(p.value, ".p.val", sep = "")] == max(smry.temp2[, paste(p.value, ".p.val", sep = "")])) > 1) {
           evaluated.term <- as.character(row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ]))
-        }else{
+        }
+        else {
           evaluated.term <- row.names(smry.temp2[smry.temp2[, paste(p.value, ".p.val", sep = "")] == max(smry.temp2[, paste(p.value, ".p.val", sep = "")]), ])[1]
         }
-        ##  
-        cat("    p-value for term", paste("\"", evaluated.term, "\"", sep = ""), "=", smry.temp2[evaluated.term, paste(p.value, ".p.val", sep = "")], ">=", alpha, "\n")
-        hoi <- gsub("\\)", "", gsub("\\(", "", intr.order[intr.order$Order > order, "Coef"]))
+        cat("    p-value for term", paste("\"", evaluated.term, "\"", sep = ""), "=", smry.temp2[evaluated.term, paste(p.value, ".p.val", sep = "")], ">=", alpha, "\n") 
+		hoi <- gsub("\\)", "", gsub("\\(", "", intr.order[intr.order$Order > order, "Coef"]))
         tt <- data.frame()
         for (i in 1:length(hoi)) {
           tt[i, 1] <- length(grep("FALSE", unique(unlist(strsplit(evaluated.term, ":")) %in% unlist(strsplit(hoi[i], ":"))))) < 1
@@ -110,8 +115,7 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
           cat("    part of higher-order interaction\n")
           cat("    skipping term\n")
           keepers <- row.names(smry.temp2)
-          #new
-          keepers <- keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ])),keepers)]
+          keepers <- keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ])), keepers)]
           smry.temp2 <- smry.temp2[keepers, ]
           smry.temp2 <- na.omit(smry.temp2)
         }
@@ -135,8 +139,8 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
             }
           }
           if (method[1] %in% c("AIC", "BIC")) {
-            m.temp.ic <- attributes(summary(m.temp))$AICtab[1, method[1]]
-            model.ic <- attributes(summary(model))$AICtab[1, method[1]]
+            m.temp.ic <- summary(m.temp)$AICtab[method[1]]
+            model.ic <- summary(model)$AICtab[method[1]]
             ic.diff <- m.temp.ic - model.ic
             if (ic.diff >= threshold) {
               reduction <- FALSE
@@ -181,7 +185,7 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
               }
             }
             else {
-            	cat(paste("    simple model more likely than complex model\n"))
+              cat(paste("    simple model more likely than complex model\n"))
             }
           }
           if (method[1] == "F") {
@@ -243,8 +247,10 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
     coefs <- row.names(anova(model))
     m.ranef.variables <- gsub("\\((.*)\\|.*", "\\1", m.ranefs)
     m.ranef.variables <- gsub(".\\+(.*)", "\\1", m.ranef.variables)
-    m.ranef.variables <- m.ranef.variables[m.ranef.variables != "1"]
-    m.ranef.variables <- m.ranef.variables[m.ranef.variables != "0"]
+    m.ranef.variables <- m.ranef.variables[m.ranef.variables != 
+                                             "1"]
+    m.ranef.variables <- m.ranef.variables[m.ranef.variables != 
+                                             "0"]
     ranef.to.remove <- vector("character")
     for (m.ranef.variable in m.ranef.variables) {
       if (!m.ranef.variable %in% coefs) {
@@ -258,11 +264,10 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
         rtr <- c(rtr, grep(iii, m.ranefs, value = TRUE))
         cat(paste("  ", iii, " in random effects structure, but not in fixed effects structure\n", sep = ""))
         cat("    removing", iii, "from model ...\n")
-        rtr2<-c(rtr2,sub(iii,1,grep(iii, m.ranefs, value = TRUE)))
+        rtr2 <- c(rtr2, sub(iii, 1, grep(iii, m.ranefs, 
+                                         value = TRUE)))
       }
-      
-     eval(parse(text = paste("model<-update(model,.~.-", paste(rtr, collapse = "-"),"+",paste(rtr2, collapse = "+"), ",data=data)", sep = "")))
-      
+      eval(parse(text = paste("model<-update(model,.~.-", paste(rtr, collapse = "-"), "+", paste(rtr2, collapse = "+"), ",data=data)", sep = "")))
     }
     else {
       cat("  nothing to prune\n")

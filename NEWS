@@ -1,4 +1,13 @@
 --------------------
+version 2.5
+-----
+* Fixed a bug win ``bfFixefLMER_F.fnc'' and
+``bfFixefLMER_t.fnc'' when backfitting on AIC,
+BIC, llrt, relLik.AIC, and relLik.BIC.
+* Added option "z" to argument ``method''.
+* Added examples to test backfitting on all methods for
+lmer and glmer models.
+--------------------
 version 2.4
 -----
 * Updated package to work with post-version 1.0 of 
