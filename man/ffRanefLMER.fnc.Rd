@@ -13,6 +13,7 @@ log.file = NULL)}
   \item{if.warn.not.add}{Logical. If a warning is issued after fitting a model with a new random effect (e.g., \code{false convergence} or the like), should the random effect nevertheless be evaluated? Defaults to \code{TRUE}, meaning that if such a warning is issued, the random effect will not be added to the random effects structure of the model. If set to \code{FALSE}, the random effect will be evaluated for inclusion as any other random effects would be via log likelihood ratio testing even if a warning is issued.}
   \item{log.file}{Should the back-fitting log be saved? Defaults to \code{NULL}, which means that a log file is saved in a temporary folder as \code{paste("ffRanefLMER_log_", gsub(":", "-", gsub(" ", "_", date())), ".txt", sep = "")}. The path and file name of the log can be changed to whatever the use wishes. Set to \code{FALSE} to disable.}
 }
+\note{The removal of a random effect from the random effects structure if the variables that compose it are not also in the fixed effects structure has been turned off in this version.}
 \value{A \code{mer} object with forward-fitted random effect structure as well as a log of the process is printed on screen and, optionally, printed in a log file.}
 \references{Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.}
 \author{Antoine Tremblay, Dalhousie University, \code{trea26@gmail.com}.}

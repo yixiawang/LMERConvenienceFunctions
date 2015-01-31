@@ -92,6 +92,7 @@ and then type in the console
 }
 On the ACEnet cluster, this results in 22 independent analyses, simultaneously using a total of 22 cores and 176 GB of RAM. This analysis completes in about 30 minutes to 1 hour.
 }
+\note{The removal of a random effect from the random effects structure if the variables that compose it are not also in the fixed effects structure has been turned off in this version.}
 \value{A \code{mer} object with back-fitted fixed effects and forward-fitted random effects, as well as a log of the process, which is printed on screen and, optionally, printed in a log file.}
 \references{
 Baayen, R.H., Davidson, D.J. and Bates, D.M. (2008). Mixed-effects modeling with crossed random effects for subjects and items. Journal of Memory and Language, 59, 390--412.
@@ -104,7 +105,7 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 }
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
 
-\section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while lower-bound \emph{p}-values can be conservative. See \url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests} and function \code{pamer.fnc}.}
+\section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while lower-bound \emph{p}-values can be conservative. See function \code{pamer.fnc}.}
 
 \seealso{
 \code{\link{bfFixefLMER_F.fnc}; }

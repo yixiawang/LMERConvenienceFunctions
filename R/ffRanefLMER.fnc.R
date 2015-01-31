@@ -135,10 +135,10 @@ ffRanefLMER.fnc <- function(model,
       by.vars<-ran.effects$by.vars
   
       for(slope in slopes){
-        if(!slope%in%coefs){
-          cat("warning:",slope,"not part of model coefficients\n")
-          cat("\tskipping\n")
-        } else {
+        #if(!slope%in%coefs){
+        #  cat("warning:",slope,"not part of model coefficients\n")
+        #  cat("\tskipping\n")
+        #} else {
           for(variable in by.vars){
 	    if(is.factor(model@frame[,slope])){
             	cat("evaluating addition of",paste("(",slope,"|",variable,")",sep=""),"to model\n")
@@ -148,10 +148,10 @@ ffRanefLMER.fnc <- function(model,
             if(slope!=variable){
                 wngs=file(file.path(temp.dir,"temp.txt"),open="w+")
                 sink(wngs,type="message")
-                if(!variable%in%coefs){
-                  cat("\twarning:",variable,"not part of model coefficients\n")
-                  cat("\tskipping\n")
-                } else {
+                #if(!variable%in%coefs){
+                #  cat("\twarning:",variable,"not part of model coefficients\n")
+                #  cat("\tskipping\n")
+                #} else {
                   # Fit more complex model
 		  if(is.factor(model@frame[,slope])){
                   	eval(parse(text=paste("model.updated=update(model,.~.+(",slope,"|",variable,"))",sep="")))
@@ -191,23 +191,23 @@ ffRanefLMER.fnc <- function(model,
 		      }
                     }
                  }
-               }
+               #}
              } # close if(slope!=variable) loop
            } # close for(variable in by.vars) loop
-         }
+         #}
        } # close for(slope in slopes) loop
      } # close if(length(ran.effects$slopes)>0)
     }else{
     for(ranef in ran.effects){
-          ranef<-gsub(" ","",ranef)
-          cat("evaluating addition of",ranef,"to model\n")
+        ranef<-gsub(" ","",ranef)
+        cat("evaluating addition of",ranef,"to model\n")
 		model.term<-gsub("\\((.*)\\|.*","\\1",ranef)
 		model.term<-gsub(".\\+(.*)","\\1",model.term)
 		#model.term<-gsub("(.*)\\|.*","\\1",model.term)
-        	if(!model.term%in%coefs){
-          		cat("warning: variable",model.term,"not part of model coefficients\n")
-          		cat("\tskipping\n")
-        	}else{
+        	#if(!model.term%in%coefs){
+          	#	cat("warning: variable",model.term,"not part of model coefficients\n")
+          	#	cat("\tskipping\n")
+        	#}else{
           		wngs=file(file.path(temp.dir,"temp.txt"),open="w+",blocking=TRUE)
           		sink(wngs,type="message")
           		# Fit more complex model
@@ -242,7 +242,7 @@ ffRanefLMER.fnc <- function(model,
               				cat("\tnot adding",ranef,"to model\n")
             			}
           		}
-      		}
+      		#}
 	}
    }
 

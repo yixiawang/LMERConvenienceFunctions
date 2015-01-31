@@ -58,13 +58,9 @@ plotRaw3d.fnc<-function(data=NULL,
 	}
 
 	if(plot.type[1]=="image.plot"){
-	  if(!try(require(fields,quietly=TRUE))){
-	    stop("Package \"fields\" not available.\n    Please set argument \"plot.type\" to \"contour\", \n    \"persp\", or \"persp3d\".\n")
-	  }
-	  require(fields,quietly=TRUE)
-          contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
+    	contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
 	                                        
-	  # Determine color.
+	  	# Determine color.
           if(color=="heat"){
             pal=heat.colors(50)
             con.col=3
@@ -91,11 +87,6 @@ plotRaw3d.fnc<-function(data=NULL,
 
           return(invisible(list(z=x,col=pal)))
       }else if(plot.type[1]=="persp3d"){
-		# check if rgl is available
-		if(!try(require(rgl,quietly=TRUE))){
-			stop("Package \"rgl\" not available.")
-		}	
-		require(rgl,quietly=TRUE) 
 
 		dev.new()
 

@@ -121,8 +121,7 @@ Tremblay, Dalhousie University, \email{trea26@gmail.com} and Johannes Ransijn
 \email{johannesransijn@gmail.com}.}
 
 \section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while
-	lower-bound \emph{p}-values can be conservative. See
-	\url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests} and function
+	lower-bound \emph{p}-values can be conservative. See function
 	\code{pamer.fnc}.}
 
 \seealso{

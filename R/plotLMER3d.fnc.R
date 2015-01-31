@@ -732,11 +732,7 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 
 
 	if(plot.type[1]=="image.plot"){
-	  if(!try(require(fields,quietly=TRUE))){
-	    stop("Package \"fields\" not available.\n    Please set argument \"plot.type\" to \"contour\", \n    \"persp\", or \"persp3d\".\n")
-	  }
-	  require(fields,quietly=TRUE)
-          contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
+      contourlevels = seq(zlim[1], zlim[2], by=contourstepsize)
 	                                        
 	  # Determine color.
           if(color=="heat"){
@@ -956,11 +952,6 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 		return(invisible(list(z=z,col=color[facetcol])))
 
 	}else{
-		if(!try(require(rgl,quietly=TRUE))){
-			stop("Package \"rgl\" not available.\n Please set \"plot.type\" to \"contour\", \"image.plot\", or \"persp\".\n")
-		}	
-		require(rgl,quietly=TRUE) 
-
 		# the color portion of this code is adapted from the persp() help page
 		#par(bg="white")
 		nrz<-nrow(z)
@@ -1088,6 +1079,6 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 
                 par3d(cex=op3d)
 
-		return(invisible(list(z=z,col=col)))
+		return(invisible(list(x=x,y=y,z=z,col=col)))
 	}
 }

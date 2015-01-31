@@ -18,6 +18,11 @@ You can find information regarding differences between AIC and BIC from \code{ht
 \item{relLik }{The relative likelihood between the two models. Model \code{y} will be that much more likely given the data than model \code{x}.}
 }
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\references{
+On AIC and relative log-likelihood (which they call evidence ratio):
+
+Symonds, M.R.E and Moussalli, A. (2011). \emph{A brief guide to model selection, multimodel inference and model averaging in behavioural ecology using Akaike's information criterion.} \emph{Behavioral Ecology and Sociobiology}, 65, 13--21. doi: 10.1007/s00265-010-1037-6
+}
 \seealso{
 \code{\link{logLik}; }
 \code{\link{AIC}; }

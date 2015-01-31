@@ -43,7 +43,7 @@ plot.dat = "default", path = "default", ...)}
 }
 \details{See help page to Harald Baayen's \code{plotLMER.fnc} function as well as to Duncan Murdoch's \code{persp3d} function and the help page to function \code{image.plot} from package \code{fields}. To save screenshots of "persp3d" plots (after plotting), use function \code{rgl.snapshot} (produces \code{png} files) or function \code{rgl.postscript} (produces \code{eps} files).}
 \author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.} 
-\value{Invisibly returns plotting information. If \code{plot.type = "contour"}, \code{plot.type = "image.plot"}, or \code{plot.type = "persp"}, a contour or perspective plot, respectively. If \code{plot.type = "persp3d"}, a 2d plot as created by \code{plotLMER.fnc} as well as a dynamic 3d plot as created by \code{persp3d}. If \code{ret = TRUE}, a two-element list is returned containing the \emph{matrix} and the matrix of corresponding colors is returned. If argument \code{intel} in non-null, a file containing plotting information will be saved.}
+\value{Invisibly returns plotting information (\code{x} and \code{y} vectors, \code{z} matrix, and colors, \code{col}). If \code{plot.type = "contour"}, \code{plot.type = "image.plot"}, or \code{plot.type = "persp"}, a contour or perspective plot, respectively. If \code{plot.type = "persp3d"}, a 2d plot as created by \code{plotLMER.fnc} as well as a dynamic 3d plot as created by \code{persp3d}. If \code{ret = TRUE}, a two-element list is returned containing the \emph{matrix} and the matrix of corresponding colors is returned. If argument \code{intel} in non-null, a file containing plotting information will be saved.}
 \seealso{
 \code{\link{persp}};
 \code{\link{contour}};

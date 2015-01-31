@@ -137,11 +137,6 @@ plotDensity3d.fnc<-function(x,
 
 	# dynamic 3d plot
 	if(plot.type=="persp3d"){
-		if(!try(require(rgl,quietly=TRUE))){
-			stop("Package \"rgl\" not available.\n Please set \"plot.type\" to \"contour\" or \"persp\".\n")
-		}	
-		require(rgl,quietly=TRUE) 
-
 		# the color portion of this code is adapted from the persp() help page
 		#par(bg="white")
 		nrz<-nrow(mat)

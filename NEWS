@@ -1,4 +1,11 @@
 --------------------
+version 2.8
+-----
+* In functions ``ffRanefLMER.fnc'', disabled the blocking
+of random effects that are not in the fixed effect structure.
+This was done so as to enable the addition of random effects
+such as ``(1+VAR1*VAR2|VAR3)''.
+--------------------
 version 2.5
 -----
 * Fixed a bug win ``bfFixefLMER_F.fnc'' and

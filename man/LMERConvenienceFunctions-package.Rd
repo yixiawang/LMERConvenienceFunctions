@@ -2,15 +2,14 @@
 \alias{LMERConvenienceFunctions-package}
 \alias{LMERConvenienceFunctions}
 \docType{package}
-\title{An suite of functions to facilitate modeling with LMER (other miscellanea).}
-\description{The main functions of the package are fixed effect back-fitting functions (\code{bfFixefLMER_F.fnc} or \code{bfFixefLMER.fnc_t.fnc} and random effect forward fitting \code{ffRanefLMER.fnc}. The first two functions enable one to backfit the fixed effects of a model on "F" (\emph{p}-values), "t" (\emph{t} statisitc), "llrt" (log-likelihood ratio test), "AIC", "BIC", "relLik.AIC", and "relLik.BIC". The third function enables one to forward-fit a model's random-effect structure by way of log-likelihood ratio testing. See their respective help pages for details on the procedure. There is also a function to first back-fit fixed effects from an initial model, then forward-fit random effects, and finally re-backfit fixed effects (\code{fitLMER.fnc}). Other functions include a function to compute ANOVAs with upper- or lower-bound \emph{p}-values and R-squared values for each model term; \code{pamer.fnc}), a function to graph model criticism plots (\code{mcp.fnc}), a function to trim data on model residuals (\code{romr.fnc}), one to perform per-subject trimming on the response variable (\code{perSubjectTrim.fnc}, functions to perform posthoc analyses (\code{mcposthoc.fnc}), a function to generate summaries of \code{mcposthoc} objects (\code{summary.mcposthoc}), a function to generate (dynamic) 3d plots of \code{mer} objects (\code{plotLMER3d.fnc}), a function to generate (dynamic) 3d plots of the raw data as a function of an interaction between two numeric variables (\code{plotRaw3d.fnc}), a function to plot (dynamic) 3d kernel estimates of two numeric variables (\code{plotDensity3d.fnc}), and a function to calculate the relative log-likehood between two models (\code{relLik}). Also, as of version 2.4, the package gains function ``plotLMER.fnc'' (revived from archived package ``languageR''). Additionally, there are functions to list files in the current directory in matrix format (\code{f}, with easily readable numbers for each file/directory), change directory (\code{cd}), and to change directory and automatically list files in new directory (\code{cdf}), to go up one directory and automatically list files (\code{cdup}), and a function to list in matrix format the column names of a data frame (\code{cn}). The data to run examples is contained in package \code{LCF_data}.
-}
+\title{Model Selection and Post-hoc Analysis for (G)LMER Models}
+\description{The main function of the package is to perform backward selection of fixed effects, forward fitting of the random effects, and post-hoc analyses using parallel capabilities. Other functionality includes the computation of ANOVAs with upper- or lower-bound p-values and R-squared values for each model term, model criticism plots, data trimming on model residuals, and data visualization. The data to run examples is contained in package \code{LCF_data}.}
 \details{
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 2.5\cr
-Date: \tab 2013-12-14\cr
+Version: \tab 2.10\cr
+Date: \tab 2015-1-31\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
@@ -35,15 +34,17 @@ Newman, A.J., Tremblay, A., Neville, H.J., and Ullman, M.T. (In preparation).  T
 
 Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.
 
-Quene, H., & van den Bergh, H. (2008). Examples of mixed-effects modeling with crossed random effects and with binomial data. Journal of Memory and Language, 59, 413--425. doi: 10.1016/j.jml.2008.02.002.
+
+Quene, H., & van den Bergh, H. (2008). Examples of mixed-effects modeling with crossed random effects and with binomial data. \emph{Journal of Memory and Language}, 59, 413--425. doi: 10.1016/j.jml.2008.02.002.
+
+
+Symonds, M.R.E and Moussalli, A. (2011). \emph{A brief guide to model selection, multimodel inference and model averaging in behavioural ecology using Akaike's information criterion.} \emph{Behavioral Ecology and Sociobiology}, 65, 13--21. doi: 10.1007/s00265-010-1037-6
 
 
 Tremblay, Antoine. (2009). \emph{Processing Advantages of Lexical Bundles: Evidence from Self-paced Reading, Word and Sentence Recall, and Free Recall with Event-related Brain Potential Recordings}. Ph.D. Dissertation. University of Alberta, Edmonton, Canada.
 
 
 Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
-
-\url{http://rwiki.sciviews.org/doku.php?id=guides:lmer-tests}
 }
 \keyword{ package }
 \seealso{
@@ -70,11 +71,10 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
 }
 \examples{
 \dontrun{
-if(try(require(LCFdata,quietly=TRUE))){
   ############################################
   #            Load and format data.         #
   ############################################
-  require(LCFdata)
+  library(LCFdata)
   data(eeg)
 
   # restrict to electrode Fz and 80--180 ms window
@@ -118,6 +118,7 @@ if(try(require(LCFdata,quietly=TRUE))){
   #       of fixed effects. Finally,         #
   #       demonstrate pamer.fnc.             # 
   ############################################
+  library(lme4)
   # fit initial model
   m0 <- lmer(Fz ~ (FreqBdc + LengthBc + WMCc)^2 + (1 | Subject), 
     data = eeg)
@@ -291,6 +292,5 @@ if(try(require(LCFdata,quietly=TRUE))){
 	log.file = FALSE)
   m.test <- bfFixefLMER_t.fnc(m4, method = "relLik.BIC",
 	log.file = FALSE)
-  }
 }
 }

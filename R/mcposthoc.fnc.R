@@ -10,9 +10,6 @@ mcposthoc.fnc<-function(model,var,two.tailed=TRUE,
     stop("This argument is depricated. Please see \"http://stackoverflow.com/questions/19199713/lme4-and-languager-compatibility-error-input-model-is-not-a-mer-object\" for possible avenues to get p-values.\n")
   }
 
-  # load library
-  require(parallel,quietly=TRUE)
-
   if(!is.list(var)){
     stop("argument \"var\" must be a list\n")
   }
