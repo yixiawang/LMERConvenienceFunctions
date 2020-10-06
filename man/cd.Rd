@@ -5,7 +5,7 @@
 \usage{cd(dir)}
 \arguments{\item{dir}{The row number corresponding to the directory list returned by function \code{f}.}}
 \value{Change directory to the selected one.}
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 \seealso{
 \code{\link{f}; }
 \code{\link{cdf}; }

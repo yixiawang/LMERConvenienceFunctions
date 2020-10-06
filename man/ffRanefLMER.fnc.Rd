@@ -16,7 +16,7 @@ log.file = NULL)}
 \note{The removal of a random effect from the random effects structure if the variables that compose it are not also in the fixed effects structure has been turned off in this version.}
 \value{A \code{mer} object with forward-fitted random effect structure as well as a log of the process is printed on screen and, optionally, printed in a log file.}
 \references{Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plus}. New York: Springer.}
-\author{Antoine Tremblay, Dalhousie University, \code{trea26@gmail.com}.}
+\author{Antoine Tremblay, Statistics Canada, \code{trea26@gmail.com}.}
 
 \seealso{
 \code{\link{bfFixefLMER_F.fnc}; }

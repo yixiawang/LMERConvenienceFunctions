@@ -1,4 +1,20 @@
 --------------------
+version 3.0
+-----
+* A recent change to LME4 (commit 98d8c8a, released in
+LME4 1.1-23 on the 6th of March 2020) changed the names
+of the table produced by anova(), breaking multiple
+functions within LMERConvenienceFunctions.
+* This was fixed.
+* Removed anything that had to do with RGL. It was too
+problematic.
+--------------------
+version 2.12
+-----
+* Fixed warning in ``pamer.fnc'' with glmer models.
+* Updated ``pamer.fnc'' help page, more specifically, 
+removed the note about glmer models.
+--------------------
 version 2.8
 -----
 * In functions ``ffRanefLMER.fnc'', disabled the blocking

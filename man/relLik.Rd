@@ -17,7 +17,7 @@ You can find information regarding differences between AIC and BIC from \code{ht
 \item{AIC(y), BIC(y) }{The \code{AIC} or ]code{BIC} value of the second model object.}
 \item{relLik }{The relative likelihood between the two models. Model \code{y} will be that much more likely given the data than model \code{x}.}
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 \references{
 On AIC and relative log-likelihood (which they call evidence ratio):
 

@@ -1,10 +1,19 @@
 import(Matrix)
 import(lme4)
 import(fields)
-import(rgl)
 import(parallel)
 import(mgcv)
 import(LCFdata)
+
+importFrom("grDevices", "cm.colors", "colorRampPalette", "dev.new",
+           "dev.off", "gray", "heat.colors", "jpeg", "terrain.colors",
+           "topo.colors", "trans3d")
+importFrom("graphics", "abline", "box", "contour", "lines", "mtext",
+           "par", "persp", "plot", "points", "text")
+importFrom("methods", "is")
+importFrom("stats", "AIC", "BIC", "anova", "density", "median",
+           "na.omit", "pf", "plogis", "pt", "qqline", "qqnorm", "qt",
+           "quantile", "relevel", "resid", "rnorm", "sd")
 
 export(bfFixefLMER_F.fnc)
 export(bfFixefLMER_t.fnc)

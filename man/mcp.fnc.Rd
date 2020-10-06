@@ -11,7 +11,7 @@
 \details{The first of the four plots graphs the density of the model residuals. The second plot graphs the quantile-quantile plot (actual standardized residuals versus theoretical quantiles). The third plot illustrates the fitted values versus the standardized residuals. The fourth graph plots the absolute values of the \code{dffits} of the residuals (not producing this plot as of version 2.2; might come back in future versions).}
 \value{Returns the four plots described above.}
 \references{Baayen, R.H. (2008). \emph{Analyzing Linguistic Data. A Practical Introduction to Statistics Using R}. Cambridge, UK: Cambridge University Press.}
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}.}
 
 \examples{
 # see example LMERConvenienceFunctions help page.

@@ -117,7 +117,7 @@ file.} \references{ Newman, A.J., Tremblay, A., Nichols, E.S., Neville, H.J.,
 and Ullman, M.T. (2012). The Influence of Language Proficiency on Lexical
 Semantic Processing in Native and Late Learners of English. \emph{Journal of
 	Cognitive Neuroscience}, \emph{25}, 1205--1223.  } \author{Antoine
-Tremblay, Dalhousie University, \email{trea26@gmail.com} and Johannes Ransijn
+Tremblay, Statistics Canada, \email{trea26@gmail.com} and Johannes Ransijn
 \email{johannesransijn@gmail.com}.}
 
 \section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while

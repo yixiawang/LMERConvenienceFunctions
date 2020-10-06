@@ -2,21 +2,21 @@
 \alias{LMERConvenienceFunctions-package}
 \alias{LMERConvenienceFunctions}
 \docType{package}
-\title{Model Selection and Post-hoc Analysis for (G)LMER Models}
+\title{Model Selection and Post-Hoc Analysis for (G)LMER Models}
 \description{The main function of the package is to perform backward selection of fixed effects, forward fitting of the random effects, and post-hoc analyses using parallel capabilities. Other functionality includes the computation of ANOVAs with upper- or lower-bound p-values and R-squared values for each model term, model criticism plots, data trimming on model residuals, and data visualization. The data to run examples is contained in package \code{LCF_data}.}
 \details{
 \tabular{ll}{
 Package: \tab LMERConvenienceFunctions\cr
 Type: \tab Package\cr
-Version: \tab 2.10\cr
-Date: \tab 2015-1-31\cr
+Version: \tab 3.0\cr
+Date: \tab 2020-09-27\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }
 }
-\author{Antoine Tremblay, Dalhousie University, and Johannes Ransijn, University of Copenhagen
+\author{Antoine Tremblay, Statistics Canada, and Johannes Ransijn, University of Copenhagen
 
-Maintainer: Antoine Tremblay <trea26@gmail.com>
+Maintainer: "Antoine Tremblay, Statistics Canada" <trea26@gmail.com>
 }
 
 \references{
@@ -188,7 +188,7 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
   summary(m2.ph, term = "FreqBdchigh") 
   # Then low vs mid (the low vs high row is redundant from the 
   # above summary):
-  summary(m2.ph, term = "FreqBdclow")
+  summary(m2.ph, term = "FreqBdcmid")
   # Note that none of the levels differ from each other. Indeed, 
   # the backfitting process indicated that the model only has an 
   # intercept (i.e., the FreqBc factor variable was not significant).
@@ -198,7 +198,7 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
   summary(object = m2.ph, term = "LengthBc")
   # Does Length effect different Freq bins? Start with low 
   # versus mid and high
-  smry <- summary(object = m2.ph, term = "FreqBdclow:LengthBc")
+  smry <- summary(object = m2.ph, term = "FreqBdchigh:LengthBc")
   # then mid versus low and high
   smry <- summary(object = m2.ph, term = "FreqBdcmid:LengthBc")
 
@@ -232,12 +232,14 @@ Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measur
   m4 <- glmer(FreqBdc ~ (Fz + LengthBc + WMCc)^2 + (1 | Subject),
 	family = "binomial", data = eeg)
   summary(m4)
+  pamer.fnc(m4)
 
   # Back fit fixed effects, forward fit random effects, and then
   # re-back fit fixed effects. Need to set argument backfit.on to "t".
   m5 <- fitLMER.fnc(model = m4, ran.effects = "(0 + LengthBc | Subject)",
 	backfit.on = "t", log.file = FALSE)
   summary(m5)
+  pamer.fnc(m5)
 
   # Plot the 2-way interaction.
   plotLMER.fnc(m5, pred = "Fz", intr = list("LengthBc", 

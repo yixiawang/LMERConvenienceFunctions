@@ -39,6 +39,20 @@ fitLMER.fnc <- function(model,
 			gsub(" ","_",date())),".txt",sep=""))
 	}
 
+	do.we.run.it<-1
+	if(is.list(ran.effects)){
+		if(unique(c(length(ran.effects$ran.intercepts),length(ran.effects$slopes),length(ran.effects$corr),length(ran.effects$by.vars)))==0){
+			do.we.run.it<-0
+		}
+	}else if(is.vector(ran.effects)){
+		if(length(ran.effects)==0){
+			do.we.run.it<-0
+		}
+	}
+	if(do.we.run.it==0){
+		warning("Argument \"ran.effects\" is empty, which means you will not be forward-fitting the random effect structure of your model. You could just as well run function \"bfFixefLMER_F.fnc\" or \"bfFixefLMER_t.fnc\".\n",immediate=TRUE)
+	}
+
   	current.dir=getwd()
   	temp.dir=tempdir()
   	tempdir()

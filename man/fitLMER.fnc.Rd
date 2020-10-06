@@ -103,7 +103,7 @@ Pinheiro, J.C. and Bates, D.M. (2000). \emph{Mixed Effects Models in S and S-Plu
 
 Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 
 \section{Warnings}{Upper-bound \emph{p}-values can be anti-conservative, while lower-bound \emph{p}-values can be conservative. See function \code{pamer.fnc}.}
 

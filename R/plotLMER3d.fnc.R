@@ -1,7 +1,7 @@
 plotLMER3d.fnc<-function(model=NULL,
 			pred,
 			intr,
-			plot.type="contour", # or "persp" or "persp3d" or "image.plot"
+			plot.type="contour", # or "persp" or "image.plot"
 			xlim = range(x, na.rm = TRUE),
 			ylim = range(y, na.rm = TRUE),
 			zlim=range(z, na.rm = TRUE), 
@@ -9,32 +9,20 @@ plotLMER3d.fnc<-function(model=NULL,
 			ylab=NULL, 
 			zlab=NULL, 
 			main=NULL, 
-                        shift=0,
-                        scale=1,
+            shift=0,
+            scale=1,
 			cex=1,
 			fun=NA, 
 			n=30,
 			color="topo",
-			alpha=1,
-			alpha.rs=0.65,
-			alpha.u=1,
-			lit=TRUE,
 			theta=0,
 			phi=0,
 			contourstepsize=0.2,
             legend.args=NULL,
-			play3d=FALSE,   # or TRUE or a list with first element axis, e.g., c(0,0,1), second element rpm, 
-					# e.g., 4, and third element duration, e.g., 20.			
-			ref.surf=FALSE,
-			underneath=FALSE,
-			add.raw=FALSE,
-			color.raw="grey",
-			alpha.raw=0.5,
 			rug=FALSE,
-			rug.u=FALSE,
 			plot.dat="default",
 			path="default",
-                        ...
+            ...
 
 ){
 	if(is.null(model) && plot.dat=="default"){
@@ -939,146 +927,6 @@ plotLMERTweaked<-function (model, xlabel = NA, xlabs = NA, ylabel = NA, ylimit =
 
 		rm(err)
 
-
-		if(rug){
-			xy<-expand.grid(as.numeric(rownames(z)),as.numeric(colnames(z)))
-			temp<-vector("numeric")
-			for(i in 1:nrow(xy)){
-				temp<-c(temp,z[as.character(xy$Var1[i]),as.character(xy$Var2[i])])
-			}
-			points(trans3d(xy[,1],xy[,2],temp,pmat=res),pch=19,cex=0.5)
-		}
-
 		return(invisible(list(z=z,col=color[facetcol])))
-
-	}else{
-		# the color portion of this code is adapted from the persp() help page
-		#par(bg="white")
-		nrz<-nrow(z)
-		ncz<-ncol(z)
-
-		# Create a function interpolating colors in the range of specified colors
-        	if(color=="heat"){
-            		jet.colors<-colorRampPalette(heat.colors(100))
-        	}else if(color=="topo"){
-			jet.colors <- colorRampPalette(topo.colors(100)) 
-        	}else if(color=="cm"){
-            		jet.colors<-colorRampPalette(cm.colors(100))
-        	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(terrain.colors(100))
-        	}else if(color=="gray"||color=="bw"||color=="grey"){
-            		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
-        	}else{
-			stop("color scheme not recognised")
-		}
-
-		# Generate the desired number of colors from this palette
-		nbcol<-100
-		color<-jet.colors(nbcol)
-
-		# Compute the z-value at the facet centres
-		zfacet<-z[-1,-1]+z[-1,-ncz]+z[-nrz,-1]+z[-nrz,-ncz]
-
-		# Recode facet z-values into color indices
-		facetcol<-cut(zfacet,nbcol)
-		facetcol=color[facetcol]
-
-		# this portion is from the persp3d() help page
-		nx=length(rownames(z))
-		ny=length(colnames(z))
-		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
-
-
-                x<-as.numeric(rownames(z))
-                y<-as.numeric(colnames(z))
-
-                op3d<-par3d()$cex
-                par3d(cex=cex)
-
-		# create persp3d plot
-		jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
-				zlab=zlab,main=main,alpha=alpha,
-                                smooth=FALSE,lit=lit,xlab=xlab,
-                                ylab=ylab),silent=TRUE)
-		dev.off()
-
-		if(length(grep("Error",err))>0){
-                        if(length(unique(x))!=length(x)){
-                            x<-sort(jitter(x,factor=0.01))
-                        }
-                        if(length(unique(y))!=length(y)){
-                            y<-sort(jitter(y,factor=0.01))
-                        }
-
-		        jpeg(filename=file.path(tempdir(),"tmp.jpeg"))
-		        err<-try(persp3d(x=x,y=y,z=z,col=col,zlim=zlim,
-				        zlab=zlab,main=main,alpha=alpha,
-                                        smooth=FALSE,lit=lit,xlab=xlab,
-                                        ylab=ylab),silent=TRUE)
-		        dev.off()
-                 }
-
-		if(length(grep("Error",err))>0){
-			cat("\tplotting anyways, but will not use supplied x- and y-values ...\n")
-			persp3d(z=z,col=col,zlim=zlim,zlab=zlab,main=main,
-                            alpha=alpha,smooth=FALSE,lit=lit,xlab=paste(xlab,
-                            "-- Random Units",sep=" "),ylab=paste(ylab,
-                            "-- Random Units",sep=" "),...)
-		}else{
-		        persp3d(x=x,y=y,z=z,col=col,zlim=zlim,zlab=zlab,
-                            main=main,alpha=alpha,smooth=FALSE,lit=lit,
-                            xlab=xlab,ylab=ylab,...)
-                }
-
-		if(add.raw){
-			response<-gsub(" ","",strsplit(as.character(model@call)[2],"~")[[1]][1])
-			xy<-ifelse(length(grep("Error",err))>0,FALSE,TRUE)
-			plotRaw3d.fnc(data=model@frame,response=response,pred=pred,intr=intr,xy=xy,
-				color=color.raw,alpha=alpha.raw,plot.type="persp3d",xlab="",ylab="",
-				zlab="",main="",add=TRUE,shift=shift,scale=scale)
-		}
-
-		rm(err)
-
-		if(ref.surf){
-			persp3d(x=x,y=y,matrix(mean(z),ncol=ncol(z),
-				nrow=nrow(z),byrow=TRUE),col="grey",
-                                alpha=alpha.rs,zlim=zlim,add=TRUE,
-                                lit=lit)
-		}
-
-		if(underneath){
-			persp3d(x=x,y=y,z=(matrix(min(z),nrow(z),ncol(z))+zlim[1]),
-				col=col,alpha=alpha.u,add=TRUE,smooth=FALSE,lit=lit,
-                                zlim=zlim)	
-			if(rug.u){
-				for(i in 1:nrow(z)){
-					plot3d(x=x[i],y=y,z=(matrix(min(z),
-                                                nrow(z),ncol(z))+zlim[1])[i,],
-                                                add=TRUE,col="black",size=3)
-				}
-			}
-		}
-
-		if(rug){
-			for(i in 1:nrow(z)){
-				plot3d(x=x[i],y=y,z=z[i,],add=TRUE,
-                                    col="black",size=3)
-			}
-		}
-
-
-		if(play3d || is.list(play3d)){
-			if(is.list(play3d)){
-				play3d(spin3d(axis=play3d[[1]], rpm=play3d[[2]]), duration=play3d[[3]])
-			}else{
-				play3d(spin3d(axis=c(0,0,1),rpm=4),duration=20)
-			}
-		}
-
-                par3d(cex=op3d)
-
-		return(invisible(list(x=x,y=y,z=z,col=col)))
 	}
 }

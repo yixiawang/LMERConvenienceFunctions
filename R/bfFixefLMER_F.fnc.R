@@ -1,8 +1,4 @@
-bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC", 
-                                          "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, alpha = NULL, 
-          alphaitem = NULL, prune.ranefs = TRUE, p.value = "upper", 
-          set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, 
-          log.file = NULL) 
+bfFixefLMER_F.fnc<-function(model, item = FALSE, method = c("F", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, alpha = NULL, alphaitem = NULL, prune.ranefs = TRUE, p.value = "upper", set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, log.file = NULL) 
 {
   if (length(item) == 0) {
     stop("please supply a value to argument \"item\".\n")
@@ -24,18 +20,16 @@ bfFixefLMER_F.fnc<-function (model, item = FALSE, method = c("F", "llrt", "AIC",
     threshold <- c(0.05, 0.05, 5, 5, 4, 4)[match(method[1], c("F", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"))]
   }
   if (is.null(alpha)) {
-    if (method[1] == "F") {
+    #if (method[1] == "F") {
       alpha <- threshold
-    }
-    else {
-      alpha <- 0
-    }
+    #} else {
+    #  alpha <- 0
+    #}
   }
   if (is.null(alphaitem)) {
     if (method[1] == "F" || method[1] == "llrt") {
       alphaitem <- threshold
-    }
-    else {
+    } else {
       alphaitem <- 0.05
     }
   }

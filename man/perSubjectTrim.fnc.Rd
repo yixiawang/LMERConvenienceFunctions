@@ -16,7 +16,7 @@ The function returns the following objects:
 \item{n.removed}{The number of data points removed.}
 \item{percent.removed}{The percentage of removed data points.}
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}.}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}.}
 
 \seealso{
 \code{\link{mcp.fnc}}

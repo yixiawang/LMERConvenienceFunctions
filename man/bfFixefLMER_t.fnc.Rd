@@ -58,7 +58,7 @@ It is probably because you updated the model using function \code{update} and th
 \references{
 Tremblay, A. and Tucker B. V. (2011). The Effects of N-gram Probabilistic Measures on the Processing and Production of Four-word Sequences. \emph{The Mental Lexicon}, \emph{6(2)}, 302--324.
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com} and Johannes Ransijn \email{johannesransijn@gmail.com}.}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com} and Johannes Ransijn \email{johannesransijn@gmail.com}.}
 \seealso{
 \code{\link{bfFixefLMER_F.fnc}; }
 \code{\link{ffRanefLMER.fnc}; }

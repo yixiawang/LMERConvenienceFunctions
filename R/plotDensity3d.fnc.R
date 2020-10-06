@@ -7,7 +7,6 @@ plotDensity3d.fnc<-function(x,
 			zlab=NULL, 
 			main=NULL, 
 			cex=1,
-			alpha=1,
 			lit=TRUE,
 			theta=0,
 			phi=0,
@@ -133,50 +132,5 @@ plotDensity3d.fnc<-function(x,
 
 		# return info
 	        return(invisible(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=color[facetcol])))
-	}
-
-	# dynamic 3d plot
-	if(plot.type=="persp3d"){
-		# the color portion of this code is adapted from the persp() help page
-		#par(bg="white")
-		nrz<-nrow(mat)
-		ncz<-ncol(mat)
-
-		# Create a function interpolating colors in the range of specified colors
-        	if(color=="heat"){
-            		jet.colors<-colorRampPalette(heat.colors(100))
-        	}else if(color=="topo"){
-			jet.colors <- colorRampPalette(topo.colors(100)) 
-        	}else if(color=="cm"){
-            		jet.colors<-colorRampPalette(cm.colors(100))
-        	}else if(color=="terrain"){
-            		jet.colors<-colorRampPalette(terrain.colors(100))
-        	}else if(color=="gray"||color=="bw"||color=="grey"){
-            		jet.colors<-colorRampPalette(gray(seq(0.1,0.9,length=7)))
-		}
-
-		# Generate the desired number of colors from this palette
-		nbcol<-100
-		color<-jet.colors(nbcol)
-
-		# Compute the z-value at the facet centres
-		zfacet<-mat[-1,-1]+mat[-1,-ncz]+mat[-nrz,-1]+mat[-nrz,-ncz]
-
-		# Recode facet z-values into color indices
-		facetcol<-cut(zfacet,nbcol)
-		facetcol=color[facetcol]
-
-		# this portion is from the persp3d() help page
-		nx=nrow(mat)
-		ny=ncol(mat)
-		col <- rbind(1, cbind(matrix(facetcol, nx-1, ny-1), 1))
-
-		# plot
-		persp3d(x=seq(min(x),max(x),length=nrow(mat)),y=seq(min(y),max(y),length=ncol(mat)),
-			z=mat,col=col,zlab=zlab,main=main,alpha=alpha,smooth=FALSE,lit=lit,
-			xlab=xlab,ylab=ylab,...)
-
-		# return info
-		return(invisible(list(x=x,y=y,xd=xd,yd=yd,mat=mat,col=pal)))
 	}
 }

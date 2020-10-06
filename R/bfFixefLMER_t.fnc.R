@@ -1,4 +1,18 @@
 bfFixefLMER_t.fnc<-function (model, item = FALSE, method = c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"), threshold = NULL, t.threshold = NULL, alphaitem = NULL, prune.ranefs = TRUE, set.REML.FALSE = TRUE, keep.single.factors = FALSE, reset.REML.TRUE = TRUE, log.file = NULL) {
+  # for testing
+  # model=m2
+  # item = FALSE
+  # method = c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC")
+  # method = "llrt"
+  # threshold = NULL
+  # t.threshold = NULL
+  # alphaitem = NULL
+  # prune.ranefs = TRUE
+  # set.REML.FALSE = TRUE
+  # keep.single.factors = FALSE
+  # reset.REML.TRUE = TRUE
+  # log.file = NULL
+
   if (length(item) == 0) {
     stop("please supply a value to argument \"item\".\n")
   }
@@ -21,18 +35,16 @@ bfFixefLMER_t.fnc<-function (model, item = FALSE, method = c("t", "z", "llrt", "
     threshold <- c(2, 2, 0.05, 5, 5, 4, 4)[match(method[1], c("t", "z", "llrt", "AIC", "BIC", "relLik.AIC", "relLik.BIC"))]
   }
   if (is.null(t.threshold)) {
-    if ((method[1] == "t") || (method[1] == "z")) {
+    #if ((method[1] == "t") || (method[1] == "z")) {
       t.threshold <- 2
-    }
-    else {
-      t.threshold <- Inf
-    }
+    #} else {
+    #  t.threshold <- Inf
+    #}
   }
   if (is.null(alphaitem)) {
     if (method[1] == "llrt") {
       alphaitem <- threshold
-    }
-    else {
+    } else {
       alphaitem <- 0.05
     }
   }
@@ -78,8 +90,7 @@ bfFixefLMER_t.fnc<-function (model, item = FALSE, method = c("t", "z", "llrt", "
 	options(warn=ow)
     coefs <- row.names(anova(temp.lmer))
     data[, as.character(unlist(as.list(model@call))$formula[2])] <- odv
-  }
-  else {
+  } else {
     coefs <- row.names(anova(model))
   }
   if (is(model, "merMod")) {
@@ -152,8 +163,7 @@ bfFixefLMER_t.fnc<-function (model, item = FALSE, method = c("t", "z", "llrt", "
         keepers <- row.names(smry.temp2)
         keepers <- keepers[-grep(as.character(row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ]))[1], keepers)]
         smry.temp2 <- smry.temp2[keepers, ]
-      }
-      else {
+      } else {
         cat("     not part of higher-order interaction\n")
         m.temp <- NULL
         eval(parse(text = paste("m.temp=update(model,.~.-", row.names(smry.temp2[smry.temp2[, 3] == min(smry.temp2[, 3]), ])[1], ")", sep = "")))

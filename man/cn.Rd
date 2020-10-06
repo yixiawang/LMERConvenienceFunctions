@@ -5,7 +5,7 @@
 \usage{cn(data.frame)}
 \arguments{\item{data.frame}{A data frame.}}
 \value{A matrix containing the column names of the data frame.}
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 \seealso{
 \code{\link{colnames}}
 }

@@ -15,7 +15,7 @@ full.names = FALSE, recursive = FALSE, ignore.case = FALSE)}
 \value{A matrix containing the names of the files and directories, preceded by a row number, in the specified directories. If a path does not exist or is not a directory or is unreadable it is skipped, with a warning.  
 
 The files are sorted in alphabetical order, on the full path if \code{full.names = TRUE}. Directories are included only if \code{recursive = FALSE}.}
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 \note{File naming conventions are platform dependent.  \code{recursive = TRUE} is not supported on all platforms and may be ignored (with a warning).}
 \seealso{
 \code{\link{list.files}}

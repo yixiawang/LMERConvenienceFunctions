@@ -17,7 +17,7 @@ term = NULL, print = TRUE, ...)}
 \item{term }{The term from the posthoc list for which a summary is desired.}
 \item{summary }{The posthoc summary.}
 }
-\author{Antoine Tremblay, Dalhousie University, \email{trea26@gmail.com}}
+\author{Antoine Tremblay, Statistics Canada, \email{trea26@gmail.com}}
 \seealso{
 \code{\link{mcposthoc.fnc}; }
 \code{\link{pamer.fnc}. }

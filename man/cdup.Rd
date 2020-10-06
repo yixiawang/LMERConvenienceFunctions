@@ -13,7 +13,7 @@ cdup()
 Change directory one level up.
 }
 \author{
-Antoine Tremblay, Dalhousie University, <trea26@gmail.com>
+Antoine Tremblay, Statistics Canada, <trea26@gmail.com>
 }
 
 \seealso{
