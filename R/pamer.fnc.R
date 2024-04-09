@@ -8,19 +8,19 @@ pamer.fnc<-function (model, ndigits = 4)
   else {
     dims <- NULL
     rank.X = qr(model@pp$X)$rank
-    anova.table = anova(model)
+    anova.table = anova(model, dff = "lme4")
     anova.table = cbind(anova.table, upper.den.df = nrow(model@frame) - rank.X)
     p.values.upper = as.numeric()
     p.values.lower = as.numeric()
     for (term in row.names(anova.table)) {
-      p.values.upper = c(p.values.upper, round(1 - pf(anova.table[term,"F value"], anova.table[term, "numDF"], nrow(model@frame) - rank.X), ndigits))
+      p.values.upper = c(p.values.upper, round(1 - pf(anova.table[term,"F value"], anova.table[term, "npar"], nrow(model@frame) - rank.X), ndigits))
       model.ranef <- ranef(model)
       lower.bound <- 0
       for (i in 1:length(names(model.ranef))) {
         dims <- dim(model.ranef[[i]])
         lower.bound <- lower.bound + dims[1] * dims[2]
       }
-      p.values.lower = c(p.values.lower, 1 - pf(anova.table[term, "F value"], anova.table[term, "numDF"], nrow(model@frame) - rank.X - lower.bound))
+      p.values.lower = c(p.values.lower, 1 - pf(anova.table[term, "F value"], anova.table[term, "npar"], nrow(model@frame) - rank.X - lower.bound))
     }
     aov.table <- as.data.frame(anova(model))
 	if(!as.vector(model@call[1]) == "glmer()"){
